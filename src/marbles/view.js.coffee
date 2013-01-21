@@ -37,6 +37,7 @@ Marbles.View = class View
       @set(k, options[k]) if options[k]
 
     @on 'ready', @bindViews
+    @initialize(options)
 
   generateCid: =>
     @cid = "#{@constructor.view_name}_#{@constructor._id_counter++}"
@@ -52,6 +53,8 @@ Marbles.View = class View
       @constructor.partials = {}
       for name in @constructor.partial_names
         @constructor.partials[name] = @constructor.getTemplate(name)
+
+  initialize: =>
 
   bindViews: =>
     @_child_views ?= {}
