@@ -97,7 +97,7 @@ Marbles.View = class View
     view
 
   context: =>
-    config: Marbles.config
+    {}
 
   renderHTML: (context = @context()) =>
     unless @constructor.template
