@@ -8,6 +8,8 @@
 #= require ./marbles/http
 #= require ./marbles/http/client
 #= require ./marbles/http/client/middleware
+#= require ./marbles/model
+#= require ./marbles/collection
 
 window.Marbles = {
   VERSION: '0.0.1'
