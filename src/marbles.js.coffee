@@ -5,6 +5,9 @@
 #= require ./marbles/router
 #= require ./marbles/accessors
 #= require ./marbles/view
+#= require ./marbles/http
+#= require ./marbles/http/client
+#= require ./marbles/http/client/middleware
 
 window.Marbles = {
   VERSION: '0.0.1'
