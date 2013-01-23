@@ -20,7 +20,7 @@ class Marbles.History
 
   # start pushState handling
   start: (options = {}) =>
-    throw new Error("Marbles.history has already been started") if Marbles.History.started
+    throw new Error("Marbles.history has already been started") if Marbles.history.started
     Marbles.history.started = true
 
     @options = _.extend { root: '/' }, @options, options
