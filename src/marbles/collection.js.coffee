@@ -1,5 +1,6 @@
 Marbles.Collection = class Collection
   @model: Marbles.Model
+  model_ids: new Array
 
   constructor: (options = {}) ->
     @append_raw(options.raw) if _.isArray(options.raw)
