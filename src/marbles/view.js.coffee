@@ -1,3 +1,4 @@
+Marbles.Views = {}
 Marbles.View = class View
   @instances: {
     all: {}
