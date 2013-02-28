@@ -27,5 +27,5 @@
     "tmp/tests/*.js"
   ],
   "before_tests": "coffee -c -o tmp src && coffee -c -o tmp/tests tests",
-  "on_exit": "rm -rf tmp"
+  "after_tests": "rm -rf tmp"
 }
