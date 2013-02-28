@@ -1,0 +1,31 @@
+{
+  "launch_in_dev": [
+    "phantomjs"
+  ],
+  "framework": "jasmine",
+  "src_files": [
+    "src/**/*.coffee",
+    "src/**/*.js",
+    "tests/**/*.coffee"
+  ],
+  "serve_files": [
+    "src/polyfills/*.js",
+    "vendor/*.js",
+    "tmp/marbles.js.js",
+    "tmp/marbles/dom.js.js",
+    "tmp/marbles/dom/input_selection.js.js",
+    "tmp/marbles/events.js.js",
+    "tmp/marbles/history.js.js",
+    "tmp/marbles/router.js.js",
+    "tmp/marbles/accessors.js.js",
+    "tmp/marbles/view.js.js",
+    "tmp/marbles/http.js.js",
+    "tmp/marbles/http/client.js.js",
+    "tmp/marbles/http/client/middleware.js.js",
+    "tmp/marbles/model.js.js",
+    "tmp/marbles/collection.js.js",
+    "tmp/tests/*.js"
+  ],
+  "before_tests": "coffee -c -o tmp src && coffee -c -o tmp/tests tests",
+  "on_exit": "rm -rf tmp"
+}
