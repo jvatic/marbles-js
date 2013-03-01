@@ -14,7 +14,7 @@ Marbles.Accessors = {
 
     old_v = obj[last_key]
     obj[last_key] = v
-    @trigger("change:#{keypath}", v, old_v) unless v == old_v
+    @trigger("change:#{keypath}", v, old_v, keypath) unless v == old_v
     v
 
   get: (keypath, options={}) ->

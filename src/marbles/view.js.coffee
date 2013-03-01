@@ -74,6 +74,7 @@ Marbles.View = class View
         view.bindViews?()
 
         @trigger("init:#{view_class_name}", view) if _init
+        @trigger("init-view", view_class_name, view) if _init
       else
         console.warn "Marbles.Views.#{view_class_name} is not defined!"
 

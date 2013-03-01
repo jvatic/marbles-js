@@ -3,11 +3,20 @@ Marbles.Model = class Model
     all: {}
   }
   @id_mapping: {}
+  @id_mapping_scope: ['id']
   @_id_counter: 0
   @model_name: '_default'
 
+  @buildIdMappingScope: (params) =>
+    scope = []
+    for key in @id_mapping_scope
+      return null unless params.hasOwnProperty(key)
+      scope.push params[key]
+    scope.join(":")
+
   @find: (params, options = {}) ->
-    if params.id && (cid = @id_mapping[@model_name]?[params.id])
+    id_scope = @buildIdMappingScope(params)
+    if id_scope && (cid = @id_mapping[@model_name]?[id_scope])
       params.cid = cid
 
     if params.cid && instance = @instances.all[params.cid]
@@ -43,6 +52,8 @@ Marbles.Model = class Model
     @generateCid()
     @trackInstance()
     @on 'change:id', @updateIdMapping
+    for key in @constructor.id_mapping_scope
+      @on "change:#{key}", @updateIdMapping
     @parseAttributes(attributes)
 
   generateCid: =>
@@ -56,10 +67,22 @@ Marbles.Model = class Model
   parseAttributes: (attributes) =>
     @set(k, v, {keypath:false}) for k,v of attributes
 
-  updateIdMapping: (new_id, old_id) =>
+  updateIdMapping: (new_value, old_value, attr) =>
+    old_scope = []
+    new_scope = []
+    for key in @constructor.id_mapping_scope
+      if key == attr
+        old_scope.push old_value
+        new_scope.push new_value
+      else
+        old_scope.push @get(key)
+        new_scope.push @get(key)
+    old_scope = old_scope.join(":")
+    new_scope = new_scope.join(":")
+
     @constructor.id_mapping[@constructor.model_name] ?= {}
-    delete @constructor.id_mapping[@constructor.model_name][old_id]
-    @constructor.id_mapping[@constructor.model_name][new_id] = @cid
+    delete @constructor.id_mapping[@constructor.model_name][old_scope]
+    @constructor.id_mapping[@constructor.model_name][new_scope] = @cid
 
   set: (keypath, v, options={}) =>
     return unless keypath && keypath.length
