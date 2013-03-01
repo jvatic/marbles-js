@@ -55,3 +55,21 @@ describe "Marbles.DOM.querySelectorAll", ->
     expect(Marbles.DOM.querySelectorAll(".#{klass}", parent_el).length).toEqual(5)
     expect(Marbles.DOM.querySelectorAll(".#{klass}", control_parent_el).length).toEqual(7)
 
+describe "Marbles.DOM.match", ->
+  it "should return true if given selector matches given element", ->
+    el = document.createElement('div')
+    el.className = 'foo bar baz'
+    document.body.appendChild(el)
+
+    expect(Marbles.DOM.match(el, '.foo')).toBe(true)
+    expect(Marbles.DOM.match(el, '.bar')).toBe(true)
+    expect(Marbles.DOM.match(el, '.baz')).toBe(true)
+
+  it "should return false if geven selector doesn't match given element", ->
+    el = document.createElement('div')
+    document.body.appendChild(el)
+
+    expect(Marbles.DOM.match(el, '.foo')).toBe(false)
+    expect(Marbles.DOM.match(el, '.bar')).toBe(false)
+    expect(Marbles.DOM.match(el, '.baz')).toBe(false)
+
