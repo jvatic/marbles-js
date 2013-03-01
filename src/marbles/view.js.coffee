@@ -12,9 +12,9 @@ Marbles.View = class View
   # Marbles assumes you have pre-compiled hogan templates
   # TODO: Should be able to use any templating library
   @getTemplate: (template_path) ->
-    throw new Error("Marbles.View.templates is not defined. Expected an object conatining compiled hogan (mustache) templates.") unless (@templates ?= window.HoganTemplates)
+    return Marbles.throwAsync new Error("Marbles.View.templates is not defined. Expected an object conatining compiled hogan (mustache) templates.") unless (@templates ?= window.HoganTemplates)
     template = @templates[template_path]
-    throw new Error("Marbles.View.templates[#{template_path}] is not defined.") unless template
+    return Marbles.throwAsync new Error("Marbles.View.templates[#{template_path}] is not defined.") unless template
     template
 
   @detach: (cid) ->

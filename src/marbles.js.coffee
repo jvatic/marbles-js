@@ -13,4 +13,6 @@
 
 window.Marbles = {
   VERSION: '0.0.1'
+  throwAsync: (error) ->
+    setTimeout (-> throw error), 0
 }
