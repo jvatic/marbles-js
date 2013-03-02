@@ -132,6 +132,9 @@ Marbles.DOM = DOM = {
     _.any(DOM.parentNodes(el), (_el) -> _el == document.body)
 
   getStyle: (el, name) ->
+    # convert to camel case (e.g. 'padding-left' to 'paddingLeft')
+    name = name.replace(/-([a-z])/ig, ((match, char) -> char.toUpperCase()))
+
     val = el.style[name]
     val = DOM.getComputedStyle(el, name) if !val || val.match(/^[\s\r\t\n]*$/)
     val
