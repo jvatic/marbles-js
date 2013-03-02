@@ -150,10 +150,8 @@ Marbles.DOM = DOM = {
       @setStyle(el, name, value)
 
   setInnerText: (el, value) ->
-    if typeof el.innerText == undefined
-      el.textContent = value
-    else
-      el.innerText = value
+    el.textContent = value
+    el.innerText = value
     value
 
   parentNodes: (el) ->
