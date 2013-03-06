@@ -4,7 +4,7 @@ Marbles.View = class View
     all: {}
   }
   @_id_counter: 0
-  @view_name: '_default'
+  @view_name: '_default' # chould be snake_case version of Marbles.Views key (e.g. Marbles.Views.MainView should be main_view)
 
   @find: (cid) ->
     @instances.all[cid]
@@ -60,23 +60,25 @@ Marbles.View = class View
   bindViews: =>
     @_child_views ?= {}
     _.each Marbles.DOM.querySelectorAll('[data-view]', (@container?.el || @el)), (el) =>
-      view_class_name = Marbles.DOM.attr(el, 'data-view')
+      view_class_names = Marbles.DOM.attr(el, 'data-view').split(/\s+/)
 
-      if viewClass = Marbles.Views[view_class_name]
-        _init = false
-        unless el.view_cid && (view = viewClass.instances.all[el.view_cid])
-          view = new viewClass el: el, parent_view: @
-          _init = true
-        @_child_views[view_class_name] ?= []
-        @_child_views[view_class_name].push view.cid
-        el.view_cid = view.cid
+      for view_class_name in view_class_names
+        if viewClass = Marbles.Views[view_class_name]
+          _init = false
+          el.view_cids ?= {}
+          unless (_view_cid = el.view_cids[view_class_name]) && (view = viewClass.instances.all[_view_cid])
+            view = new viewClass el: el, parent_view: @
+            _init = true
+          @_child_views[view_class_name] ?= []
+          @_child_views[view_class_name].push view.cid
+          el.view_cids[view_class_name] = view.cid
 
-        view.bindViews?()
+          view.bindViews?()
 
-        @trigger("init:#{view_class_name}", view) if _init
-        @trigger("init-view", view_class_name, view) if _init
-      else
-        console.warn "Marbles.Views.#{view_class_name} is not defined!"
+          @trigger("init:#{view_class_name}", view) if _init
+          @trigger("init-view", view_class_name, view) if _init
+        else
+          console.warn "Marbles.Views.#{view_class_name} is not defined!"
 
   detachChildViews: =>
     for class_name, cids of (@_child_views || {})
@@ -121,7 +123,8 @@ Marbles.View = class View
       else
         @el.innerHTML = html
 
-    @el.view_cid = @cid
+    @el.view_cids ?= {}
+    @el.view_cids[@constructor.view_name.replace(/_([a-z])/ig, (match, char) -> char.toUpperCase()).replace(/^([a-z])/, (match, char) -> char.toUpperCase())] = @cid
 
     @detachChildViews()
 
