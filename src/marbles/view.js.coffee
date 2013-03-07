@@ -34,7 +34,7 @@ Marbles.View = class View
     @trackInstance()
     @initTemplates()
 
-    for k in ['el', 'parent_view', 'container', 'render_method']
+    for k in ['el', 'parent_view', '_parent_view_cid', 'container', 'render_method']
       @set(k, options[k]) if options[k]
 
     @on 'ready', @bindViews
@@ -67,7 +67,7 @@ Marbles.View = class View
           _init = false
           el.view_cids ?= {}
           unless (_view_cid = el.view_cids[view_class_name]) && (view = viewClass.instances.all[_view_cid])
-            view = new viewClass el: el, parent_view: @
+            view = new viewClass el: el, parent_view: @, _parent_view_cid: @cid
             _init = true
           @_child_views[view_class_name] ?= []
           @_child_views[view_class_name].push view.cid
@@ -90,13 +90,16 @@ Marbles.View = class View
   childViews: (view_class_name) =>
     _.map @_child_views[view_class_name], (cid) => @constructor.find(cid)
 
+  parentView: =>
+    Marbles.View.find(@_parent_view_cid)
+
   findParentView: (view_name) =>
     key = "_parent_#{view_name}_cid"
     return view if @[key] && (view = Marbles.View.find(@[key]))
 
     view = @
     while view && view.constructor.view_name != view_name
-      view = view.parent_view
+      view = view.parentView()
     @[key] = view.cid if view
     view
 
