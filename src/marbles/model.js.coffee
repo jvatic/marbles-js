@@ -7,7 +7,7 @@ Marbles.Model = class Model
   @_id_counter: 0
   @model_name: '_default'
 
-  @buildIdMappingScope: (params) =>
+  @buildIdMappingScope: (params) ->
     scope = []
     for key in @id_mapping_scope
       return null unless params.hasOwnProperty(key)
@@ -20,6 +20,7 @@ Marbles.Model = class Model
       params.cid = cid
 
     if params.cid && instance = @instances.all[params.cid]
+      options?.success?(instance)
       return instance
 
     if params.id && (!options.hasOwnProperty('fetch') || options.fetch) && (!params.hasOwnProperty('fetch') || params.fetch)
