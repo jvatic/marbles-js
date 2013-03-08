@@ -6,6 +6,7 @@
 #= require ./marbles/accessors
 #= require ./marbles/view
 #= require ./marbles/http
+#= require ./marbles/http/uri
 #= require ./marbles/http/client
 #= require ./marbles/http/client/middleware
 #= require ./marbles/model
