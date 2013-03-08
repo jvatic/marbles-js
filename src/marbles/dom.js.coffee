@@ -14,6 +14,10 @@ Marbles.DOM = DOM = {
     return unless el
     el.attributes?.getNamedItem(name)?.value
 
+  setAttr: (el, name, value) ->
+    return unless el
+    el[name] = value
+
   replaceChildren: (el, new_children...) ->
     for child in el.childNodes
       el.removeChild(child)
