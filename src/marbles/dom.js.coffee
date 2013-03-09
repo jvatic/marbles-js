@@ -16,7 +16,7 @@ Marbles.DOM = DOM = {
 
   setAttr: (el, name, value) ->
     return unless el
-    el[name] = value
+    el.setAttribute(name, value)
 
   replaceChildren: (el, new_children...) ->
     for child in el.childNodes
