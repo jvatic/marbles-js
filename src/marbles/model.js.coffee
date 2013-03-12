@@ -20,8 +20,9 @@ Marbles.Model = class Model
       params.cid = cid
 
     if params.cid && instance = @instances.all[params.cid]
-      options?.success?(instance)
-      return instance
+      if !instance.options.partial_data || params.include_partial_data || options.include_partial_data
+        options?.success?(instance)
+        return instance
 
     if params.id && (!options.hasOwnProperty('fetch') || options.fetch) && (!params.hasOwnProperty('fetch') || params.fetch)
       @fetch(params, options)
