@@ -51,6 +51,14 @@ Marbles.Collection = class Collection
     @trigger('prepend:complete', models)
     models
 
+  first: =>
+    return unless cid = @model_ids[0]
+    @constructor.model.find({ cid: cid })
+
+  last: =>
+    return unless cid = _.last(@model_ids)
+    @constructor.model.find({ cid: cid })
+
   unshift: (models...) =>
     for model in models
       @model_ids.unshift(model.cid)
