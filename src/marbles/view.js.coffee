@@ -69,8 +69,11 @@ Marbles.View = class View
           unless (_view_cid = el.view_cids[view_class_name]) && (view = viewClass.instances.all[_view_cid])
             view = new viewClass el: el, parent_view: @, _parent_view_cid: @cid
             _init = true
+
           @_child_views[view_class_name] ?= []
-          @_child_views[view_class_name].push view.cid
+          if @_child_views[view_class_name].indexOf(view.cid) == -1
+            @_child_views[view_class_name].push view.cid
+
           el.view_cids[view_class_name] = view.cid
 
           view.bindViews?()
