@@ -58,7 +58,11 @@ Marbles.Model = class Model
     @parseAttributes(attributes)
 
   generateCid: =>
-    @cid = "#{@constructor.model_name}_#{@constructor._id_counter++}"
+    if @options.cid
+      @cid = @options.cid
+      delete @options.cid
+    else
+      @cid = "#{@constructor.model_name}_#{@constructor._id_counter++}"
 
   trackInstance: =>
     @constructor.instances.all[@cid] = @
