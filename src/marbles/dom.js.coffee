@@ -223,7 +223,7 @@ Marbles.DOM = DOM = {
 
   loadFormParams: (form, params) ->
     for key, val of params
-      el = DOM.querySelectorAllOne("[name=#{key}]")
+      el = DOM.querySelector("[name=#{key}]")
       continue unless el
       DOM.setElementValue(el, val)
 
