@@ -95,7 +95,7 @@ class Marbles.History
     return false unless Marbles.history.started
     options = {trigger: true} if options is true
     fragment = (fragment || '').replace(@regex.route_stripper, '')
-    return if fragment is @fragment
+    return if fragment is @fragment && !options.trigger
 
     fragment = @options.root + fragment if fragment.indexOf(@options.root) != 0
     @fragment = fragment
