@@ -2,15 +2,20 @@ Marbles.Collection = class Collection
   @model: Marbles.Model
   model_ids: new Array
 
+  @buildModel: (attrs) ->
+    new @model(attrs)
+
   constructor: (options = {}) ->
-    @append_raw(options.raw) if _.isArray(options.raw)
+    @resetRaw(options.raw) if _.isArray(options.raw)
 
   fetch: (params = {}, options = {}) =>
     throw new Error("You need to define #{@constructor.name}::fetch(params, options)!")
 
-  reset: (resources_attribtues = []) =>
+  resetRaw: (resources_attribtues) =>
     @model_ids = []
-    @append(resources_attribtues)
+    models = @appendRaw(resources_attribtues, silent: true)
+    @trigger('reset', models)
+    models
 
   includes: (model) =>
     return @model_ids.indexOf(model.cid) != -1
@@ -23,11 +28,28 @@ Marbles.Collection = class Collection
       @model_ids = @model_ids.slice(0, index).concat(@model_ids.slice(index+1, @model_ids.length))
     @model_ids.length
 
-  append_raw: (resources_attribtues = {}) =>
-    for attrs in resources_attribtues
-      model = new @constructor.model(attrs)
+  appendRaw: (resources_attribtues = [], options = {}) =>
+    return [] unless resources_attribtues?.length
+
+    models = for attrs in resources_attribtues
+      model = @constructor.buildModel(attrs)
       @model_ids.push(model.cid)
       model
+
+    @trigger('append:complete', models) unless options.silent
+    models
+
+  prependRaw: (resources_attribtues = []) =>
+    return [] unless resources_attribtues?.length
+
+    models = for i in [resources_attribtues.length-1..0]
+      attrs = resources_attribtues[i]
+      model = @constructor.buildModel(attrs)
+      @model_ids.unshift(model.cid)
+      model
+
+    @trigger('prepend:complete', models)
+    models
 
   unshift: (models...) =>
     for model in models

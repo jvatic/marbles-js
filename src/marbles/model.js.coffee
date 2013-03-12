@@ -52,7 +52,6 @@ Marbles.Model = class Model
   constructor: (attributes, @options = {}) ->
     @generateCid()
     @trackInstance()
-    @on 'change:id', @updateIdMapping
     for key in @constructor.id_mapping_scope
       @on "change:#{key}", @updateIdMapping
     @parseAttributes(attributes)
