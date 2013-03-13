@@ -37,6 +37,8 @@ Marbles.View = class View
     for k in ['el', 'parent_view', '_parent_view_cid', 'container', 'render_method']
       @set(k, options[k]) if options[k]
 
+    @_parent_view_cid ?= options.parent_view?.cid
+
     @on 'ready', @bindViews
     @initialize(options)
 
