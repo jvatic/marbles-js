@@ -17,6 +17,11 @@ Marbles.Collection = class Collection
     @trigger('reset', models)
     models
 
+  empty: =>
+    @model_ids = []
+    @trigger('reset', [])
+    []
+
   includes: (model) =>
     return @model_ids.indexOf(model.cid) != -1
 
@@ -50,6 +55,9 @@ Marbles.Collection = class Collection
 
     @trigger('prepend:complete', models)
     models
+
+  prependIds: (model_cids...) =>
+    @model_cids = model_cids.concat(@model_cids)
 
   first: =>
     return unless cid = @model_ids[0]
