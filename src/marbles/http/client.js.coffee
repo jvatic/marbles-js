@@ -18,7 +18,7 @@ Marbles.HTTP.Client = class HTTPClient
     if hosts
       host = hosts.shift()
       throw @InvalidSchemeError(host) unless @urlHasValidScheme(host)
-      host.toString().replace(/\/$/, '') + @buildPath(path)
+      host.toString().replace(/\/$/, '') + @buildPath(path).replace(/\/$/, '')
     else
       @buildPath(path)
 
