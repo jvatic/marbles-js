@@ -35,7 +35,7 @@ Marbles.HTTP.Client = class HTTPClient
         callback?.success?(res, xhr)
         @options.success?(res, xhr)
       else
-        if hosts.length && @options.cycle
+        if hosts?.length && @options.cycle
           return @request(method, path, params, callback, hosts)
         callback?.error?(res, xhr)
         @options.error?(res, xhr)
