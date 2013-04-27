@@ -101,7 +101,7 @@ class Marbles.History
     @fragment = fragment
 
     unless @_hasPushState
-      return (window.location.href = @options.root + fragment)
+      return (window.location.href = fragment)
 
     window.history[if options.replace then 'replaceState' else 'pushState']({}, document.title, fragment)
 
