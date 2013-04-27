@@ -13,7 +13,7 @@
 #= require ./marbles/collection
 
 window.Marbles = {
-  VERSION: '0.0.1'
+  VERSION: '0.0.2'
   throwAsync: (error) ->
     setTimeout (-> throw error), 0
 }
