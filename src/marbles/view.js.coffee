@@ -1,5 +1,31 @@
 Marbles.Views = {}
 Marbles.View = class View
+  class @Template
+    @find: (template_path) ->
+      unless Marbles.View.templates ?= window.HoganTemplates
+        Marbles.throwAsync new Error("Marbles.View.templates is not defined. Expected an object conatining compiled Hogan (mustache) or Lo-Dash templates.")
+        return null
+
+      template = Marbles.View.templates[template_path]
+      unless template
+        Marbles.throwAsync new Error("Marbles.View.templates[#{template_path}] is not defined.")
+        return null
+
+      if (typeof template.render) is 'function'
+        # Hogan
+        template
+      else
+        if (typeof template) is 'function'
+          # Lowdash
+          new Marbles.View.Template(template)
+        else
+          Marbles.throwAsync new Error("Marbles.View.templates[#{template_path}] does not have a render method and is not a function. Expected either a compiled Hogan or Lo-Dash template.")
+          null
+
+    constructor: (@compiled_template) ->
+    render: (context, partials = {}) =>
+      @compiled_template(_.extend({ partials: partials }, context))
+
   @instances: {
     all: {}
   }
@@ -9,13 +35,8 @@ Marbles.View = class View
   @find: (cid) ->
     @instances.all[cid]
 
-  # Marbles assumes you have pre-compiled hogan templates
-  # TODO: Should be able to use any templating library
   @getTemplate: (template_path) ->
-    return Marbles.throwAsync new Error("Marbles.View.templates is not defined. Expected an object conatining compiled hogan (mustache) templates.") unless (@templates ?= window.HoganTemplates)
-    template = @templates[template_path]
-    return Marbles.throwAsync new Error("Marbles.View.templates[#{template_path}] is not defined.") unless template
-    template
+    Marbles.View.Template.find(template_path)
 
   @detach: (cid) ->
     delete @instances.all[cid]
