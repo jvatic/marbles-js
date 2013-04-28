@@ -35,3 +35,13 @@ Marbles.HTTP.URI = class URI
       uri = uri_or_string
     (uri.scheme == @scheme) and (uri.hostname == @hostname) and (uri.port == @port) and (uri.path == @path)
 
+  mergeParams: (params) =>
+    params = for k,v of params
+      v = if typeof v.join is 'function'
+        encodeURIComponent(v.join(','))
+      else
+        encodeURIComponent(v)
+      "#{encodeURIComponent(k)}=#{v}"
+    separator = if @path.match(/\?/) then "&" else "?"
+    @path += "#{separator}#{params.join('&')}" if params.length
+
