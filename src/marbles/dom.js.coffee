@@ -216,9 +216,11 @@ Marbles.DOM = DOM = {
   serializeForm: (form) ->
     params = {}
     for el in DOM.querySelectorAll('[name]', form)
-      name = el.name
-      value = DOM.formElementValue(el)
-      params[name] = value
+      value = if el.type == 'file'
+        el.files
+      else
+        DOM.formElementValue(el)
+      params[el.name] = value
     params
 
   setElementValue: (el, val) ->
