@@ -37,7 +37,7 @@ Marbles.HTTP.URI = class URI
 
   mergeParams: (params) =>
     params = for k,v of params
-      v = if typeof v.join is 'function'
+      v = if typeof v is 'object' && typeof v.join is 'function'
         encodeURIComponent(v.join(','))
       else
         encodeURIComponent(v)
