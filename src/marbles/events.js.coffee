@@ -5,13 +5,13 @@
 event_splitter = /\s+/
 
 Marbles.Events = {
-  on: (events, callback, context) ->
+  on: (events, callback, context, options = {}) ->
     events = events?.split(event_splitter) unless _.isArray(events)
     @_events ?= {}
     for name in events
       do (name) =>
         @_events[name] ?= []
-        @_events[name].push(callback: callback, context: context || @)
+        @_events[name].push(callback: callback, context: context || @, options: options)
 
     # remove binding when listener anounces self-deletion
     context?.on? 'detach', (obj) =>
@@ -19,7 +19,7 @@ Marbles.Events = {
 
     @ # chainable
 
-  once: (events, callback, context) ->
+  once: (events, callback, context, options = {}) ->
     events = events?.split(event_splitter) unless _.isArray(events)
 
     for name in events
@@ -27,7 +27,7 @@ Marbles.Events = {
         once = =>
           @off(name, once)
           callback.apply(context || @, arguments)
-        @on(name, once, context)
+        @on(name, once, context, options)
 
     @ # chainable
 
@@ -57,7 +57,10 @@ Marbles.Events = {
     for name in events
       continue unless bindings = @_events?[name]
       for binding in bindings
-        binding.callback?.apply?(binding.context, args)
+        if binding.options.args is false
+          binding.callback?.call?(binding.context)
+        else
+          binding.callback?.apply?(binding.context, args)
 
     @ # chainable
 }
