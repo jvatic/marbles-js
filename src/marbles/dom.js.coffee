@@ -213,14 +213,33 @@ Marbles.DOM = DOM = {
     else
       el.value
 
-  serializeForm: (form) ->
+  serializeForm: (form, options = {}) ->
     params = {}
     for el in DOM.querySelectorAll('[name]', form)
       value = if el.type == 'file'
         el.files
       else
         DOM.formElementValue(el)
-      params[el.name] = value
+
+      if options.expand_nested && el.name.match(/^([^\[]+)\[([^\[]+)\]/)
+        name = RegExp.$1
+        parts = []
+
+        _name = el.name
+        _offset = name.length
+        while _name.slice(_offset, _name.length).match(/^\[([^\[]+)\]/)
+          if _part = RegExp.$1
+            _offset += _part.length + 2
+            parts.push(_part)
+
+        _obj = (params[name] ?= {})
+        for _part, index in parts
+          if index == parts.length-1
+            _obj[_part] = value
+          else
+            _obj = (_obj[_part] = {})
+      else
+        params[el.name] = value
     params
 
   setElementValue: (el, val) ->
