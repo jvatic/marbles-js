@@ -85,7 +85,7 @@ Marbles.Collection = class Collection
     @trigger 'detach', @
 
   fetch: (params = {}, options = {}) =>
-    throw new Error("You need to define #{@constructor.name}::fetch(params, options)!")
+    throw new Error("You need to define #{@constructor.name}.prototype.fetch(params, options)!")
 
   empty: =>
     @model_ids = []
