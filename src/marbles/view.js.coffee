@@ -24,7 +24,8 @@ Marbles.View = class View
 
     constructor: (@compiled_template) ->
     render: (context, partials = {}) =>
-      @compiled_template(_.extend({ partials: partials }, context))
+      context = _.extend({ partials: partials }, context)
+      @compiled_template.call(context, context)
 
   @instances: {
     all: {}
