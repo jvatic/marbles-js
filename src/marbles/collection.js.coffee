@@ -46,7 +46,7 @@ Marbles.Collection = class Collection
     for key in @constructor.id_mapping_scope
       @on "change:#{key}", @updateIdMapping
 
-    @resetRaw(@options.raw) if _.isArray(@options.raw)
+    @resetJSON(@options.raw) if _.isArray(@options.raw)
 
   generateCid: =>
     unless @constructor.collection_name
@@ -87,12 +87,6 @@ Marbles.Collection = class Collection
   fetch: (params = {}, options = {}) =>
     throw new Error("You need to define #{@constructor.name}::fetch(params, options)!")
 
-  resetRaw: (resources_attribtues) =>
-    @model_ids = []
-    models = @appendRaw(resources_attribtues, silent: true)
-    @trigger('reset', models)
-    models
-
   empty: =>
     @model_ids = []
     @trigger('reset', [])
@@ -109,27 +103,35 @@ Marbles.Collection = class Collection
       @model_ids = @model_ids.slice(0, index).concat(@model_ids.slice(index+1, @model_ids.length))
     @model_ids.length
 
-  appendRaw: (resources_attribtues = [], options = {}) =>
-    return [] unless resources_attribtues?.length
+  resetJSON: (json, options = {}) =>
+    @model_ids = []
+    models = @appendJSON(json, silent: true)
+    @trigger('reset', models) unless options.silent
+    models
 
-    models = for attrs in resources_attribtues
-      model = @constructor.buildModel(attrs)
+  appendJSON: (json, options = {}) =>
+    return [] unless json?.length
+
+    models = for attrs in json
+      model = @buildModel(attrs)
       @model_ids.push(model.cid)
       model
 
-    @trigger('append:complete', models) unless options.silent
+    @trigger('append', models) unless options.silent
+
     models
 
-  prependRaw: (resources_attribtues = []) =>
-    return [] unless resources_attribtues?.length
+  prependJSON: (json, options = {}) =>
+    return [] unless json?.length
 
-    models = for i in [resources_attribtues.length-1..0]
-      attrs = resources_attribtues[i]
-      model = @constructor.buildModel(attrs)
+    models = for i in [json.length-1..0]
+      attrs = json[i]
+      model = @buildModel(attrs)
       @model_ids.unshift(model.cid)
       model
 
-    @trigger('prepend:complete', models)
+    @trigger('prepend', models) unless options.silent
+
     models
 
   prependIds: (model_cids...) =>
