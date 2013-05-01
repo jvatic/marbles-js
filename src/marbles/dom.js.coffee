@@ -234,12 +234,15 @@ Marbles.DOM = DOM = {
             _offset += _part.length + 2
             parts.push(_part)
 
-        _obj = (params[name] ?= {})
-        for _part, index in parts
-          if index == parts.length-1
-            _obj[_part] = value
-          else
-            _obj = (_obj[_part] = {})
+        if options.use_keypath
+          params["#{name}.#{parts.join('.')}"] = value
+        else
+          _obj = (params[name] ?= {})
+          for _part, index in parts
+            if index == parts.length-1
+              _obj[_part] = value
+            else
+              _obj = (_obj[_part] = {})
       else
         params[el.name] = value
     params
