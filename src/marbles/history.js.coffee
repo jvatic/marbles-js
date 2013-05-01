@@ -59,7 +59,7 @@ class Marbles.History
     for q in query
       [key,val] = q.split('=')
       continue unless val
-      val = decodeURIComponent(val)
+      val = decodeURIComponent(val).replace('+', ' ') # + doesn't decode
       val = val.split(',') if val.indexOf(',') != -1
       params[key] = val
     params
