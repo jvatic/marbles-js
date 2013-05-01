@@ -80,9 +80,9 @@ Marbles.View = class View
 
   initialize: =>
 
-  bindViews: =>
+  bindViews: (container = (@container?.el || @el)) =>
     @_child_views ?= {}
-    _.each Marbles.DOM.querySelectorAll('[data-view]', (@container?.el || @el)), (el) =>
+    _.each Marbles.DOM.querySelectorAll('[data-view]', container), (el) =>
       view_class_names = Marbles.DOM.attr(el, 'data-view').split(/\s+/)
 
       for view_class_name in view_class_names
