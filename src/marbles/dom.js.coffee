@@ -63,7 +63,7 @@ Marbles.DOM = DOM = {
     el
 
   appendHTML: (el, html) ->
-    tmp_el = document.createElement('tbody')
+    tmp_el = document.createElement('div')
     tmp_el.innerHTML = html
     for node in tmp_el.childNodes
       continue unless node
