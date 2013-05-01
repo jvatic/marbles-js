@@ -40,6 +40,13 @@ Marbles.View = class View
   @getTemplate: (template_path) ->
     Marbles.View.Template.find(template_path)
 
+  @initTemplates: ->
+    @template ?= @getTemplate(@template_name) if @template_name
+    if !@partials && @partial_names
+      @partials = {}
+      for name in @partial_names
+        @partials[name] = @getTemplate(name)
+
   @detach: (cid) ->
     delete @instances.all[cid]
     instance_cids = @instances[@view_name]
@@ -74,11 +81,7 @@ Marbles.View = class View
     @constructor.instances[@constructor.view_name].push @cid
 
   initTemplates: =>
-    @constructor.template ?= @constructor.getTemplate(@constructor.template_name) if @constructor.template_name
-    if !@constructor.partials && @constructor.partial_names
-      @constructor.partials = {}
-      for name in @constructor.partial_names
-        @constructor.partials[name] = @constructor.getTemplate(name)
+    @constructor.initTemplates()
 
   initialize: =>
 
