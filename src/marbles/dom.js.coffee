@@ -64,6 +64,17 @@ Marbles.DOM = DOM = {
   appendHTML: (el, html) ->
     tmp_el = document.createElement('div')
     tmp_el.innerHTML = html
+
+    # Hack to make appending script tags work as expected
+    for script_node in DOM.querySelectorAll('script', tmp_el)
+      new_node = document.createElement('script')
+      new_node.type = script_node.type
+      if script_node.src
+        new_node.src = script_node.src
+      else
+        new_node.innerHTML = script_node.innerHTML
+      DOM.replaceWith(script_node, new_node)
+
     for node in tmp_el.childNodes
       continue unless node
       el.appendChild(node)
