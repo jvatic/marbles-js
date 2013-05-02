@@ -36,11 +36,10 @@ Marbles.DOM = DOM = {
     offset_top
 
   replaceWithHTML: (el, html) ->
-    tmp_el = document.createElement('div')
-    tmp_el.innerHTML = html
-    new_el = tmp_el.firstChild
-    DOM.replaceWith(el, new_el)
-    new_el
+    fragment = document.createDocumentFragment()
+    DOM.appendHTML(fragment, html)
+    DOM.replaceWith(el, fragment)
+    fragment
 
   replaceWith: (el, new_el) ->
     el.parentNode.replaceChild(new_el, el)
@@ -53,9 +52,9 @@ Marbles.DOM = DOM = {
     el.parentNode?.removeChild(el)
 
   prependHTML: (el, html) ->
-    tmp_el = document.createElement('tbody')
-    tmp_el.innerHTML = html
-    child_nodes = tmp_el.childNodes
+    tmp_fragment = document.createDocumentFragment()
+    DOM.appendHTML(tmp_fragment, html)
+    child_nodes = tmp_fragment.childNodes
     for index in [(child_nodes.length-1)..0]
       node = child_nodes[index]
       continue unless node
@@ -71,17 +70,9 @@ Marbles.DOM = DOM = {
     el
 
   insertHTMLAfter: (html, reference_el) ->
-    tmp_el = document.createElement('tbody')
-    tmp_el.innerHTML = html
-    if tmp_el.childNodes.length == 1
-      el = tmp_el.childNodes[0]
-      return DOM.insertAfter(el, reference_el)
-    else
-      els = []
-      for i in [(tmp_el.childNodes.length-1)..0]
-        continue unless (node = tmp_el.childNodes[i])
-        els.unshift(DOM.insertAfter(node, reference_el))
-      els
+    fragment = document.createDocumentFragment()
+    DOM.appendHTML(fragment, html)
+    DOM.insertAfter(fragment, reference_el)
 
   insertBefore: (el, reference_el) ->
     reference_el.parentNode?.insertBefore(el, reference_el)

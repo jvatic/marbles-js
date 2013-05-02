@@ -149,13 +149,16 @@ Marbles.View = class View
 
     if @container?.el
       @el = document.createElement('div')
-      @el.innerHTML = html
+      Marbles.DOM.appendHTML(@el, html)
       Marbles.DOM.replaceChildren(@container.el, @el)
     else
       if @render_method == 'replace'
         @el = Marbles.DOM.replaceWithHTML(@el, html)
       else
-        @el.innerHTML = html
+        new_el = document.createElement('div')
+        Marbles.DOM.appendHTML(new_el, html)
+        Marbles.DOM.replaceChildren(@el, new_el)
+        @el = new_el
 
     @el.view_cids ?= {}
     @el.view_cids[@constructor.view_name.replace(/_([a-z])/ig, (match, char) -> char.toUpperCase()).replace(/^([a-z])/, (match, char) -> char.toUpperCase())] = @cid
