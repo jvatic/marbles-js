@@ -9,6 +9,7 @@
 #= require ./marbles/http/uri
 #= require ./marbles/http/client
 #= require ./marbles/http/client/middleware
+#= require ./marbles/object
 #= require ./marbles/model
 #= require ./marbles/collection
 
