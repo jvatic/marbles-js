@@ -1,50 +1,25 @@
 Marbles.HTTP.Client = class HTTPClient
-  @urlHasValidScheme: (url = '') ->
-    # has valid scheme (see https://tools.ietf.org/html/rfc3986#section-3.1)
-    url.toString().match(/^[a-z][a-z0-9+.-]+:\/\//i)
-
-  @InvalidSchemeError: (url) ->
-    error = new Error(url)
-    error.name = 'InvalidSchemeError'
-    error
-
-  @InvalidPathError: (path) ->
-    error = new Error(path)
-    error.name = 'InvalidPathError'
-    error
-
-  @buildUrl: (path, hosts) =>
-    return path if @urlHasValidScheme(path)
-    if hosts
-      host = hosts.shift()
-      throw @InvalidSchemeError(host) unless @urlHasValidScheme(host)
-      host.toString().replace(/\/$/, '') + @buildPath(path).replace(/\/$/, '')
-    else
-      @buildPath(path)
-
-  @buildPath: (path) =>
-    throw @InvalidPathError(path) unless path
-    path.replace(/^\/?/, '/')
-
   constructor: (@options = {}) ->
 
-  request: (method, path, params = {}, callback, hosts) =>
-    hosts ?= _.clone(@options.hosts)
-    new Marbles.HTTP method, @constructor.buildUrl(path || '', hosts), _.extend({}, @options.params, params), (res, xhr) =>
-      if xhr.status in [200...400]
-        callback?.success?(res, xhr)
-        @options.success?(res, xhr)
-      else
-        if hosts?.length && @options.cycle
-          return @request(method, path, params, callback, hosts)
-        callback?.error?(res, xhr)
-        @options.error?(res, xhr)
+  request: (method, args) =>
+    new Marbles.HTTP(_.extend(args, {
+      method: method
+      params: _.extend({}, @options.params, args.params)
+      middleware: [].concat(@options.middleware || []).concat(args.middleware || [])
+      callback: (res, xhr) =>
+        if xhr.status in [200...400]
+          args.callback?.success?(res, xhr)
+          @options.success?(res, xhr)
+        else
+          args.callback?.error?(res, xhr)
+          @options.error?(res, xhr)
 
-      callback?(res, xhr)
-      callback?.complete?(res, xhr)
-      @options.complete?(res, xhr)
-    , @options.middleware
+        args.callback?(res, xhr)
+        args.callback?.complete?(res, xhr)
+        @options.complete?(res, xhr)
+    }))
 
 for method in ['HEAD', 'GET', 'POST', 'PUT', 'DELETE']
   do (method) ->
     HTTPClient::[method.toLowerCase()] = -> @request(method, arguments...)
+
