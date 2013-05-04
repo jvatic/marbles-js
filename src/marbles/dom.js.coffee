@@ -19,7 +19,7 @@ Marbles.DOM = DOM = {
     el.setAttribute(name, value)
 
   replaceChildren: (el, new_children...) ->
-    for child in el.childNodes
+    for child in el.children
       el.removeChild(child)
 
     for child in new_children
