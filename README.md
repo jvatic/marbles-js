@@ -18,7 +18,7 @@ This gem is meant to be used in conjunction with Sprockets. Download and compile
 
 ```ruby
 # Assuming you have an existing Sprockets environment assigned to `assets`
-MarblesJS.sprockets_setup(assets)
+MarblesJS::Sprockets.setup(assets)
 ```
 
 ```javascript
