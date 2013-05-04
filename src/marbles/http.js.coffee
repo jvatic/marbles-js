@@ -14,7 +14,7 @@ Marbles.HTTP = class HTTP
     [@method, @url, params, @body, @headers, callback, @middleware] = [args.method.toUpperCase(), args.url, args.params, args.body, args.headers, args.callback, args.middleware || []]
 
     if @method in ['GET', 'HEAD']
-      @key = "#{@method}:#{@url}:#{JSON.stringify(@params || '{}')}"
+      @key = "#{@method}:#{@url}:#{JSON.stringify(params || '{}')}"
       if request = HTTP.active_requests[@key]
         return request.callbacks.push(callback)
       else
