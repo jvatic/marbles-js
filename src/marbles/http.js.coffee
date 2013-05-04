@@ -1,3 +1,7 @@
+#= require_self
+#= require ./http/uri
+
+window.Marbles ?= {}
 Marbles.HTTP = class HTTP
   @MULTIPART_BOUNDARY: "-----------REQUEST_PART"
 
