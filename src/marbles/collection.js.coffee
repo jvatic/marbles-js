@@ -137,6 +137,9 @@ Marbles.Collection = class Collection
 
     models
 
+  appendIds: (model_cids...) =>
+    @model_ids = @model_ids.concat(model_cids)
+
   prependJSON: (json, options = {}) =>
     return [] unless json?.length
 
@@ -162,7 +165,7 @@ Marbles.Collection = class Collection
     models
 
   prependIds: (model_cids...) =>
-    @model_cids = model_cids.concat(@model_cids)
+    @model_ids = model_cids.concat(@model_ids)
 
   first: =>
     return unless cid = @model_ids[0]
