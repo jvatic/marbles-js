@@ -6,7 +6,7 @@ Marbles.Collection = class Collection
     all: {}
   }
   @id_mapping: {}
-  @id_mapping_scope: ['cid']
+  @id_mapping_scope: []
   @_id_counter: 0
 
   @buildIdMappingScope: (params) ->
