@@ -38,7 +38,11 @@ Marbles.Collection = class Collection
         break
 
   @buildModel: (attrs) ->
-    new @model(attrs)
+    if @id_mapping_scope && @id_mapping_scope.length && _.every(@id_mapping_scope, ((k) => attrs.hasOwnProperty(k)))
+      model = @model.find(_.inject(@id_mapping_scope, ((m, k) => m[k] = attrs[k]; m), {}), fetch: false)
+      model.parseAttributes(attrs)
+    model ?= new @model(attrs)
+    model
 
   constructor: (@options = {}) ->
     @generateCid()
