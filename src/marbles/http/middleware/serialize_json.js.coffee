@@ -4,7 +4,6 @@ Marbles.HTTP.Middleware.SerializeJSON = {
     return unless (content_type = http.headers['Content-Type']) && content_type.match(/\bjson/i)
     body = if http.body then JSON.stringify(http.body) else null
     body = null if body == "{}" or body == "[]"
-    console.log('processRequest', typeof body)
     http.body = body
 
   processResponse: (http, xhr) ->
