@@ -78,8 +78,7 @@ Marbles.DOM = DOM = {
         new_node.innerHTML = script_node.innerHTML
       DOM.replaceWith(script_node, new_node)
 
-    for node in tmp_el.childNodes
-      continue unless node
+    while node = tmp_el.firstChild
       el.appendChild(node)
     el
 
