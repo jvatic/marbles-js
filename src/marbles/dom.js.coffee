@@ -18,9 +18,12 @@ Marbles.DOM = DOM = {
     return unless el
     el.setAttribute(name, value)
 
+  removeChildren: (el) ->
+    el.innerHTML = ""
+    el
+
   replaceChildren: (el, new_children...) ->
-    for child in el.children
-      el.removeChild(child)
+    DOM.removeChildren(el)
 
     for child in new_children
       el.appendChild(child)
