@@ -109,6 +109,12 @@ Marbles.Collection = class Collection
     @trigger('reset', models) unless options.silent
     models
 
+  resetModels: (models, options = {}) =>
+    @model_ids = []
+    models = @appendModels(models, silent: true)
+    @trigger('reset', models) unless options.silent
+    models
+
   appendJSON: (json, options = {}) =>
     return [] unless json?.length
 
@@ -116,6 +122,16 @@ Marbles.Collection = class Collection
       model = @buildModel(attrs)
       @model_ids.push(model.cid)
       model
+
+    @trigger('append', models) unless options.silent
+
+    models
+
+  appendModels: (models, options = {}) =>
+    return [] unless models?.length
+
+    for model in models
+      @model_ids.push(model.cid)
 
     @trigger('append', models) unless options.silent
 
@@ -129,6 +145,17 @@ Marbles.Collection = class Collection
       model = @buildModel(attrs)
       @model_ids.unshift(model.cid)
       model
+
+    @trigger('prepend', models) unless options.silent
+
+    models
+
+  prependModels: (models, options = {}) =>
+    return [] unless models?.length
+
+    for i in [models.length-1..0]
+      model = models[i]
+      @model_ids.unshift(model.cid)
 
     @trigger('prepend', models) unless options.silent
 
