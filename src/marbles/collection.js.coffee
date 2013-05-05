@@ -17,9 +17,12 @@ Marbles.Collection = class Collection
     scope.join(":")
 
   @find: (params) ->
-    id_scope = @buildIdMappingScope(params)
-    if id_scope && (cid = @id_mapping[@collection_name]?[id_scope])
-      params.cid = cid
+    unless params.cid
+      id_scope = @buildIdMappingScope(params)
+      if id_scope && (cid = @id_mapping[@collection_name]?[id_scope])
+        params.cid = cid
+      else
+        return null
 
     @instances.all[params.cid]
 
