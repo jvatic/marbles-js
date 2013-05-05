@@ -144,6 +144,9 @@ Marbles.Collection = class Collection
 
     models
 
+  push: (models...) =>
+    @appendModels(models)
+
   appendIds: (model_cids...) =>
     @model_ids = @model_ids.concat(model_cids)
 
@@ -171,6 +174,9 @@ Marbles.Collection = class Collection
 
     models
 
+  unshift: (models...) =>
+    @prependModels(models)
+
   prependIds: (model_cids...) =>
     @model_ids = model_cids.concat(@model_ids)
 
@@ -181,16 +187,6 @@ Marbles.Collection = class Collection
   last: =>
     return unless cid = _.last(@model_ids)
     @constructor.model.find({ cid: cid })
-
-  unshift: (models...) =>
-    for model in models
-      @model_ids.unshift(model.cid)
-    @model_ids.length
-
-  push: (models...) =>
-    for model in models
-      @model_ids.push(model.cid)
-    @model_ids.length
 
   models: (cids = @model_ids) =>
     models = []
