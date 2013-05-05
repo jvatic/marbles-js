@@ -155,10 +155,8 @@ Marbles.View = class View
       if @render_method == 'replace'
         @el = Marbles.DOM.replaceWithHTML(@el, html)
       else
-        new_el = document.createElement('div')
-        Marbles.DOM.appendHTML(new_el, html)
-        Marbles.DOM.replaceChildren(@el, new_el)
-        @el = new_el
+        Marbles.DOM.removeChildren(@el)
+        Marbles.DOM.appendHTML(@el, html)
 
     @el.view_cids ?= {}
     @el.view_cids[@constructor.view_name.replace(/_([a-z])/ig, (match, char) -> char.toUpperCase()).replace(/^([a-z])/, (match, char) -> char.toUpperCase())] = @cid
