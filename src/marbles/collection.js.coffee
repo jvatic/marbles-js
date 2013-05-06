@@ -40,11 +40,13 @@ Marbles.Collection = class Collection
         delete @id_mapping[_id]
         break
 
-  @buildModel: (attrs) ->
+  @buildModel: (attrs, options = {}) ->
+    model_constructor = options.model || @model
+
     if @id_mapping_scope && @id_mapping_scope.length && _.every(@id_mapping_scope, ((k) => attrs.hasOwnProperty(k)))
-      model = @model.find(_.inject(@id_mapping_scope, ((m, k) => m[k] = attrs[k]; m), {}), fetch: false)
+      model = model_constructor.find(_.inject(@id_mapping_scope, ((m, k) => m[k] = attrs[k]; m), {}), fetch: false)
       model.parseAttributes(attrs)
-    model ?= new @model(attrs)
+    model ?= new model_constructor(attrs)
     model
 
   constructor: (@options = {}) ->
