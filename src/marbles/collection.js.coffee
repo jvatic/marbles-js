@@ -126,7 +126,7 @@ Marbles.Collection = class Collection
     return [] unless json?.length
 
     models = for attrs in json
-      model = @buildModel(attrs)
+      model = @constructor.buildModel(attrs)
       @model_ids.push(model.cid)
       model
 
@@ -155,7 +155,7 @@ Marbles.Collection = class Collection
 
     models = for i in [json.length-1..0]
       attrs = json[i]
-      model = @buildModel(attrs)
+      model = @constructor.buildModel(attrs)
       @model_ids.unshift(model.cid)
       model
 
