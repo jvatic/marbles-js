@@ -128,10 +128,12 @@ Marbles.Collection = class Collection
   appendJSON: (json, options = {}) =>
     return [] unless json?.length
 
-    models = for attrs in json
+    models = []
+    for attrs in json
       model = @constructor.buildModel(attrs)
-      @model_ids.push(model.cid)
-      model
+      if !@options.unique || @model_ids.indexOf(model.cid) == -1
+        @model_ids.push(model.cid)
+        models.push(model)
 
     @trigger('append', models) unless options.silent
 
@@ -140,8 +142,12 @@ Marbles.Collection = class Collection
   appendModels: (models, options = {}) =>
     return [] unless models?.length
 
+    _models = []
     for model in models
-      @model_ids.push(model.cid)
+      if !@options.unique || @model_ids.indexOf(model.cid) == -1
+        @model_ids.push(model.cid)
+        _models.push(model)
+    models = _models
 
     @trigger('append', models) unless options.silent
 
@@ -152,15 +158,19 @@ Marbles.Collection = class Collection
 
   appendIds: (model_cids...) =>
     @model_ids = @model_ids.concat(model_cids)
+    @model_ids = _.uniq(@model_ids) if @options.unique
+    @model_ids
 
   prependJSON: (json, options = {}) =>
     return [] unless json?.length
 
-    models = for i in [json.length-1..0]
+    models = []
+    for i in [json.length-1..0]
       attrs = json[i]
       model = @constructor.buildModel(attrs)
-      @model_ids.unshift(model.cid)
-      model
+      if !@options.unique || @model_ids.indexOf(model.cid) == -1
+        @model_ids.unshift(model.cid)
+        models.push(model)
 
     @trigger('prepend', models) unless options.silent
 
@@ -169,9 +179,13 @@ Marbles.Collection = class Collection
   prependModels: (models, options = {}) =>
     return [] unless models?.length
 
+    _models = []
     for i in [models.length-1..0]
       model = models[i]
-      @model_ids.unshift(model.cid)
+      if !@options.unique || @model_ids.indexOf(model.cid) == -1
+        @model_ids.unshift(model.cid)
+        _models.unshift(model)
+    models = _models
 
     @trigger('prepend', models) unless options.silent
 
@@ -182,6 +196,8 @@ Marbles.Collection = class Collection
 
   prependIds: (model_cids...) =>
     @model_ids = model_cids.concat(@model_ids)
+    @model_ids = _.uniq(@model_ids) if @options.unique
+    @model_ids
 
   first: =>
     return unless cid = @model_ids[0]
