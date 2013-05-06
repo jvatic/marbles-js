@@ -49,7 +49,10 @@ Marbles.DOM = DOM = {
     new_el
 
   prependChild: (el, node) ->
-    el.insertBefore(node, el.firstChild)
+    if el.firstChild
+      el.insertBefore(node, el.firstChild)
+    else
+      el.appendChild(node)
 
   removeNode: (el) ->
     el.parentNode?.removeChild(el)
