@@ -43,9 +43,10 @@ Marbles.Collection = class Collection
   @buildModel: (attrs, options = {}) ->
     model_constructor = options.model || @model
 
-    if @id_mapping_scope && @id_mapping_scope.length && _.every(@id_mapping_scope, ((k) => attrs.hasOwnProperty(k)))
-      model = model_constructor.find(_.inject(@id_mapping_scope, ((m, k) => m[k] = attrs[k]; m), {}), fetch: false)
-      model.parseAttributes(attrs)
+    _id_mapping_scope = @model.id_mapping_scope
+    if _id_mapping_scope && _id_mapping_scope.length && _.every(_id_mapping_scope, ((k) => attrs.hasOwnProperty(k)))
+      model = model_constructor.find(_.inject(_id_mapping_scope, ((m, k) => m[k] = attrs[k]; m), {}), fetch: false)
+      model?.parseAttributes(attrs)
     model ?= new model_constructor(attrs)
     model
 
