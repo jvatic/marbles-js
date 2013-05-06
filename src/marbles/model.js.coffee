@@ -50,7 +50,7 @@ Marbles.Model = class Model
     @constructor.detach(@cid)
     @trigger 'detach', @
 
-  constructor: (attributes, @options = {}) ->
+  constructor: (attributes = {}, @options = {}) ->
     @generateCid()
     @trackInstance()
     for key in @constructor.id_mapping_scope
