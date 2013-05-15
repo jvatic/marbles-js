@@ -35,12 +35,14 @@ Marbles.Events = {
     events = events?.split(event_splitter) unless _.isArray(events)
 
     if !events
-      return @_events = {}
+      return @ # chainable
+
+    @_events ?= {}
 
     for name in events
       if !callback && !context
         delete @_events[name]
-        return
+        return @ # chainable
 
       return unless bindings = @_events[name]
 
