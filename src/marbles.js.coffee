@@ -11,6 +11,7 @@
 #= require ./marbles/object
 #= require ./marbles/model
 #= require ./marbles/collection
+#= require ./marbles/unified_collection
 
 window.Marbles = {
   VERSION: '0.0.3'

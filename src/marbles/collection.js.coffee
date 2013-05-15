@@ -94,6 +94,12 @@ Marbles.Collection = class Collection
     @constructor.detach(@cid)
     @trigger 'detach', @
 
+  # options:
+  #   success: fn(models, res, xhr, params, options)
+  #   failure: fn(res, xhr, params, options)
+  #   complete: fn(models, res, xhr, params, options)
+  #
+  # success or failure functions must be called before the complete function
   fetch: (params = {}, options = {}) =>
     throw new Error("You need to define #{@constructor.name}.prototype.fetch(params, options)!")
 
