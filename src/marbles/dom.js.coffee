@@ -38,6 +38,14 @@ Marbles.DOM = DOM = {
       offset_top += ref.offsetTop
     offset_top
 
+  offsetLeft: (el) ->
+    return unless el
+    offset_left = el.offsetLeft
+    ref = el
+    while ref = ref.offsetParent
+      offset_left += ref.offsetLeft
+    offset_left
+
   replaceWithHTML: (el, html) ->
     new_el = document.createElement('div')
     DOM.appendHTML(new_el, html)
