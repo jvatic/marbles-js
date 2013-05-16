@@ -46,6 +46,9 @@ Marbles.Model = class Model
         delete @id_mapping[_id]
         break
 
+    @trigger('detach', cid)
+    Marbles.Model.trigger('detach', cid)
+
   detach: =>
     @constructor.detach(@cid)
     @trigger 'detach', @

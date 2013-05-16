@@ -7,6 +7,7 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
   constructor: (collections, @options = {}) ->
     for collection in collections
       @collection_ids.push(collection.cid)
+    @watchModelMortality()
 
   collections: =>
     _collections = []

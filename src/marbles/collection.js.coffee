@@ -57,6 +57,7 @@ Marbles.Collection = class Collection
       @on "change:#{key}", @updateIdMapping
 
     @resetJSON(@options.raw) if _.isArray(@options.raw)
+    @watchModelMortality()
 
   generateCid: =>
     unless @constructor.collection_name
@@ -90,6 +91,10 @@ Marbles.Collection = class Collection
     delete @constructor.id_mapping[@constructor.collection_name][old_scope]
     @constructor.id_mapping[@constructor.collection_name][new_scope] = @cid
 
+  watchModelMortality: =>
+    Marbles.Model.on 'detach', (cid) =>
+      @removeIds(cid)
+
   detach: =>
     @constructor.detach(@cid)
     @trigger 'detach', @
@@ -111,13 +116,22 @@ Marbles.Collection = class Collection
   includes: (model) =>
     return @model_ids.indexOf(model.cid) != -1
 
+  removeIndex: (index) =>
+    @model_ids = @model_ids.slice(0, index).concat(@model_ids.slice(index + 1, @model_ids.length))
+
   remove: (models...) =>
     for model in models
       cid = model.cid
       index = @model_ids.indexOf(cid)
       continue if index == -1
-      @model_ids = @model_ids.slice(0, index).concat(@model_ids.slice(index+1, @model_ids.length))
+      @removeIndex(index)
     @model_ids.length
+
+  removeIds: (cids...) =>
+    for cid in cids
+      index = @model_ids.indexOf(cid)
+      continue if index == -1
+      @removeIndex(index)
 
   resetJSON: (json, options = {}) =>
     @model_ids = []
