@@ -2,7 +2,7 @@ Marbles.HTTP.Client = class HTTPClient
   constructor: (@options = {}) ->
 
   request: (method, args) =>
-    new Marbles.HTTP(_.extend(args, {
+    new Marbles.HTTP(_.extend({}, args, {
       method: method
       params: _.extend({}, @options.params, args.params)
       middleware: [].concat(@options.middleware || []).concat(args.middleware || [])
