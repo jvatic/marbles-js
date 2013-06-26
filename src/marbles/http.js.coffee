@@ -10,7 +10,7 @@ Marbles.HTTP = class HTTP
   @active_requests: {}
   MAX_NUM_RETRIES: 3
 
-  constructor: (args) ->
+  constructor: (args, retry_count) ->
     [@method, @url, params, @body, @headers, callback, @middleware] = [args.method.toUpperCase(), args.url, args.params, args.body, args.headers, args.callback, args.middleware || []]
 
     if @method in ['GET', 'HEAD']
@@ -20,12 +20,10 @@ Marbles.HTTP = class HTTP
       else
         HTTP.active_requests[@key] = @
 
-      @retry_count = 0
+      @retry_count = retry_count || 0
 
-      @retry_arguments = _.inject(arguments, ((memo, i)-> memo.push(i); memo), [])
       @retry = =>
-        http = new HTTP @retry_arguments...
-        http.retry_count = @retry_count
+        http = new HTTP args, @retry_count
         http.callbacks = @callbacks
 
     @callbacks = if callback then [callback] else []
