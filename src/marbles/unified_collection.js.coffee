@@ -38,21 +38,7 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
       options[collection.cid]?.success?(_models, res, xhr, _params, _options)
       for model, index in _models
         continue if models.indexOf(model) != -1
-
-        if !models[index] || (@sortModelsBy(models[index]) == @sortModelsBy(model))
-          insert_at_index = index
-        else if models[index] && @sortModelsBy(models[index]) > @sortModelsBy(model)
-          _index = index
-          while (_model = models[_index]) && @sortModelsBy(_model) > @sortModelsBy(model)
-            _index += 1
-          insert_at_index = _index
-        else # it's less than
-          _index = index
-          while (_model = models[_index]) && @sortModelsBy(_model) < @sortModelsBy(model)
-            _index -= 1
-          insert_at_index = _index
-
-        models = models.slice(0, insert_at_index).concat([model]).concat models.slice(insert_at_index, models.length)
+        models.push(model)
 
     failureFn = (collection, res, xhr, _params, _options) =>
       options[collection.cid]?.failure?(res, xhr, _params, _options)
@@ -65,6 +51,8 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
       xhrs.push(xhr)
 
       if num_pending_fetches <= 0
+        models = _.sortBy(models, @sortModelsBy)
+
         if is_success
           models = @fetchSuccess(models, options)
           options.success?(models, responses, xhrs, params, options)
