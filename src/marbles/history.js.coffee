@@ -15,7 +15,7 @@ class Marbles.History
   getFragment: (fragment = window.location.pathname) =>
     fragment += search if search = window.location.search
 
-    fragment = fragment.substr(@options.root.length) if fragment.indexOf(@options.root) == -1
+    fragment = fragment.substr(@options.root.length) if fragment.indexOf(@options.root) != -1
     fragment.replace(@regex.route_stripper, '')
 
   # start pushState handling
