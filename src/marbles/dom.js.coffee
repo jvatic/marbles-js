@@ -3,8 +3,8 @@
 #= require ./dom/input_selection
 
 Marbles.DOM = DOM = {
-  querySelector: (selector, el) -> (el || document).querySelector(selector)
-  querySelectorAll: (selector, el) -> (el || document).querySelectorAll(selector)
+  querySelector: (selector, el) -> (if arguments.length == 2 then el else document)?.querySelector(selector)
+  querySelectorAll: (selector, el) -> (if arguments.length == 2 then el else document)?.querySelectorAll(selector) || []
 
   match: (el, selector) ->
     return unless el
