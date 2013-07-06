@@ -240,6 +240,7 @@ Marbles.DOM = DOM = {
         DOM.formElementValue(el)
 
       continue if el.type is 'radio' && !el.checked
+      continue if el.type is 'checkbox' && !el.checked
 
       if options.expand_nested && el.name.match(/^([^\[]+)\[([^\[]+)\]/)
         name = RegExp.$1
