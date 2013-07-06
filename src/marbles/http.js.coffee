@@ -1,5 +1,6 @@
 #= require_self
 #= require ./http/uri
+#= require ./http/link_header
 
 window.Marbles ?= {}
 Marbles.HTTP = class HTTP
