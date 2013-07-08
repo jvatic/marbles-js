@@ -94,9 +94,10 @@ Marbles.View = class View
         if viewClass = Marbles.Views[view_class_name]
           _init = false
           el.view_cids ?= {}
-          unless (_view_cid = el.view_cids[view_class_name]) && (view = viewClass.instances.all[_view_cid])
-            view = new viewClass el: el, parent_view: @, _parent_view_cid: @cid
-            _init = true
+          if (_view_cid = el.view_cids[view_class_name]) && (view = viewClass.instances.all[_view_cid])
+            return # continue
+
+          view = new viewClass el: el, parent_view: @, _parent_view_cid: @cid
 
           @_child_views[view_class_name] ?= []
           if @_child_views[view_class_name].indexOf(view.cid) == -1
@@ -106,8 +107,8 @@ Marbles.View = class View
 
           view.bindViews?()
 
-          @trigger("init:#{view_class_name}", view) if _init
-          @trigger("init-view", view_class_name, view) if _init
+          @trigger("init:#{view_class_name}", view)
+          @trigger("init-view", view_class_name, view)
         else
           console.warn "Marbles.Views.#{view_class_name} is not defined!"
 
