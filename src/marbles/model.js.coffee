@@ -24,7 +24,7 @@ Marbles.Model = class Model
         options?.success?(instance)
         return instance
 
-    if !params.cid && (!options.hasOwnProperty('fetch') || options.fetch) && (!params.hasOwnProperty('fetch') || params.fetch)
+    if !params.hasOwnProperty('cid') && (!options.hasOwnProperty('fetch') || options.fetch) && (!params.hasOwnProperty('fetch') || params.fetch)
       @fetch(params, options)
 
     null
