@@ -49,11 +49,12 @@ Marbles.DOM = DOM = {
   replaceWithHTML: (el, html) ->
     new_el = document.createElement('div')
     DOM.appendHTML(new_el, html)
-    DOM.replaceWith(el, new_el)
-    if new_el.childElementCount == 1
+    new_el = if new_el.childElementCount == 1
       new_el.children[0]
     else
       new_el
+
+    DOM.replaceWith(el, new_el)
 
   replaceWith: (el, new_el) ->
     el.parentNode.replaceChild(new_el, el)
