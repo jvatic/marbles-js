@@ -111,9 +111,6 @@ Marbles.Model = class Model
     else
       keys = [keypath]
 
-    return unless @fields?.length
-    return if @fields.indexOf(keys[0]) == -1
-
     Marbles.Accessors.get.apply(@, arguments)
 
   toJSON: =>
