@@ -105,7 +105,7 @@ Marbles.View = class View
 
           el.view_cids[view_class_name] = view.cid
 
-          view.bindViews?()
+          view.trigger('ready')
 
           @trigger("init:#{view_class_name}", view)
           @trigger("init-view", view_class_name, view)
