@@ -179,6 +179,7 @@ Marbles.Collection = class Collection
   appendIds: (model_cids...) =>
     @model_ids = @model_ids.concat(model_cids)
     @model_ids = _.uniq(@model_ids) if @options.unique
+    @trigger('append')
     @model_ids
 
   prependJSON: (json, options = {}) =>
@@ -217,6 +218,7 @@ Marbles.Collection = class Collection
   prependIds: (model_cids...) =>
     @model_ids = model_cids.concat(@model_ids)
     @model_ids = _.uniq(@model_ids) if @options.unique
+    @trigger('prepend')
     @model_ids
 
   first: =>
