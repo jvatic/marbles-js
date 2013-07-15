@@ -1,13 +1,31 @@
 require "marbles-js/version"
 
 module MarblesJS
-  module Sprockets
-    ASSET_PATHS = [File.expand_path(File.join(File.expand_path(File.dirname(__FILE__)), '../src'))].freeze
+  def self.settings
+    @settings ||= {}
+  end
 
+  def self.configure(options = {})
+    self.settings[:public_dir] = File.expand_path('../../public/assets', __FILE__) # lib/../public/assets
+    self.settings[:asset_paths] = [ File.expand_path('../../src', __FILE__) ]
+    self.settings[:asset_paths] << File.expand_path('../../vendor', __FILE__) if options[:vendor]
+  end
+
+  module Sprockets
     # Append asset paths to an existing Sprockets environment
-    def self.setup(environment)
-      ASSET_PATHS.each do |path|
+    def self.setup(environment, options = {})
+      MarblesJS.configure(options)
+      MarblesJS.settings[:asset_paths].each do |path|
         environment.append_path(path)
+      end
+    end
+
+    module Helpers
+      AssetNotFoundError = Class.new(StandardError)
+      def asset_path(source, options = {})
+        asset = environment.find_asset(source)
+        raise AssetNotFoundError.new("#{source.inspect} does not exist within #{environment.paths.inspect}!") unless asset
+        "./#{asset.digest_path}"
       end
     end
   end

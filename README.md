@@ -16,13 +16,54 @@ And then execute:
 
 This gem is meant to be used in conjunction with Sprockets. Download and compile the coffee-script source files you need otherwise.
 
+Marbles.js depends on [LoDash](http://lodash.com).
+
 ```ruby
 # Assuming you have an existing Sprockets environment assigned to `assets`
-MarblesJS::Sprockets.setup(assets)
+
+MarblesJS::Sprockets.setup(assets) # doesn't expose lodash path
+# OR
+MarblesJS::Sprockets.setup(assets, :vendor => true) # exposes lodash path
 ```
 
 ```javascript
+//= require lodash
 //= require marbles
+```
+
+### Compiling
+
+```ruby
+require 'marbles-js/compiler'
+
+# Compile assets
+MarblesJS::Compiler.compile_assets(
+  :compress => true, # optional, defaults to false
+  :logfile => '/dev/null', # optional, defaults to STDOUT
+  :assets_dir => "./public/assets" # optional, defaults to {marbles-js_gem_root}/public/assets
+)
+
+# Compile and gzip assets
+MarblesJS::Compiler.gzip_assets(
+  :compress => true, # optional, defaults to true
+  :logfile => '/dev/null', # optional, defaults to STDOUT
+  :assets_dir => "./public/assets" # optional, defaults to {marbles-js_gem_root}/public/assets
+)
+```
+
+OR
+
+```ruby
+# Rakefile
+
+namespace :marbles do
+  require 'marbles-js/tasks/assets'
+end
+
+namespace :assets do
+  task :precompile => ['marbles:assets:precompile'] do
+  end
+end
 ```
 
 ## TODO
