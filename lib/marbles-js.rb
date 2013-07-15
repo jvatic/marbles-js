@@ -9,8 +9,9 @@ module MarblesJS
     self.settings[:public_dir] ||= File.expand_path('../../public/assets', __FILE__) # lib/../public/assets
     unless self.settings[:asset_paths]
       self.settings[:asset_paths] = [ File.expand_path('../../src', __FILE__) ]
-      self.settings[:asset_paths] << File.expand_path('../../vendor', __FILE__) if options[:vendor]
     end
+    self.settings[:asset_paths] << File.expand_path('../../vendor', __FILE__) if options[:vendor]
+    self.settings[:asset_paths].uniq!
   end
 
   module Sprockets
