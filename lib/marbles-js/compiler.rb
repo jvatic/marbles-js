@@ -12,12 +12,14 @@ module MarblesJS
       lodash.js
     ).freeze
 
-    attr_accessor :sprockets_environment, :assets_dir
+    attr_accessor :sprockets_environment, :assets_dir, :compile_vendor
 
     def configure_app(options = {})
       return if @app_configured
 
       MarblesJS.configure(options)
+
+      self.compile_vendor ||= options[:vendor]
 
       @app_configured = true
     end
@@ -35,7 +37,7 @@ module MarblesJS
           include MarblesJS::Sprockets::Helpers
         end
       end
-      MarblesJS::Sprockets.setup(self.sprockets_environment, :vendor => !!options[:vendor])
+      MarblesJS::Sprockets.setup(self.sprockets_environment, :vendor => !!compile_vendor)
 
       if options[:compress]
         # Setup asset compression
@@ -58,7 +60,7 @@ module MarblesJS
       )
 
       manifest.compile(ASSET_NAMES)
-      manifest.compile(VENDOR_ASSET_NAMES) if options[:vendor]
+      manifest.compile(VENDOR_ASSET_NAMES) if compile_vendor
     end
 
     def compress_assets
