@@ -95,7 +95,7 @@ Marbles.View = class View
           _init = false
           el.view_cids ?= {}
           if (_view_cid = el.view_cids[view_class_name]) && (view = viewClass.instances.all[_view_cid])
-            return # continue
+            continue
 
           view = new viewClass el: el, parent_view: @, _parent_view_cid: @cid
 
