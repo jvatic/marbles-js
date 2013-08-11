@@ -88,7 +88,9 @@ class Marbles.History
     query_params = @parseQueryParams(parts[2] || '')
     matched = _.any @handlers, (handler) =>
       if handler.route.test(fragment)
+        @trigger('handler:before', handler, fragment, query_params)
         handler.callback(fragment, query_params)
+        @trigger('handler:after', handler, fragment, query_params)
         true
     matched
 
