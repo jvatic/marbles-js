@@ -7,6 +7,8 @@ Marbles.Model = class Model
   @_id_counter: 0
   @model_name: '_default'
 
+  @dirty_tracking_enabled: false
+
   @buildIdMappingScope: (params) ->
     scope = []
     for key in @id_mapping_scope
@@ -60,6 +62,10 @@ Marbles.Model = class Model
       @on "change:#{key}", @updateIdMapping
     @parseAttributes(attributes)
 
+    if @constructor.dirty_tracking_enabled
+      @dirty_tracking = new Marbles.Object
+      @on "change", @keypathChanged
+
   generateCid: =>
     if @options.cid
       @cid = @options.cid
@@ -73,7 +79,7 @@ Marbles.Model = class Model
     @constructor.instances[@constructor.model_name].push @cid
 
   parseAttributes: (attributes) =>
-    @set(k, v, {keypath:false}) for k,v of attributes
+    @set(k, v, {keypath:false, dirty:false}) for k,v of attributes
 
   updateIdMapping: (new_value, old_value, attr) =>
     old_scope = []
@@ -112,6 +118,29 @@ Marbles.Model = class Model
       keys = [keypath]
 
     Marbles.Accessors.get.apply(@, arguments)
+
+  hasKey: (keypath, options) =>
+    Marbles.Accessors.hasKey.apply(@, arguments)
+
+  remove: (keypath, options) =>
+    Marbles.Accessors.remove.apply(@, arguments)
+
+  keypathChanged: (new_val, old_val, keypath, options) =>
+    return if options.dirty == false
+    if @dirty_tracking && !@dirty_tracking.hasKey(keypath)
+      @dirty_tracking.set(keypath, old_val)
+
+  isDirty: (keypath, options) =>
+    @dirty_tracking?.hasKey(keypath, options)
+
+  keypathPersisted: (keypath, options) =>
+    @dirty_tracking.remove(keypath, options)
+
+  getOriginal: (keypath, options) =>
+    if @dirty_tracking?.hasKey(keypath, options)
+      @dirty_tracking?.get(keypath, options)
+    else
+      @get(keypath, options)
 
   toJSON: =>
     attrs = {}

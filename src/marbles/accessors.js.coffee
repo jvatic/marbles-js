@@ -14,11 +14,35 @@ Marbles.Accessors = {
 
     old_v = obj[last_key]
     obj[last_key] = v
-    @trigger("change:#{keypath}", v, old_v, keypath) unless v == old_v
+    unless v == old_v
+      @trigger("change", v, old_v, keypath, options)
+      @trigger("change:#{keypath}", v, old_v, keypath, options)
     v
 
   get: (keypath, options={}) ->
-    return unless keypath && keypath.length
+    @hasKey(keypath, keypath: !(options.keypath == false), return_value: true)[1]
+
+  remove: (keypath, options={}) ->
+    return unless @hasKey(keypath, options)
+
+    if !options.hasOwnProperty('keypath') || options.keypath
+      keys = keypath.split('.')
+    else
+      keys = [keypath]
+    last_key = keys.pop()
+
+    if keys.length
+      delete @get(keys.join('.'))[last_key]
+    else
+      delete @[last_key]
+
+  hasKey: (keypath, options={}) ->
+    unless keypath && keypath.length
+      if options.return_value
+        return [false]
+      else
+        return false
+
     if !options.hasOwnProperty('keypath') || options.keypath
       keys = keypath.split('.')
     else
@@ -27,8 +51,16 @@ Marbles.Accessors = {
 
     obj = @
     for k in keys
+      break unless obj && obj.hasOwnProperty(k)
       obj = obj[k]
-      return unless obj
 
-    obj[last_key]
+    _has_key = false
+
+    if obj
+      _has_key = obj.hasOwnProperty(last_key)
+
+    if options.return_value
+      [_has_key, obj?[last_key]]
+    else
+      _has_key
 }
