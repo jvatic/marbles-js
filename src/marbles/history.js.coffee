@@ -1,3 +1,7 @@
+#= require ./core
+#= require ./events
+#= require_self
+
 ###################################
 # Inspired by Backbone.js History #
 ###################################

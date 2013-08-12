@@ -1,9 +1,9 @@
+#= require ./core
 #= require_self
 #= require ./http/uri
 #= require ./http/link_header
 #= require ./http/request
 
-window.Marbles ?= {}
 Marbles.HTTP = class HTTP
   @MULTIPART_BOUNDARY: "-----------REQUEST_PART"
 

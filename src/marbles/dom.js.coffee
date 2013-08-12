@@ -1,4 +1,5 @@
 #= require ../polyfills/querySelector
+#= require ./core
 #= require_self
 #= require ./dom/input_selection
 

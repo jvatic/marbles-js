@@ -1,3 +1,6 @@
+#= require ./core
+#= require_self
+
 Marbles.Views = {}
 Marbles.View = class View
   class @Template

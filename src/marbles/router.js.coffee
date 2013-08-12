@@ -1,3 +1,6 @@
+#= require ./history
+#= require_self
+
 ##################################
 # Inspired by Backbone.js Router #
 ##################################

@@ -1,3 +1,6 @@
+#= require ./core
+#= require_self
+
 ##################################
 # Inspired by Backbone.js Events #
 ##################################

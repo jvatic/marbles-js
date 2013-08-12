@@ -1,3 +1,6 @@
+#= require ../http
+#= require_self
+
 Marbles.HTTP.Client = class HTTPClient
   constructor: (@options = {}) ->
 

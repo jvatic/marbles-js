@@ -1,3 +1,2 @@
-#= require_self
+#= require ./middleware/core
 #= require_tree ./middleware
-Marbles.HTTP.Middleware ?= {}

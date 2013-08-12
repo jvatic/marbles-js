@@ -1,3 +1,6 @@
+#= require ./core
+#= require_self
+
 CONTENT_TYPE = 'application/x-www-form-urlencoded'
 
 Marbles.HTTP.Middleware.FormEncoded = {

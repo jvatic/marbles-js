@@ -1,3 +1,6 @@
+#= require ./core
+#= require_self
+
 Marbles.HTTP.Middleware.SerializeJSON = {
   processRequest: (http) ->
     return if http.multipart

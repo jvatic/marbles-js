@@ -1,3 +1,8 @@
+#= require ./core
+#= require ./accessors
+#= require ./events
+#= require_self
+
 Marbles.Model = class Model
   @instances: {
     all: {}

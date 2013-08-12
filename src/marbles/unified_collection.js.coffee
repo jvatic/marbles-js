@@ -1,3 +1,6 @@
+#= require ./collection
+#= require_self
+
 Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
   @collection: Marbles.Collection
   collection_ids: new Array

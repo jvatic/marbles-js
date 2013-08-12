@@ -1,4 +1,6 @@
-window.Marbles ?= {}
+#= require ../core
+#= require_self
+
 Marbles.HTTP ?= {}
 Marbles.HTTP.URI = class URI
   constructor: (@url) ->

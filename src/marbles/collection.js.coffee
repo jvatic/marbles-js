@@ -1,3 +1,6 @@
+#= require ./model
+#= require_self
+
 Marbles.Collection = class Collection
   @model: Marbles.Model
   model_ids: new Array

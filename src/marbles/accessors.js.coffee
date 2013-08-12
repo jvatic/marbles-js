@@ -1,3 +1,6 @@
+#= require ./core
+#= require_self
+
 Marbles.Accessors = {
   set: (keypath, v, options={}) ->
     return unless keypath && keypath.length
