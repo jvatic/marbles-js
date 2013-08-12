@@ -1,4 +1,4 @@
-#= require_self
+#= require ./marbles/core
 #= require ./marbles/dom
 #= require ./marbles/events
 #= require ./marbles/history
@@ -12,9 +12,3 @@
 #= require ./marbles/model
 #= require ./marbles/collection
 #= require ./marbles/unified_collection
-
-window.Marbles = {
-  VERSION: '0.0.3'
-  throwAsync: (error) ->
-    setTimeout (-> throw error), 0
-}
