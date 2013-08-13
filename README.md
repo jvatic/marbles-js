@@ -2,6 +2,8 @@
 
 **Disclaimer: This is still in early alpha stages and not ready for production. Use at your own risk.**
 
+Note that most components depend on LoDash (Underscore.js should also work).
+
 ## Gem
 
 ### Installation
