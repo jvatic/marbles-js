@@ -218,6 +218,13 @@ Marbles.DOM = DOM = {
     for event in events.split(' ')
       el[method](event, callback, capture)
 
+  once: (el, events, callback, capture=false) ->
+    _callback = ->
+      callback.apply(this, arguments)
+      Marbles.DOM.off(el, events, _callback, capture)
+
+    @on(el, events, _callback, capture)
+
   formElementValue: (el) ->
     if el.nodeName.toLowerCase() == 'select'
       multiple = el.multiple
