@@ -7,6 +7,12 @@ Marbles.DOM = DOM = {
   querySelector: (selector, el) -> (if arguments.length == 2 then el else document)?.querySelector(selector)
   querySelectorAll: (selector, el) -> (if arguments.length == 2 then el else document)?.querySelectorAll(selector) || []
 
+  parentQuerySelector: (el, selector) ->
+    node = el
+    while node = node.parentNode
+      return node if @match(node, selector)
+    null
+
   match: (el, selector) ->
     return unless el
     _.any @querySelectorAll(selector, el.parentNode), (_el) => _el == el
