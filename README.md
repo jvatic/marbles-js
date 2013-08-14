@@ -115,6 +115,10 @@ URL encodes request `body` (must be an Object) when `Content-Type` is to `applic
 
 JSON encodes request `body` when `Content-Type` matches `\bjson`. It also deserializes the response body if the `Content-Type` is set appropriately.
 
+##### WithCredentials
+
+Sets the `withCredentials` flag on the xmlhttp request object to `true` to include cookies with the request. Note that `Access-Control-Allow-Credentials` must be set to `true` on the server and `Access-Control-Allow-Origin` must be explicitly set.
+
 #### Client
 
 Simple wrapper around `Marbles.HTTP`.
