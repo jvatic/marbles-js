@@ -138,6 +138,9 @@ Marbles.View = class View
     @[key] = view.cid if view
     view
 
+  findSiblingViews: (view_class_name) =>
+    @parentView()?.childViews(view_class_name)
+
   context: =>
     {}
 
