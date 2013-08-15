@@ -17,6 +17,10 @@ Marbles.DOM = DOM = {
     return unless el
     _.any @querySelectorAll(selector, el.parentNode), (_el) => _el == el
 
+  hasAttr: (el, name) ->
+    return unless el
+    !!el.attributes?.getNamedItem(name)
+
   attr: (el, name) ->
     return unless el
     el.attributes?.getNamedItem(name)?.value
