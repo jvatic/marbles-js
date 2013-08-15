@@ -8,7 +8,7 @@
 class Marbles.Router
   @regex:
     named_param: /:\w+/g
-    splat_param: /\*\w+/g
+    splat_param: /\*\w*/g
     escape_regex: /[-[\]{}()+?.,\\^$|#\s]/g
 
   constructor: (options) ->
