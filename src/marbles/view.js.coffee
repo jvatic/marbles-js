@@ -1,4 +1,5 @@
 #= require ./core
+#= require ./id_counter
 #= require_self
 
 Marbles.Views = {}
@@ -34,7 +35,6 @@ Marbles.View = class View
   @instances: {
     all: {}
   }
-  @_id_counter: 0
   @view_name: '_default' # chould be snake_case version of Marbles.Views key (e.g. Marbles.Views.MainView should be main_view)
 
   @find: (cid) ->
@@ -63,6 +63,8 @@ Marbles.View = class View
     @trigger 'detach', @
 
   constructor: (options = {}) ->
+    @constructor._id_counter ?= Marbles.IDCounter.counterForScope(@constructor.view_name)
+
     @generateCid()
     @trackInstance()
     @initTemplates()
@@ -76,7 +78,7 @@ Marbles.View = class View
     @initialize(options)
 
   generateCid: =>
-    @cid = "#{@constructor.view_name}_#{@constructor._id_counter++}"
+    @cid = "#{@constructor.view_name}_#{@constructor._id_counter.increment()}"
 
   trackInstance: =>
     @constructor.instances.all[@cid] = @

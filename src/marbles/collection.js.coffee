@@ -1,4 +1,5 @@
 #= require ./model
+#= require ./id_counter
 #= require_self
 
 Marbles.Collection = class Collection
@@ -10,7 +11,6 @@ Marbles.Collection = class Collection
   }
   @id_mapping: {}
   @id_mapping_scope: []
-  @_id_counter: 0
 
   @buildIdMappingScope: (params) ->
     scope = []
@@ -54,6 +54,9 @@ Marbles.Collection = class Collection
     model
 
   constructor: (@options = {}) ->
+    @constructor.collection_name ?= @constructor.model.model_name + '_collection'
+    @constructor._id_counter ?= Marbles.IDCounter.counterForScope(@constructor.collection_name)
+
     @generateCid()
     @trackInstance()
     for key in @constructor.id_mapping_scope
@@ -63,14 +66,11 @@ Marbles.Collection = class Collection
     @watchModelMortality()
 
   generateCid: =>
-    unless @constructor.collection_name
-      @constructor.collection_name = @constructor.model.model_name + '_collection'
-
     if @options.cid
       @cid = @options.cid
       delete @options.cid
     else
-      @cid = "#{@constructor.collection_name}_#{@constructor._id_counter++}"
+      @cid = "#{@constructor.collection_name}_#{@constructor._id_counter.increment()}"
 
   trackInstance: =>
     @constructor.instances.all[@cid] = @

@@ -1,4 +1,5 @@
 #= require ./core
+#= require ./id_counter
 #= require ./accessors
 #= require ./events
 #= require_self
@@ -9,7 +10,6 @@ Marbles.Model = class Model
   }
   @id_mapping: {}
   @id_mapping_scope: ['id']
-  @_id_counter: 0
   @model_name: '_default'
 
   @dirty_tracking_enabled: false
@@ -61,6 +61,8 @@ Marbles.Model = class Model
     @trigger 'detach', @
 
   constructor: (attributes = {}, @options = {}) ->
+    @constructor._id_counter ?= Marbles.IDCounter.counterForScope(@constructor.model_name)
+
     @generateCid()
     @trackInstance()
     for key in @constructor.id_mapping_scope
@@ -76,7 +78,7 @@ Marbles.Model = class Model
       @cid = @options.cid
       delete @options.cid
     else
-      @cid = "#{@constructor.model_name}_#{@constructor._id_counter++}"
+      @cid = "#{@constructor.model_name}_#{@constructor._id_counter.increment()}"
 
   trackInstance: =>
     @constructor.instances.all[@cid] = @
