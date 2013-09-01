@@ -21,6 +21,56 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
 
   sortModelsBy: (model) => model.cid
 
+  # Takes an object with collection cids as keys
+  # and an array of models as values:
+  #
+  #   {
+  #     collection_cid: [models...]
+  #   }
+  #
+  # and an optional callback which is called for
+  # each collection with with collection_id and models
+  #
+  # Returns an array of models
+  filterAndSortCollectionsModels: (models, callback) =>
+
+    # Sort all collections' models seperately
+    # and find the collection with the lowest value
+    # for the last model
+
+    lowest_last_value = null
+
+    for collection_cid, _models of models
+      continue unless models[collection_cid].length
+
+      models[collection_cid] = _.sortBy(_models, @sortModelsBy)
+
+      if lowest_last_value
+        _last_value = @sortModelsBy(_.last(models[collection_cid]))
+        if _last_value < lowest_last_value
+          lowest_last_value = _last_value
+      else
+        lowest_last_value = @sortModelsBy(_.last(models[collection_cid]))
+
+    # Discard all models with a sort value greater than
+    # the lowest last value (this ensures that fetching
+    # paginated results from multiple collections
+    # doesn't distort the sort order)
+
+    final_models = []
+
+    for collection_cid, _models of models
+      _models = _.filter(_models, (model) =>
+        @sortModelsBy(model) <= lowest_last_value
+      )
+
+      callback?(collection_cid, _models)
+
+      final_models = final_models.concat(_models)
+
+    # Sort and return the remaining models
+    _.sortBy(final_models, @sortModelsBy)
+
   # params:
   #   {collection_cid}: params Object {}
   # options:
@@ -31,30 +81,39 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
   fetch: (params = {}, options = {}) =>
     collections = @collections()
     num_pending_fetches = collections.length
-    models = []
-    responses = []
-    xhrs = []
+    models = {}
+    responses = {}
+    xhrs = {}
+    collections_success = {}
     is_success = false
 
-    successFn = (collection, _models, res, xhr, _params, _options) =>
+    successFn = (collection, _models) =>
       is_success = true
-      options[collection.cid]?.success?(_models, res, xhr, _params, _options)
+      collections_success[collection.cid] = true
+
       for model, index in _models
-        continue if models.indexOf(model) != -1
-        models.push(model)
+        continue if models[collection.cid] && models[collection.cid].indexOf(model) != -1
+        models[collection.cid] ?= []
+        models[collection.cid].push(model)
 
-    failureFn = (collection, res, xhr, _params, _options) =>
-      options[collection.cid]?.failure?(res, xhr, _params, _options)
+    failureFn = (collection) =>
+      collections_success[collection.cid] = false
 
-    completeFn = (collection, _models, res, xhr, _params, _options) =>
+    completeFn = (collection, _models, res, xhr) =>
       num_pending_fetches -= 1
-      options[collection.cid]?.complete?(_models, res, xhr, _params, _options)
 
-      responses.push(res)
-      xhrs.push(xhr)
+      responses[collection.cid] = res
+      xhrs[collection.cid] = xhr
 
       if num_pending_fetches <= 0
-        models = _.sortBy(models, @sortModelsBy)
+        models = @filterAndSortCollectionsModels(models, (collection_cid, _models) =>
+          if collections_success[collection_cid]
+            options[collection.cid]?.success?(_models, responses[collection_cid], xhrs[collection_cid], params[collection_cid], options[collection_cid])
+          else
+            options[collection.cid]?.failure?(responses[collection_cid], xhrs[collection_cid], params[collection_cid], options[collection_cid])
+
+          options[collection_cid]?.complete?(_models, responses[collection_cid], xhrs[collection_cid], params[collection_cid], options[collection_cid])
+        )
 
         if is_success
           models = @fetchSuccess(models, options)
