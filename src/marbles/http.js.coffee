@@ -22,11 +22,11 @@ Marbles.HTTP = class HTTP
       else
         HTTP.active_requests[@key] = @
 
-      @retry_count = retry_count || 0
+    @retry_count = retry_count || 0
 
-      @retry = =>
-        http = new HTTP args, @retry_count
-        http.callbacks = @callbacks
+    @retry = =>
+      http = new HTTP args, @retry_count
+      http.callbacks = @callbacks
 
     @callbacks = if callback then [callback] else []
 
@@ -117,8 +117,21 @@ Marbles.HTTP = class HTTP
 
       @response_data = xhr.response
 
+      abort = false
+
+      retryFn = =>
+        abort = true
+
+        return if @retry_count >= @MAX_NUM_RETRIES
+
+        @retry_count += 1
+        @retry()
+
       for middleware in @middleware
-        middleware.processResponse?(@, xhr)
+        break if abort
+        middleware.processResponse?(@, xhr, retry: retryFn)
+
+      return if abort
 
       for fn in @callbacks
         continue unless typeof fn == 'function'
