@@ -120,9 +120,9 @@ Marbles.HTTP = class HTTP
       abort = false
 
       retryFn = =>
-        abort = true
-
         return if @retry_count >= @MAX_NUM_RETRIES
+
+        abort = true
 
         @retry_count += 1
         @retry()
