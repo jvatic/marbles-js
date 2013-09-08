@@ -136,9 +136,9 @@ Marbles.DOM = DOM = {
     document.documentElement?.offsetWidth
 
   innerWidth: (el) ->
-    width = parseInt @getStyle(el, 'width')
-    padding = parseInt(@getStyle(el, 'padding-left'))
-    padding += parseInt(@getStyle(el, 'padding-right'))
+    width = parseFloat @getComputedStyle(el, 'width')
+    padding = parseFloat(@getStyle(el, 'padding-left'))
+    padding += parseFloat(@getStyle(el, 'padding-right'))
     width - padding
 
   addClass: (el, class_name) ->
