@@ -32,7 +32,7 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
   # each collection with with collection_id and models
   #
   # Returns an array of models
-  filterAndSortCollectionsModels: (models, callback) =>
+  filterAndSortCollectionsModels: (models, callbacks) =>
 
     # Sort all collections' models seperately
     # and find the collection with the lowest value
@@ -61,10 +61,15 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
 
     for collection_cid, _models of models
       _models = _.filter(_models, (model) =>
-        @sortModelsBy(model) <= lowest_last_value
+
+        if @sortModelsBy(model) <= lowest_last_value
+          true
+        else
+          callbacks.rejectModel?(collection_cid, model)
+          false
       )
 
-      callback?(collection_cid, _models)
+      callbacks.complete?(collection_cid, _models)
 
       final_models = final_models.concat(_models)
 
@@ -84,6 +89,8 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
     models = {}
     responses = {}
     xhrs = {}
+    collections_params = {}
+    collections_options = {}
     collections_success = {}
     is_success = false
 
@@ -99,33 +106,41 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
     failureFn = (collection) =>
       collections_success[collection.cid] = false
 
-    completeFn = (collection, _models, res, xhr) =>
+    completeFn = (collection, _models, res, xhr, _params, _options) =>
       num_pending_fetches -= 1
 
       responses[collection.cid] = res
       xhrs[collection.cid] = xhr
+      collections_params[collection.cid] = _.extend {}, _params, params[collection.cid] || {}
+      collections_options[collection.cid] = _.extend {}, _options, options[collection.cid] || {}
 
       if num_pending_fetches <= 0
-        models = @filterAndSortCollectionsModels(models, (collection_cid, _models) =>
-          if collections_success[collection_cid]
-            options[collection.cid]?.success?(_models, responses[collection_cid], xhrs[collection_cid], params[collection_cid], options[collection_cid])
-          else
-            options[collection.cid]?.failure?(responses[collection_cid], xhrs[collection_cid], params[collection_cid], options[collection_cid])
+        models = @filterAndSortCollectionsModels(models,
+          rejectModel: (collection_cid, model) =>
+            # remove discarded models from collection
+            # to prevent it from being lost in a unique filter
+            @constructor.collection.find(cid: collection_cid).removeIds(model.cid)
 
-          options[collection_cid]?.complete?(_models, responses[collection_cid], xhrs[collection_cid], params[collection_cid], options[collection_cid])
+          complete: (collection_cid, _models) =>
+            if collections_success[collection_cid]
+              options[collection.cid]?.success?(_models, responses[collection_cid], xhrs[collection_cid], collections_params[collection_cid], collections_options[collection_cid])
+            else
+              options[collection.cid]?.failure?(responses[collection_cid], xhrs[collection_cid], collections_params[collection_cid], collections_options[collection_cid])
+
+            options[collection_cid]?.complete?(_models, responses[collection_cid], xhrs[collection_cid], collections_params[collection_cid], collections_options[collection_cid])
         )
 
         if is_success
           models = @fetchSuccess(models, options)
-          options.success?(models, responses, xhrs, params, options)
-          @trigger('fetch:success', models, xhrs, params, options)
+          options.success?(models, responses, xhrs, collections_params, options)
+          @trigger('fetch:success', models, xhrs, collections_params, options)
         else
           models = null
-          options.failure?(responses, xhrs, params, options)
-          @trigger('fetch:failure', responses, xhrs, params, options)
+          options.failure?(responses, xhrs, collections_params, options)
+          @trigger('fetch:failure', responses, xhrs, collections_params, options)
 
-        options.complete?(models, responses, xhrs, params, options)
-        @trigger('fetch:complete', models, responses, xhrs, params, options)
+        options.complete?(models, responses, xhrs, collections_params, options)
+        @trigger('fetch:complete', models, responses, xhrs, collections_params, options)
 
     for collection in collections
       do (collection) =>
