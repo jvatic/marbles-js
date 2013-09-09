@@ -53,7 +53,7 @@ class Marbles.History
     query = []
     for key,val of params
       val = val.join(',') if _.isArray(val)
-      continue if val?.match(/^[\s\r\t\n]*$/)
+      continue if val?.match?(/^[\s\r\t\n]*$/)
       query.push "#{key}=#{encodeURIComponent(val)}"
     "?" + query.join("&")
 
