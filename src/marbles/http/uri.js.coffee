@@ -7,6 +7,7 @@ Marbles.HTTP.URI = class URI
     return @url unless @url
     return @url if @url.isURI
 
+    @url = @url.replace(/\n/g, '')
     m = @url.match(/^(https?:\/\/)?([^\/]+)?(.*)$/)
     h = m[2]?.split(':')
     @scheme = m[1] or (window.location.protocol + '//')
