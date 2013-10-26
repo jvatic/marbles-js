@@ -72,7 +72,6 @@ Marbles.HTTP = class HTTP
       @multipart = true
 
       @buildMultipartRequestBody =>
-        # @setHeader("Content-Length", @body.length)
         @runRequestMiddleware()
         @finalizeSendRequest()
     else
