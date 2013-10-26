@@ -55,7 +55,7 @@ Marbles.HTTP = class HTTP
     ##
     # Multipart Request if body is an array
     # eg. body = [['somefile', new Blob(...), 'somefile.extention'], ...]
-    if @body && typeof @body is 'object' && @body.length
+    if @body && typeof @body is 'object' && @body.hasOwnProperty('length')
       @setHeader('Content-Type', "multipart/form-data; boundary=#{@constructor.MULTIPART_BOUNDARY}")
       @multipart = true
 
