@@ -1,307 +1,354 @@
 #= require ../polyfills/querySelector
 #= require ./core
+#= require ./dependency_manager
 #= require_self
-#= require ./dom/input_selection
 
-Marbles.DOM = DOM = {
-  querySelector: (selector, el) -> (if arguments.length == 2 then el else document)?.querySelector(selector)
-  querySelectorAll: (selector, el) -> (if arguments.length == 2 then el else document)?.querySelectorAll(selector) || []
+DOM = Marbles.DOM ?= {}
 
-  parentQuerySelector: (el, selector) ->
-    node = el
-    while node = node.parentNode
-      return node if @match(node, selector)
-    null
+##
+# Dependencies
+#
+# Should be compatible with IE 9+, Firefox, Chrome, Safari, Opera, and all major mobile browsers.
+#
+# NOTE: Functions/properties available in all browsers are not listed
 
-  match: (el, selector) ->
-    return unless el
-    _.any @querySelectorAll(selector, el.parentNode), (_el) => _el == el
+Marbles.registerDependency({
+  keypath: "document"
+  context: Marbles.global
+  functions: [
+    { name: "querySelector" },
+    { name: "querySelectorAll" }
+  ]
+})
 
-  hasAttr: (el, name) ->
-    return unless el
-    !!el.attributes?.getNamedItem(name)
+Marbles.registerDependency({
+  keypath: "HTMLElement.prototype"
+  context: Marbles.global
+  functions: [
+    { name: "querySelector" },
+    { name: "querySelectorAll" }
+  ]
+})
 
-  attr: (el, name) ->
-    return unless el
-    el.attributes?.getNamedItem(name)?.value
+Marbles.registerDependency({
+  keypath: 'document.defaultView'
+  context: Marbles.global
+  functions: [
+    { name: 'getComputedStyle' }
+  ]
+})
 
-  setAttr: (el, name, value) ->
-    return unless el
-    el.setAttribute(name, value)
+Marbles.registerDependency({
+  keypath: 'Array.prototype'
+  context: Marbles.global
+  functions: [
+    { name: 'indexOf' }
+  ]
+})
 
-  removeAttr: (el, name) ->
-    return unless el
-    el.removeAttribute(name)
+##
+# Querying
 
-  removeChildren: (el) ->
-    el.innerHTML = ""
-    el
+DOM.matchesQuerySelector = (el, selector) ->
+  for node in el.parentNode.querySelectorAll(selector)
+    return true if node == el
 
-  replaceChildren: (el, new_children...) ->
-    DOM.removeChildren(el)
+  return false
 
-    for child in new_children
-      el.appendChild(child)
+DOM.parentQuerySelector = (el, selector) ->
+  node = el
+  while node = node.parentNode
+    return node if @match(node, selector)
 
-    el
+  return null
 
-  offsetTop: (el) ->
-    return unless el
-    offset_top = el.offsetTop
-    ref = el
-    while ref = ref.offsetParent
-      offset_top += ref.offsetTop
-    offset_top
+DOM.enumerateParentNodes = (el, callback) ->
+  should_stop = false
+  stopFn = ->
+    should_stop = true
 
-  offsetLeft: (el) ->
-    return unless el
-    offset_left = el.offsetLeft
-    ref = el
-    while ref = ref.offsetParent
-      offset_left += ref.offsetLeft
-    offset_left
+  node = el
+  while node = node.parentNode
+    callback(node, stopFn)
+    break if should_stop
 
-  replaceWithHTML: (el, html) ->
-    new_el = document.createElement('div')
-    DOM.appendHTML(new_el, html)
-    new_el = if new_el.childElementCount == 1
-      new_el.children[0]
+  return null
+
+DOM.parentNodes = (el) ->
+  nodes = []
+
+  node = el
+  while node = node.parentNode
+    nodes.push(node)
+
+  return nodes
+
+##
+# Reflection
+
+DOM.isVisible = (el) ->
+  @getStyle(el, 'display') != 'none' &&
+  @getStyle(el, 'visibility') != 'hidden'
+
+DOM.isNodeInDocument = (el) ->
+  for node in @parentNodes(el)
+    return true if node == document.body
+
+  return false
+
+DOM.getInnerText = (el) ->
+  el.innerText || el.textContent
+
+DOM.getStyle = (el, name) ->
+  # convert to camel case (e.g. 'padding-left' to 'paddingLeft')
+  name = name.replace(/-([a-z])/ig, ((match, char) -> char.toUpperCase()))
+
+  val = el.style[name]
+  val = @getComputedStyle(el, name) if !val || val.match(/^[\s\r\t\n]*$/)
+
+  return val
+
+DOM.getComputedStyle = (el, name) ->
+  document.defaultView.getComputedStyle(el)[name]
+
+DOM.absoluteOffsetTop = (el) ->
+  return unless el
+  offset_top = el.offsetTop
+  ref = el
+  while ref = ref.offsetParent
+    offset_top += ref.offsetTop
+
+  return offset_top
+
+DOM.absoluteOffsetLeft = (el) ->
+  return unless el
+  offset_left = el.offsetLeft
+  ref = el
+  while ref = ref.offsetParent
+    offset_left += ref.offsetLeft
+
+  return offset_left
+
+DOM.innerWidth = (el) ->
+  width = parseFloat @getComputedStyle(el, 'width')
+  padding = parseFloat(@getStyle(el, 'padding-left'))
+  padding += parseFloat(@getStyle(el, 'padding-right'))
+
+  return width - padding
+
+DOM.windowHeight = ->
+  if typeof window.innerHeight != undefined
+    return window.innerHeight
+
+  if typeof document.body.offsetHeight != undefined
+    return document.body.offsetHeight
+
+  return document.documentElement.offsetHeight
+
+DOM.windowWidth = ->
+  if typeof window.innerWidth != undefined
+    return window.innerWidth
+
+  if typeof document.body.offsetWidth != undefined
+    return document.body.offsetWidth
+
+  return document.documentElement.offsetWidth
+
+##
+# Contruction
+
+DOM.createElementFromHTML = (html) ->
+  el = document.createElement('div')
+  @appendHTML(el, html)
+
+  if el.childElementCount == 1
+    el = el.children[0]
+
+  return el
+
+##
+# Manipulation
+
+DOM.addClass = (el, class_names) ->
+  classes = el.className.split(' ')
+
+  for name in class_names.split(' ')
+    classes.push(name) if classes.indexOf(name) == -1
+
+  el.className = classes.join(' ')
+
+  return el
+
+DOM.removeClass = (el, class_names) ->
+  exclude_names = class_names.split(' ')
+
+  classes = []
+
+  for name in el.className.split(' ')
+    continue if exclude_names.indexOf(name) != -1
+
+    classes.push(name)
+
+  el.className = classes.join(' ')
+
+  return el
+
+DOM.replaceNode = (el, new_el) ->
+  el.parentNode.replaceChild(new_el, el)
+
+DOM.removeNode = (el) ->
+  el.parentNode.removeChild(el)
+
+DOM.removeAllChildren = (el) ->
+  el.innerHTML = ""
+
+  return el
+
+DOM.setInnerText = (el, value) ->
+  el.textContent = value
+  el.innerText = value
+
+DOM.setInnerHTML = (el, html) ->
+  @removeAllChildren(el)
+  @appendHTML(el, html)
+
+DOM.prependChild = (el, node) ->
+  if el.firstChild
+    el.insertBefore(node, el.firstChild)
+  else
+    el.appendChild(node)
+
+DOM.prependHTML = (el, html) ->
+  tmp_fragment = document.createDocumentFragment()
+
+  @appendHTML(tmp_fragment, html)
+
+  child_nodes = tmp_fragment.childNodes
+
+  for index in [(child_nodes.length-1)..0]
+    node = child_nodes[index]
+
+    continue unless node
+
+    @prependChild(el, node)
+
+  return el
+
+DOM.appendHTML = (el, html) ->
+  tmp_el = document.createElement('div')
+  tmp_el.innerHTML = html
+
+  # Hack to make appending script tags work as expected
+  for script_node in tmp_el.querySelectorAll('script')
+    new_node = document.createElement('script')
+    new_node.type = script_node.type
+
+    if script_node.src
+      new_node.src = script_node.src
     else
-      new_el
+      new_node.innerHTML = script_node.innerHTML
 
-    DOM.replaceWith(el, new_el)
+    @replaceNode(script_node, new_node)
 
-  replaceWith: (el, new_el) ->
-    el.parentNode.replaceChild(new_el, el)
-    new_el
+  while node = tmp_el.firstChild
+    el.appendChild(node)
 
-  prependChild: (el, node) ->
-    if el.firstChild
-      el.insertBefore(node, el.firstChild)
-    else
-      el.appendChild(node)
+  return el
 
-  removeNode: (el) ->
-    el.parentNode?.removeChild(el)
+DOM.insertHTMLBefore = (html, reference_el) ->
+  fragment = document.createDocumentFragment()
+  @appendHTML(fragment, html)
+  @insertBefore(fragment, reference_el)
 
-  prependHTML: (el, html) ->
-    tmp_fragment = document.createDocumentFragment()
-    DOM.appendHTML(tmp_fragment, html)
-    child_nodes = tmp_fragment.childNodes
-    for index in [(child_nodes.length-1)..0]
-      node = child_nodes[index]
-      continue unless node
-      DOM.prependChild(el, node)
-    el
+DOM.insertHTMLAfter = (html, reference_el) ->
+  fragment = document.createDocumentFragment()
+  @appendHTML(fragment, html)
+  @insertAfter(fragment, reference_el)
 
-  appendHTML: (el, html) ->
-    tmp_el = document.createElement('div')
-    tmp_el.innerHTML = html
+DOM.insertBefore = (el, reference_el) ->
+  reference_el.parentNode.insertBefore(el, reference_el)
 
-    # Hack to make appending script tags work as expected
-    for script_node in DOM.querySelectorAll('script', tmp_el)
-      new_node = document.createElement('script')
-      new_node.type = script_node.type
-      if script_node.src
-        new_node.src = script_node.src
+DOM.insertAfter = (el, reference_el) ->
+  @insertBefore(el, reference_el)
+  @insertBefore(reference_el, el)
+
+  return el
+
+##
+# Events
+
+DOM._add_event_listener_fn_name = (typeof HTMLElement.prototype.addEventListener == 'function') ? 'addEventListener' : 'attachEvent'
+DOM.addEventListener = (el, events, callback, capture=false) ->
+  return for event in events.split(' ')
+    el[@_add_event_listener_fn_name](event, callback, capture)
+
+DOM.addSingleFireEventListener = (el, events, callback, capture=false) ->
+  _callback = ->
+    callback.apply(this, arguments)
+
+    DOM.removeEventListener(el, events, capture)
+
+  @addEventListener(el, events, _callback, capture)
+
+DOM._remove_event_listener_fn_name = (typeof HTMLElement.prototype.removeEventListener == 'function') ? 'removeEventListener' : 'detachEvent'
+DOM.removeEventListener = (el, events, callback, capture=false) ->
+  return for event in events.split(' ')
+    el[@_remove_event_listener_fn_name](event, callback, capture)
+
+##
+# Form Serialization / Deserialization
+
+DOM.getFormElementValue = (el) ->
+  if el.type == 'file'
+    return el.files
+
+  if el.nodeName.toLowerCase() == 'select'
+    is_multi_select = el.multiple
+
+DOM.    value = is_multi_select ? []  = ""
+
+    for option in el.querySelectorAll('option')
+      continue unless option.selected
+
+      if is_multi_select
+        value.push(option.value)
       else
-        new_node.innerHTML = script_node.innerHTML
-      DOM.replaceWith(script_node, new_node)
+        return option.value
 
-    while node = tmp_el.firstChild
-      el.appendChild(node)
-    el
+  else
+    return el.value
 
-  insertHTMLAfter: (html, reference_el) ->
-    fragment = document.createDocumentFragment()
-    DOM.appendHTML(fragment, html)
-    DOM.insertAfter(fragment, reference_el)
+DOM.setFormElementValue = (el, value) ->
+  if el.nodeName.toLowerCase() == 'select' && el.multiple
+    value = [value] unless typeof value == 'object' && typeof value.length is 'number'
 
-  insertBefore: (el, reference_el) ->
-    reference_el.parentNode?.insertBefore(el, reference_el)
+    for option in el.querySelectorAll('option')
+      continue if value.indexOf(option.value) == -1
 
-  insertAfter: (el, reference_el) ->
-    DOM.insertBefore(el, reference_el)
-    DOM.insertBefore(reference_el, el)
-    el
+      option.selected = true
 
-  windowHeight: ->
-    return window.innerHeight if window.innerHeight
-    return document.body.offsetHeight if document.body.offsetHeight
-    document.documentElement?.offsetHeight
+  else
+    el.value = value
 
-  windowWidth: ->
-    return window.innerWidth if window.innerWidth
-    return document.body.offsetWidth if document.body.offsetWidth
-    document.documentElement?.offsetWidth
+  return null
 
-  innerWidth: (el) ->
-    width = parseFloat @getComputedStyle(el, 'width')
-    padding = parseFloat(@getStyle(el, 'padding-left'))
-    padding += parseFloat(@getStyle(el, 'padding-right'))
-    width - padding
+DOM.serializeForm = (form_el) ->
+  values = {}
 
-  addClass: (el, class_name) ->
-    return unless el
-    classes = el.className.split(' ')
-    classes = _.uniq(classes.concat(class_name.split(' ')))
-    el.className = classes.join(' ')
-    el
+  for el in form_el.querySelectorAll('[name]')
+    value = @getFormElementValue(el)
 
-  removeClass: (el, class_name) ->
-    return unless el
-    classes = el.className.split(' ')
-    classes = _.without(classes, class_name.split(' ')...)
-    el.className = classes.join(' ')
-    el
+    continue if el.type is 'checkbox' && !el.checked
+    continue if el.type is 'radio' && !el.checked
 
-  show: (el, options={}) ->
-    return unless el
-    if options.visibility
-      el.style.visibility = 'visible'
-    else
-      el.style.display = 'block'
+    values[el.name] = value
 
-  hide: (el, options={}) ->
-    return unless el
-    if options.visibility
-      el.style.visibility = 'hidden'
-    else
-      el.style.display = 'none'
+  return values
 
-  isVisible: (el, options={}) ->
-    DOM.getStyle(el, 'display') != 'none' &&
-    DOM.getStyle(el, 'visibility') != 'hidden' &&
-    (!options.check_exists || DOM.exists(el))
+DOM.deserializeForm = (form_el, values) ->
+  for name, value of values
+    for el in form_el.querySelectorAll("[name=#{key}]")
+      @setFormElementValue(el, value)
 
-  exists: (el) ->
-    _.any(DOM.parentNodes(el), (_el) -> _el == document.body)
-
-  getStyle: (el, name) ->
-    # convert to camel case (e.g. 'padding-left' to 'paddingLeft')
-    name = name.replace(/-([a-z])/ig, ((match, char) -> char.toUpperCase()))
-
-    val = el.style[name]
-    val = DOM.getComputedStyle(el, name) if !val || val.match(/^[\s\r\t\n]*$/)
-    val
-
-  getComputedStyle: (el, name) ->
-    document.defaultView?.getComputedStyle(el)[name]
-
-  setStyle: (el, name, value) ->
-    el.style[name] = value
-
-  setStyles: (el, styles) ->
-    for name, value of styles
-      @setStyle(el, name, value)
-
-  setInnerText: (el, value) ->
-    el.textContent = value
-    el.innerText = value
-    value
-
-  parentNodes: (el) ->
-    nodes = []
-    node = el
-    while node = node.parentNode
-      nodes.push(node)
-    nodes
-
-  _events: {}
-  _event_id_counter: 0
-  _generateEventId: -> @_event_id_counter++
-
-  on: (el, events, callback, capture=false) ->
-    return unless el
-    method = 'addEventListener' if el.addEventListener
-    method ?= 'attachEvent' if el.attachEvent
-    return unless method
-
-    for event in events.split(' ')
-      event_id = @_generateEventId()
-      el._events ?= []
-      @_events[event_id] = el[method](event, callback, capture)
-      el._events.push(event_id)
-
-  off: (el, events, callback, capture=false) ->
-    return unless el
-    method = 'removeEventListener' if el.removeEventListener
-    method ?= 'detachEvent' if el.detachEvent
-    return unless method
-
-    for event in events.split(' ')
-      el[method](event, callback, capture)
-
-  once: (el, events, callback, capture=false) ->
-    _callback = ->
-      callback.apply(this, arguments)
-      Marbles.DOM.off(el, events, _callback, capture)
-
-    @on(el, events, _callback, capture)
-
-  formElementValue: (el) ->
-    if el.nodeName.toLowerCase() == 'select'
-      multiple = el.multiple
-      value = if multiple then [] else ""
-      for option in DOM.querySelectorAll('option', el)
-        continue unless option.selected
-        if multiple
-          value.push option.value
-        else
-          value = option.value
-          break
-      value
-    else
-      el.value
-
-  serializeForm: (form, options = {}) ->
-    params = {}
-    for el in DOM.querySelectorAll('[name]', form)
-      value = if el.type == 'file'
-        el.files
-      else
-        DOM.formElementValue(el)
-
-      continue if el.type is 'radio' && !el.checked
-      continue if el.type is 'checkbox' && !el.checked
-
-      if options.expand_nested && el.name.match(/^([^\[]+)\[([^\[]+)\]/)
-        name = RegExp.$1
-        parts = []
-
-        _name = el.name
-        _offset = name.length
-        while _name.slice(_offset, _name.length).match(/^\[([^\[]+)\]/)
-          if _part = RegExp.$1
-            _offset += _part.length + 2
-            parts.push(_part)
-
-        if options.use_keypath
-          params["#{name}.#{parts.join('.')}"] = value
-        else
-          _obj = (params[name] ?= {})
-          for _part, index in parts
-            if index == parts.length-1
-              _obj[_part] = value
-            else
-              _obj = (_obj[_part] = {})
-      else
-        params[el.name] = value
-    params
-
-  setElementValue: (el, val) ->
-    if el.nodeName.toLowerCase() == 'select' && el.multiple
-      val = [val] unless _.isArray(val)
-      for option in DOM.querySelectorAll('option', el)
-        option.selected = true if val.indexOf(option.value) != -1
-    else
-      el.value = val
-
-  loadFormParams: (form, params) ->
-    for key, val of params
-      el = DOM.querySelector("[name=#{key}]")
-      continue unless el
-      DOM.setElementValue(el, val)
-
-}
+  return null
 
