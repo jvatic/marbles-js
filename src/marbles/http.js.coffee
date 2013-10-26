@@ -9,8 +9,20 @@ Marbles.HTTP = class HTTP
 
   @MAX_BLOB_SIZE: 2000000 # 2MB
 
+  @RETRY_STATUS_CODES: [
+    0,   # Request failed
+    500, # Internal Server Error
+    502, # Bad Gateway
+    503, # Service Unavailable
+    504, # Gateway Timeout
+    522  # Connection timed out
+  ]
+
   @active_requests: {}
+
   MAX_NUM_RETRIES: 3
+
+  RETRY_METHODS: ['GET', 'HEAD']
 
   constructor: (args, retry_count) ->
     [@method, @url, params, @body, @headers, callback, @middleware] = [args.method.toUpperCase(), args.url, args.params, args.body, args.headers, args.callback, args.middleware || []]
@@ -110,7 +122,7 @@ Marbles.HTTP = class HTTP
     @request.on 'complete', (xhr) =>
       delete HTTP.active_requests[@key] if @key
 
-      if (@method in ['GET', 'HEAD']) && (xhr.status == 503 or xhr.status == 0) and (@retry_count < @MAX_NUM_RETRIES)
+      if (@method in @RETRY_METHODS) && (xhr.status in @constructor.RETRY_STATUS_CODES) && (@retry_count < @MAX_NUM_RETRIES)
         @retry_count += 1
         @retry()
         return
