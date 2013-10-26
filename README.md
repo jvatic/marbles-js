@@ -1,269 +1,65 @@
 # Marbles.js
 
-**Disclaimer: This is still in early alpha stages and not ready for production. Use at your own risk.**
+**NOTE: The API is currently being refactored for consistancy and to remove dependence on LoDash/Underscore. It's not quite ready for production use.**
 
-Note that most components depend on LoDash (Underscore.js should also work).
+Designed with the assumption you
 
-## Gem
+- Write JavaScript, not jQuery (but it's okay if you do)
+- Build real web applications
+- Need the option to pick and choose the parts you want
+- Want a framework to do the heavy lifting without becoming opaque
+- Are human and sometimes need to debug things
 
-### Installation
+There are seven major components to make your life easier when working with the DOM, HTTP requests, data, and routing.
 
-Add this line to your application's Gemfile:
+## `Marbles.DOM`
 
-    gem 'marbles-js'
+Provides you with what should exist natively but doesn't (yet) and doesn't reinvent the wheel for everything already at your disposal.
 
-And then execute:
+## `Marbles.HTTP`
 
-    $ bundle
+Sometimes your application needs to generically process requests and responses before they are sent and received. The optional middleware stack gives you the power of manipulation, allowing you to sign requests and verify response signatures, handle data serialization however you see fit, etc.
 
-### Usage
+Because servers are sometimes unreliable, `GET` and `HEAD` requests are retried a few times when service is unavailable or the server explodes with a 5xx status (you may disable this feature by simply setting `Marbles.HTTP.prototype.MAX_NUM_RETRIES = 0` or on the individual requests).
 
-This gem is meant to be used in conjunction with Sprockets. Download and compile the coffee-script source files you need otherwise.
+Multi-part requests are first-class citizens, allowing you to push those binary blobs and JSON together with ease.
 
-Marbles.js depends on [LoDash](http://lodash.com).
+If you need to add the same middleware to multiple requests and don't want to set them all up individually, `HTTP.Client` provides a small abstraction to do just that.
 
-```ruby
-# Assuming you have an existing Sprockets environment assigned to `assets`
+It also includes a small but powerful URI parsing library.
 
-MarblesJS::Sprockets.setup(assets) # doesn't expose lodash path
-# OR
-MarblesJS::Sprockets.setup(assets, :vendor => true) # exposes lodash path
-```
+But if you don't need all that, the core of the lib may be used on it's own for a small sugar coating atop the native API.
 
-```javascript
-//= require lodash
-//= require marbles
-```
+## `Marbles.View`
 
-#### Compiling
+Supports Hogan and LoDash compiled templates (or anything else with the same function signatures, see the source code for details).
 
-```ruby
-require 'marbles-js/compiler'
+Allows nested views (of any depth) via the `data-view='ViewClassName'` attribute. This is especially useful when rendering everything at once initially then re-rendering the subviews as needed.
 
-# Compile assets
-MarblesJS::Compiler.compile_assets(
-  :compress => true, # optional, defaults to false
-  :logfile => '/dev/null', # optional, defaults to STDOUT
-  :assets_dir => "./public/assets" # optional, defaults to {marbles-js_gem_root}/public/assets
-)
+Provides helpers for finding parent and child views by name.
 
-# Compile and gzip assets
-MarblesJS::Compiler.gzip_assets(
-  :compress => true, # optional, defaults to true
-  :logfile => '/dev/null', # optional, defaults to STDOUT
-  :assets_dir => "./public/assets" # optional, defaults to {marbles-js_gem_root}/public/assets
-)
-```
+Is evented.
 
-OR
+## `Marbles.Model`
 
-```ruby
-# Rakefile
+Standard getters and setters with keypath support, dirty tracking, change events (supports exact keypaths, no bubbling), and designed to avoid duplication of data through global instance tracking.
 
-namespace :marbles do
-  require 'marbles-js/tasks/assets'
-end
-
-namespace :assets do
-  task :precompile => ['marbles:assets:precompile'] do
-  end
-end
-```
+It's opinionated as to how you manage your data locally, but doesn't do more than give you a method signature for fetching it.
 
-## Components
+## `Marbles.Collection`
 
-### DOM
+A powerful tool for managing feeds involving a single model type.
 
-Light-weight library for common DOM related tasks.
+## `Marbles.UnifiedCollection`
 
-### HTTP
+Ever need to merge data from multiple sources into a single view without loosing sort order? The `UnifiedCollection` is not for everyday use, but is there when you need it.
 
-HTTP library with support for middleware and multipart requests.
+## `Marbles.Router`
 
-```javascript
-new Marbles.HTTP({
-  method: 'POST',
-  url: 'https://example.org/users/new',
-  params: {
-    bar: 'baz'
-  },
-  body: {
-    username: 'demo',
-    passphrase: 'super-secret'
-  },
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  middleware: [Marbles.HTTP.Middleware.FormEncoded],
-  callback: function(res, xhr) {
-    if (xhr.status === 200) {
-      // do stuff
-    } else {
-      // do stuff
-    }
-  }
-})
-```
+Sort of like the Backbone router but with a few notable differences:
 
-#### Middleware
-
-##### FormEncoded
-
-URL encodes request `body` (must be an Object) when `Content-Type` is to `application/x-www-form-urlencoded`. It also deserializes the response body if the `Content-Type` is set appropriately.
-
-##### SerializeJSON
-
-JSON encodes request `body` when `Content-Type` matches `\bjson`. It also deserializes the response body if the `Content-Type` is set appropriately.
-
-##### WithCredentials
-
-Sets the `withCredentials` flag on the xmlhttp request object to `true` to include cookies with the request. Note that `Access-Control-Allow-Credentials` must be set to `true` on the server and `Access-Control-Allow-Origin` must be explicitly set.
-
-#### Client
-
-Simple wrapper around `Marbles.HTTP`.
-
-```javascript
-var client = new Marbles.HTTP.Client({
-  params: {
-    api_key: 'XYZ'
-  },
-  middleware: [Marbles.HTTP.Middleware.SerializeJSON] // middleware for all requests
-  success: function(res, xhr) {}, // called when xhr.status is 200-399
-  failure: function(res, xhr) {}, // called when success isn't called
-  complete: function(res, xhr) {} // always called
-})
-
-client.get({ // same options you would pass to Marble.HTTP
-  url: 'https://example.com/users/1',
-  params: {
-    foo: 'bar'
-  },
-  middleware: [], // merged with client middleware
-  callback: {
-    // may also be a function
-    // callbacks specified in client constructor are also called
-
-    success: function(res, xhr) {},
-    failure: function(res, xhr) {},
-    complete: function(res, xhr) {}
-  }
-})
-
-client.request('GET', {
-  url: 'https://example.com/users/1',
-  params: {
-    foo: 'bar'
-  },
-  middleware: [],
-  callback: {
-    success: function(res, xhr) {},
-    failure: function(res, xhr) {},
-    complete: function(res, xhr) {}
-  }
-})
-```
-
-### Events
-
-Extend any object with `Marbles.Events` to add event methods:
-
-- `on(events, callback, context [, options])`
-- `once(events, callback, context [, options])`
-- `off(events, callback, context)`
-- `trigger(events, arg [, arg [, ...]])`
-
-where
-
-- `events` is a space (" ") delimited list of event names
-- `callback` is a function that takes the arguments passed to `trigger`
-- `context` is an object to bind the `callback` to (`this`)
-- `options` is an object with a single member `args` which can be set to `false` to disable passing the arguments from `trigger` to the `callback`
-
-```javascript
-var object = {};
-_.extend(object, Marbles.Events);
-```
-
-### Accessors
-
-Extend any object with `Marbles.Accessors` to add accessor methods:
-
-- `set(keypath, value [, options])`
-- `get(keypath [, options])`
-- `remove(keypath, value [, options])`
-- `hasKey(keypath [, options])`
-
-where
-
-- `keypath` is a dot (".") delimited list of nested object members
-- `value` is the value to assign to the target member
-- `options` is an object with a single member `keypath` which can be set to `false` to disable parsing `keypath` as a keypath
-
-```javascript
-var object = {};
-_.extend(object, Marbles.Accessors);
-
-object.set('foo.bar', 'baz');
-object.get('foo'); // { bar: 'baz' }
-object.foo; // { bar: 'baz' }
-```
-
-If the object is also extended with `Marbles.Events`, a change event is fired when calling `set`:
-
-```javascript
-// ...
-object.once('change', function(new_value, old_value, keypath, options) {
-  // called when any keypath is changed
-});
-
-object.once('change:foo.bar', function(new_value, old_value, keypath, options) {
-  // called when `foo.bar` keypath is changed (NOTE: it is not called for `foo`)
-});
-```
-
-### Object
-
-A simple class with events and accessor methods.
-
-```javascript
-var obj = new Marbles.Object({
-  foo: 'bar' // you may optionally pass attributes to the constructor
-});
-
-obj.get('foo'); // 'bar'
-```
-
-### Model
-
-`Marbles.Model` is a more complex class than `Marbles.Object`, see the source code for more information.
-
-### Collection
-
-`Marbles.Collection` class to handles a list of `Marbles.Model` instances, see the source code for more information.
-
-### Unified Collection
-
-`Marbles.UnifiedCollection` class to handles merging multiple `Marbles.Collection` instances, see the source code for more information.
-
-### History
-
-`Marbles.History` class to manages URL routing and pushState, see the source code for more information.
-
-### Router
-
-`Marbles.Router` class manages routes for `Marbles.History`, see the source code for more information.
-
-### View
-
-`Marbles.View` class handles client-side templates (supports both Hogan and LoDash) and view hierarchy. See the source code for more information.
-
-## TODO
-
-- Node.js compatibility
-- Tests
-- Define and expand browser compatibility
-- ...
+1. The named params of the route are combined with those of the URL query and presented to your callback as an Object instead of separate arguments.
+2. It's pushState or nothing. URL fragments are for jumping to a page section, not a fallback for pushSate routing. As a result your app will be slightly slower in the few browsers in use today that don't support pushState as it will have to reload for each route.
 
 ## Contributing
 
