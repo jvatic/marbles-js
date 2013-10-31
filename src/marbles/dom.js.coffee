@@ -280,7 +280,7 @@ DOM.insertAfter = (el, reference_el) ->
 DOM._add_event_listener_fn_name = (typeof HTMLElement.prototype.addEventListener == 'function') ? 'addEventListener' : 'attachEvent'
 DOM.addEventListener = (el, events, callback, capture=false) ->
   return for event in events.split(' ')
-    el[@_add_event_listener_fn_name](event, callback, capture)
+  el[@_add_event_listener_fn_name](event, callback, capture)
 
 DOM.addSingleFireEventListener = (el, events, callback, capture=false) ->
   _callback = ->
@@ -293,7 +293,7 @@ DOM.addSingleFireEventListener = (el, events, callback, capture=false) ->
 DOM._remove_event_listener_fn_name = (typeof HTMLElement.prototype.removeEventListener == 'function') ? 'removeEventListener' : 'detachEvent'
 DOM.removeEventListener = (el, events, callback, capture=false) ->
   return for event in events.split(' ')
-    el[@_remove_event_listener_fn_name](event, callback, capture)
+  el[@_remove_event_listener_fn_name](event, callback, capture)
 
 ##
 # Form Serialization / Deserialization
@@ -305,7 +305,7 @@ DOM.getFormElementValue = (el) ->
   if el.nodeName.toLowerCase() == 'select'
     is_multi_select = el.multiple
 
-DOM.    value = is_multi_select ? []  = ""
+    value = is_multi_select ? []  = ""
 
     for option in el.querySelectorAll('option')
       continue unless option.selected
