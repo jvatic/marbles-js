@@ -53,22 +53,22 @@ Marbles.HTTP = class HTTP
 
     @sendRequest()
 
-  setHeader: => @request.setHeader(arguments...)
-  setHeaders: (headers) =>
+  setRequestHeader: => @request.setRequestHeader(arguments...)
+  setRequestHeaders: (headers) =>
     for header, value of headers
-      @setHeader(header, value)
+      @setRequestHeader(header, value)
 
   sendRequest: =>
     return unless @request
 
     @request.open(@method, @url)
-    @setHeaders(@headers) if @headers
+    @setRequestHeaders(@headers) if @headers
 
     ##
     # Multipart Request if body is an array
     # eg. body = [['somefile', new Blob(...), 'somefile.extention'], ...]
     if @body && typeof @body is 'object' && @body.hasOwnProperty('length')
-      @setHeader('Content-Type', "multipart/form-data; boundary=#{@constructor.MULTIPART_BOUNDARY}")
+      @setRequestHeader('Content-Type', "multipart/form-data; boundary=#{@constructor.MULTIPART_BOUNDARY}")
       @multipart = true
 
       @buildMultipartRequestBody =>

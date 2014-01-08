@@ -26,7 +26,7 @@ Marbles.HTTP.Request = class HTTPRequest
     return if @xmlhttp.readyState != 4
     @trigger 'complete'
 
-  setHeader: (key, val) =>
+  setRequestHeader: (key, val) =>
     @request_headers[key] = val
     @xmlhttp.setRequestHeader(key,val)
 
