@@ -35,8 +35,8 @@ class Marbles.Router
     Marbles.history.navigate(fragment, options)
 
   _bindRoutes: =>
-    throw new Error("No routes defined for #{@constructor.name}", @) unless @routes
-    for route, name of @routes
+    throw new Error("No routes defined for #{@constructor.name}", @) unless @constructor.routes
+    for route, name of @constructor.routes
       @route(route, name, @[name])
     null
 
