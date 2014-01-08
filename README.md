@@ -2,6 +2,8 @@
 
 **NOTE: The API is currently being refactored for consistancy and to remove dependence on LoDash/Underscore. It's not quite ready for production use.**
 
+`Marbles.View` and most of `Marbles.DOM` (except for event binding) have been removed in favor of [React](http://facebook.github.io).
+
 Designed with the assumption you
 
 - Write JavaScript, not jQuery (but it's okay if you do)
@@ -10,11 +12,7 @@ Designed with the assumption you
 - Want a framework to do the heavy lifting without becoming opaque
 - Are human and sometimes need to debug things
 
-There are seven major components to make your life easier when working with the DOM, HTTP requests, data, and routing.
-
-## `Marbles.DOM`
-
-Provides you with what should exist natively but doesn't (yet) and doesn't reinvent the wheel for everything already at your disposal.
+There are seven major components to make your life easier when working with the HTTP requests, data, and routing.
 
 ## `Marbles.HTTP`
 
@@ -29,16 +27,6 @@ If you need to add the same middleware to multiple requests and don't want to se
 It also includes a small but powerful URI parsing library.
 
 But if you don't need all that, the core of the lib may be used on it's own for a small sugar coating atop the native API.
-
-## `Marbles.View`
-
-Supports Hogan and LoDash compiled templates (or anything else with the same function signatures, see the source code for details).
-
-Allows nested views (of any depth) via the `data-view='ViewClassName'` attribute. This is especially useful when rendering everything at once initially then re-rendering the subviews as needed.
-
-Provides helpers for finding parent and child views by name.
-
-Is evented.
 
 ## `Marbles.Model`
 
