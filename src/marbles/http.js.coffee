@@ -58,6 +58,9 @@ Marbles.HTTP = class HTTP
     for header, value of headers
       @setRequestHeader(header, value)
 
+  getRequestHeader: => @request.getRequestHeader(arguments...)
+  getResponseHeader: => @request.getResponseHeader(arguments...)
+
   sendRequest: =>
     return unless @request
 

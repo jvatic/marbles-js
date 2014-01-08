@@ -30,6 +30,12 @@ Marbles.HTTP.Request = class HTTPRequest
     @request_headers[key] = val
     @xmlhttp.setRequestHeader(key,val)
 
+  getRequestHeader: (key) =>
+    @request_headers[key]
+
+  getResponseHeader: (key) =>
+    @xmlhttp.getResponseHeader(key)
+
   on: (event_name, fn) =>
     @callbacks[event_name] ||= []
     @callbacks[event_name].push fn
