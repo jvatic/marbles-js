@@ -132,6 +132,7 @@ Marbles.HTTP = class HTTP
       @response_data = xhr.response
 
       abort = false
+      err = false
 
       retryFn = =>
         return if @retry_count >= @MAX_NUM_RETRIES
@@ -141,9 +142,14 @@ Marbles.HTTP = class HTTP
         @retry_count += 1
         @retry()
 
+      errFn = (err) =>
+        err = true
+        @response_data = err
+
       for middleware in @middleware
         break if abort
-        middleware.processResponse?(@, xhr, retry: retryFn)
+        break if err
+        middleware.processResponse?(@, xhr, retry: retryFn, setError: errFn)
 
       return if abort
 
