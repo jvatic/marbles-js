@@ -191,16 +191,17 @@
 				}
 
 				// loop through param objects until we find one without key
-				for (var j = 0, _l = params.length; i < _l; i++) {
-					if (params[0].hasOwnProperty(key)) {
-						if (i === _len-1) {
+				for (var j = 0, _l = params.length; j < _l; j++) {
+					if (params[j].hasOwnProperty(key)) {
+						if (j === _l-1) {
 							// create additional param objects as needed
 							params.push({});
 							_l++;
 						}
 						continue;
 					} else {
-						params[0][key] = val;
+						params[j][key] = val;
+						break;
 					}
 				}
 			}

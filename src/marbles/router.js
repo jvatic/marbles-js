@@ -23,6 +23,10 @@
 			return Marbles.history.navigate(path, options);
 		},
 
+		// register route handler
+		// handler will be called with an array
+		// of param objects, the first of which
+		// will contain any named params
 		route: function (route, handler) {
 			if (!Marbles.history) {
 				Marbles.history = new Marbles.History();
@@ -39,7 +43,7 @@
 			}
 
 			Marbles.history.route(route, function (path, params) {
-				Marbles.Utils.extend(params, this.extractNamedParams(route, path, paramNames));
+				params = [this.extractNamedParams(route, path, paramNames)].concat(params);
 
 				var args = [params];
 				handler.apply(this, args);
