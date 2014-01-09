@@ -5,15 +5,29 @@
 	var __hasProp = {}.hasOwnProperty;
 
 	Marbles.Utils = {
+		// @function (obj, [other [, other...]])
+		extend: function (obj) {
+			var others = Array.prototype.slice.call(arguments, 1);
+			for (var i = 0, _len = others.length; i < _len; i++) {
+				var other = others[i];
+
+				for (var key in other) {
+					if (__hasProp.call(other, key)) {
+						obj[key] = other[key];
+					}
+				}
+			}
+
+			return obj;
+		},
+
 		// @function (child, parent)
 		// The prototype of child is made to inherit from parent.
 		// Returns child.
 		// A `__super__` property is added to child
 		// for access to the parent prototype.
 		inheritPrototype: function(child, parent) {
-			for (var key in parent) {
-				if (__hasProp.call(parent, key)) child[key] = parent[key];
-			}
+			Marbles.Utils.extend(child, parent);
 
 			function ctor() {
 				this.constructor = child;
@@ -89,15 +103,7 @@
 			}
 
 			// Extend the prototype with any given mixins
-			for (var i = 0, _len = mixins.length; i < _len; i++) {
-				var mixin = mixins[i];
-				for (var k in mixin) {
-					if (!mixin.hasOwnProperty(k)) {
-						continue;
-					}
-					ctor.prototype[k] = mixin[k];
-				}
-			}
+			Marbles.Utils.extend.apply(null, [].concat([ctor.prototype]).concat(mixins));
 
 			return ctor;
 		}
