@@ -51,6 +51,16 @@
 	Model.id_mapping_scope = ['id'];
 	Model.dirty_tracking_enabled = false;
 
+	Model.displayName = 'Marbles.Model';
+
+	Model.createClass = function (proto) {
+		if (!proto.hasOwnProperty('displayName')) {
+			proto.displayName = this.displayName;
+		}
+		proto.parentClass = this;
+		return Marbles.Utils.createClass(proto);
+	};
+
 	Model.buildIdMappingScope = function (params) {
 		var scope = [];
 		for (var i = 0, _ref = this.id_mapping_scope, _len = _ref.length; i < _len; i++) {
