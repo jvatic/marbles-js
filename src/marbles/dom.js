@@ -18,7 +18,7 @@ if (typeof HTMLElement.prototype.removeEventListener !== 'function') {
 }
 
 DOM.on = function (el, events, callback, capture) {
-	if (capture == null) {
+	if (!capture) {
 		capture = false;
 	}
 
@@ -26,27 +26,27 @@ DOM.on = function (el, events, callback, capture) {
 		el[_add_event_listener_fn_name](_ref[0], callback, capture);
 	}
 	return el;
-}
+};
 
 DOM.once = function (el, events, callback, capture) {
-	if (capture == null) {
+	if (!capture) {
 		capture = false;
 	}
 
 	_callback = function () {
 		callback.apply(this, arguments);
 		DOM.removeEventListener(el, events, capture);
-	}
+	};
 
 	this.addEventListener(el, events, _callback, capture);
-}
+};
 
 DOM.off = function (el, events, callback, capture) {
-	if (capture == null) {
+	if (!capture) {
 		capture = false;
 	}
 
 	for (var i = 0, _ref = events.split(' '), _len = _ref.length; i < _len; i++) {
 		el[_remove_event_listener_fn_name](event, callback, capture);
 	}
-}
+};

@@ -63,7 +63,7 @@
 					}
 
 					return this;
-				}
+				};
 
 				Marbles.Utils.inheritPrototype(ctor, parent);
 			} else {
