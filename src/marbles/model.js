@@ -1,4 +1,5 @@
 //= require ./core
+//= require ./utils
 //= require ./id_counter
 //= require ./accessors
 //= require ./events
