@@ -7,13 +7,16 @@ Marbles.IDCounter = class IDCounter
   @counterForScope: (scope) ->
     return counter if counter = @counter_scope_mapping[scope]
 
-    counter = new IDCounter
+    counter = new IDCounter(scope)
     @counter_scope_mapping[scope] = counter
 
     counter
 
-  constructor: (@count = 0) ->
+  constructor: (@scope, @count = 0) ->
 
   increment: =>
     @count += 1
+
+  nextID: =>
+    @scope + '_' + @increment()
 

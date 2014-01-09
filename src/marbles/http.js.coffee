@@ -142,9 +142,9 @@ Marbles.HTTP = class HTTP
         @retry_count += 1
         @retry()
 
-      errFn = (err) =>
+      errFn = (msg) =>
         err = true
-        @response_data = err
+        @response_data = msg
 
       for middleware in @middleware
         break if abort
