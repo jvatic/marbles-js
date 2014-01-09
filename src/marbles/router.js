@@ -116,4 +116,19 @@
 
 	Router.routes = [];
 
+	Router.createClass = function (proto) {
+		if (!proto.hasOwnProperty('displayName')) {
+			proto.displayName = this.displayName;
+		}
+		var routes = this.routes;
+		if (proto.hasOwnProperty('routes')) {
+			routes = proto.routes;
+			delete proto.routes;
+		}
+		proto.parentClass = this;
+		var ctor =  Marbles.Utils.createClass(proto);
+		ctor.routes = routes;
+		return ctor;
+	};
+
 })();
