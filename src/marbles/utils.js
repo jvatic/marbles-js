@@ -24,48 +24,82 @@
 			return child;
 		},
 
-		// @function (displayName, constructor, proto [, parent] [, mixin, ...])
-		// Returns a new constructor function which inherits
-		// from parent (if given) with the prototype extended with
-		// any given mixins.
-		// The given displayName is used for the constructor's (non-standard) displayName property.
-		// The `__super__` property of the returned constructor
-		// provides access to the parent prototype.
-		createClass: function (displayName, constructor, proto, parent) {
-			var _constructor;
-			if (parent) {
-				_constructor = function () {
-					constructor.apply(this, arguments);
-					var _ref = _constructor.__super__.constructor.apply(this, arguments);
-					return _ref;
+		// @function (proto)
+		// returns constructor function
+		createClass: function (proto) {
+			var ctor;
+			if (proto.hasOwnProperty('parentClass')) {
+				var parent = proto.parentClass;
+				delete proto.parentClass;
+
+				ctor = function () {
+					// Handle any initialization before
+					// we call the parent constructor
+					if (typeof this.willInitialize === 'function') {
+						this.willInitialize.apply(this, arguments);
+					}
+
+					// Call the parent constructor
+					ctor.__super__.constructor.apply(this, arguments);
+
+					// Handle any initialization after
+					// we call the parent constructor
+					if (typeof this.didInitialize === 'function') {
+						this.didInitialize.apply(this, arguments);
+					}
+
+					return this;
 				}
 
-				Marbles.Utils.inheritPrototype(_constructor, parent);
-
-				_constructor.displayName = displayName;
+				Marbles.Utils.inheritPrototype(ctor, parent);
 			} else {
-				_constructor = constructor;
+				ctor = function () {
+					// Call initialization functions
+					if (typeof this.willInitialize === 'function') {
+						this.willInitialize.apply(this, arguments);
+					}
+					if (typeof this.didInitialize === 'function') {
+						this.didInitialize.apply(this, arguments);
+					}
+					return this;
+				};
 			}
 
+			// If a displayName property is given
+			// move it to the constructor
+			if (proto.hasOwnProperty('displayName')) {
+				ctor.displayName = proto.displayName;
+				delete proto.displayName;
+			}
+
+			// Grab any given mixins from proto
+			var mixins = [];
+			if (proto.hasOwnProperty('mixins')) {
+				mixins = proto.mixins;
+				delete proto.mixins;
+			}
+
+			// Add all remaining properties
+			// on proto to the prototype
 			for (var k in proto) {
 				if (!proto.hasOwnProperty(k)) {
 					continue;
 				}
-				_constructor.prototype[k] = proto[k];
+				ctor.prototype[k] = proto[k];
 			}
 
-			var mixins = Array.prototype.slice.call(arguments, 3);
+			// Extend the prototype with any given mixins
 			for (var i = 0, _len = mixins.length; i < _len; i++) {
 				var mixin = mixins[i];
 				for (var k in mixin) {
 					if (!mixin.hasOwnProperty(k)) {
 						continue;
 					}
-					_constructor.prototype[k] = mixin[k];
+					ctor.prototype[k] = mixin[k];
 				}
 			}
 
-			return _constructor;
+			return ctor;
 		}
 	};
 
