@@ -41,7 +41,13 @@
 		// @function (proto)
 		// returns constructor function
 		createClass: function (proto) {
-			var ctor;
+			var ctor,
+					willInitialize = proto.willInitialize,
+					didInitialize = proto.didInitialize;
+
+			delete proto.willInitialize;
+			delete proto.didInitialize;
+
 			if (proto.hasOwnProperty('parentClass')) {
 				var parent = proto.parentClass;
 				delete proto.parentClass;
@@ -49,8 +55,8 @@
 				ctor = function () {
 					// Handle any initialization before
 					// we call the parent constructor
-					if (typeof this.willInitialize === 'function') {
-						this.willInitialize.apply(this, arguments);
+					if (typeof willInitialize === 'function') {
+						willInitialize.apply(this, arguments);
 					}
 
 					// Call the parent constructor
@@ -58,8 +64,8 @@
 
 					// Handle any initialization after
 					// we call the parent constructor
-					if (typeof this.didInitialize === 'function') {
-						this.didInitialize.apply(this, arguments);
+					if (typeof didInitialize === 'function') {
+						didInitialize.apply(this, arguments);
 					}
 
 					return this;
@@ -69,11 +75,11 @@
 			} else {
 				ctor = function () {
 					// Call initialization functions
-					if (typeof this.willInitialize === 'function') {
-						this.willInitialize.apply(this, arguments);
+					if (typeof willInitialize === 'function') {
+						willInitialize.apply(this, arguments);
 					}
-					if (typeof this.didInitialize === 'function') {
-						this.didInitialize.apply(this, arguments);
+					if (typeof didInitialize === 'function') {
+						didInitialize.apply(this, arguments);
 					}
 					return this;
 				};
