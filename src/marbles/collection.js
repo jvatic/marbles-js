@@ -311,4 +311,40 @@
 		return model;
 	};
 
+	Collection.createClass = function (proto) {
+		var collectionName = this.collectionName,
+				cidMappingScope = this.cidMappingScope,
+				model = this.model;
+
+		if (!proto.hasOwnProperty('displayName')) {
+			proto.displayName = this.displayName;
+		}
+
+		if (proto.hasOwnProperty('collectionName')) {
+			collectionName = proto.collectionName;
+			delete proto.collectionName;
+		}
+
+		if (proto.hasOwnProperty('cidMappingScope')) {
+			cidMappingScope = proto.cidMappingScope;
+			delete proto.cidMappingScope;
+		}
+
+		if (proto.hasOwnProperty('model')) {
+			model = proto.model;
+			delete proto.model;
+		}
+
+		proto.parentClass = this;
+
+		var ctor = Marbles.Utils.createClass(proto);
+		delete ctor.cidName;
+		delete ctor.cidCounter;
+		ctor.collectionName = collectionName;
+		ctor.cidMappingScope = cidMappingScope;
+		ctor.model = model;
+		Marbles.CIDMapping.initConstructor(ctor);
+		return ctor;
+	};
+
 })();
