@@ -109,7 +109,7 @@ Marbles.HTTP = class HTTP
         return add_part("") if blob.size > @constructor.MAX_BLOB_SIZE
         data = ""
         data += "Content-Disposition: form-data; name=\"#{name}\"; filename=\"#{filename}\"\r\n"
-        data += "Content-Type: #{blob.type}\r\n"
+        data += "Content-Type: #{blob.type || 'application/octet-stream'}\r\n"
         data += "Content-Length: #{blob.size}\r\n"
         data += "\r\n"
         @readAsBinaryString blob, (binary) =>
