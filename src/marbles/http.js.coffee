@@ -7,8 +7,6 @@
 Marbles.HTTP = class HTTP
   @MULTIPART_BOUNDARY: "-----------REQUEST_PART"
 
-  @MAX_BLOB_SIZE: 2000000 # 2MB
-
   @RETRY_STATUS_CODES: [
     0,   # Request failed
     500, # Internal Server Error
@@ -106,7 +104,6 @@ Marbles.HTTP = class HTTP
     for part in @body
       do (part) =>
         [name, blob, filename] = part
-        return add_part("") if blob.size > @constructor.MAX_BLOB_SIZE
         data = ""
         data += "Content-Disposition: form-data; name=\"#{name}\"; filename=\"#{filename}\"\r\n"
         data += "Content-Type: #{blob.type || 'application/octet-stream'}\r\n"
