@@ -12,7 +12,7 @@ Designed with the assumption you
 - Want a framework to do the heavy lifting without becoming opaque
 - Are human and sometimes need to debug things
 
-There are seven major components to make your life easier when working with the HTTP requests, data, and routing.
+There are five major components to make your life easier when working with the HTTP requests, data, and routing.
 
 ## `Marbles.HTTP`
 
