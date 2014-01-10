@@ -12,7 +12,9 @@
 		modelCIDs: [],
 
 		willInitialize: function (options) {
-			this.options = {};
+			this.options = {
+				unique: !!options.unique
+			};
 
 			if (options.cid) {
 				this.cid = options.cid;
