@@ -92,7 +92,7 @@ Marbles.HTTP = class HTTP
 
     num_pending_parts = @body.length
     add_part = (data) =>
-      parts.push(data)
+      parts.push(data) if data
       num_pending_parts -= 1
 
       if num_pending_parts == 0
