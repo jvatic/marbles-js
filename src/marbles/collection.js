@@ -25,8 +25,8 @@
 		},
 
 		watchModelMortality: function () {
-			Marbles.Model.on('detach', function (cid) {
-				this.removeCids([cid]);
+			this.constructor.model.on('detach', function (cid) {
+				this.removeCIDs([cid]);
 			}, this);
 		},
 
