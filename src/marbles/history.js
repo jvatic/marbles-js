@@ -61,11 +61,16 @@
 			}
 
 			if (!options) {
-				options = {
-					trigger: true,
-					replace: false,
-					force: false
-				};
+				options = {};
+			}
+			if (!options.hasOwnProperty('trigger')) {
+				options.trigger = true;
+			}
+			if (!options.hasOwnProperty('replace')) {
+				options.replace = false;
+			}
+			if (!options.hasOwnProperty('force')) {
+				options.force = false;
 			}
 
 			if (path === this.path && !options.force) {
