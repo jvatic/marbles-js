@@ -101,9 +101,11 @@
 		},
 
 		removeAtIndex: function (cidIndex) {
+			var cid = this.modelCIDs[cidIndex];
 			this.modelCIDs = this.modelCIDs.slice(0, cidIndex).concat(
 				this.modelCIDs.slice(cidIndex + 1, this.modelCIDs.length)
 			);
+			this.trigger('remove', cid);
 			return this.modelCIDs.length;
 		},
 
