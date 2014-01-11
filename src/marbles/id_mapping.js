@@ -154,7 +154,7 @@
 		},
 
 		detach: function () {
-			ctor.detach(this.cid);
+			this.constructor.detach(this.cid);
 			this.trigger('detach', this);
 		},
 
