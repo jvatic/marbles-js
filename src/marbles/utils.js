@@ -56,7 +56,10 @@
 					// Handle any initialization before
 					// we call the parent constructor
 					if (typeof willInitialize === 'function') {
-						willInitialize.apply(this, arguments);
+						var res = willInitialize.apply(this, arguments);
+						if (res) {
+							return res;
+						}
 					}
 
 					// Call the parent constructor
@@ -76,7 +79,10 @@
 				ctor = function () {
 					// Call initialization functions
 					if (typeof willInitialize === 'function') {
-						willInitialize.apply(this, arguments);
+						var res = willInitialize.apply(this, arguments);
+						if (res && res.constructor === ctor) {
+							return res;
+						}
 					}
 					if (typeof didInitialize === 'function') {
 						didInitialize.apply(this, arguments);
