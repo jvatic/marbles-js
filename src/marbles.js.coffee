@@ -1,7 +1,6 @@
 #= require ./marbles/core
 #= require ./marbles/utils
 #= require ./marbles/dependency_manager
-#= require ./marbles/dom
 #= require ./marbles/events
 #= require ./marbles/history
 #= require ./marbles/router

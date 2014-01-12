@@ -131,7 +131,7 @@
 
 			if (this.options.pushState) {
 				// init back button binding
-				Marbles.DOM.on(window, 'popstate', this.handlePopState, this);
+				window.addEventListener('popstate', this.handlePopState, false);
 			}
 
 			this.started = true;
@@ -145,7 +145,7 @@
 		// stop pushState handling
 		stop: function () {
 			if (this.options.pushState) {
-				Marbles.DOM.off(window, 'popstate', this.handlePopState, this);
+				window.removeEventListener('popstate', this.handlePopState, false);
 			}
 			this.started = false;
 			this.trigger('stop');
