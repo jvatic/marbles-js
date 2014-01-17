@@ -164,7 +164,7 @@
 			var acceptedModels = [], model;
 			for (var i = models.length-1; i >= 0; i--) {
 				model = models[i];
-				if (!this.options.unique || this.modelCIDs.indexOf(model.cid)) {
+				if (!this.options.unique || this.modelCIDs.indexOf(model.cid) === -1) {
 					this.modelCIDs.unshift(model.cid);
 					acceptedModels.unshift(model);
 				}
@@ -244,7 +244,7 @@
 			var acceptedModels = [], model;
 			for (var i = 0, _len = models.length; i < _len; i++) {
 				model = models[i];
-				if (!this.options.unique || this.modelCIDs.indexOf(model.cid)) {
+				if (!this.options.unique || this.modelCIDs.indexOf(model.cid) === -1) {
 					this.modelCIDs.push(model.cid);
 					acceptedModels.push(model);
 				}
