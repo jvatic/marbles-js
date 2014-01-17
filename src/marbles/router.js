@@ -93,7 +93,7 @@
 				values.push(decodeURIComponent(_ref[i]));
 			}
 
-			for (i = 0, _len = paramNames; i < _len; i++) {
+			for (i = 0, _len = paramNames.length; i < _len; i++) {
 				params[paramNames[i]] = values[i];
 			}
 
