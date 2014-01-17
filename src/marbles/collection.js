@@ -9,9 +9,9 @@
 
 		mixins: [Marbles.Events, Marbles.Accessors, Marbles.IDMapping],
 
-		modelCIDs: [],
-
 		willInitialize: function (options) {
+			this.modelCIDs = [];
+
 			this.options = {
 				unique: !!options.unique
 			};
