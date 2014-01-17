@@ -296,6 +296,8 @@
 	Collection.collectionName = '_collection';
 	Collection.cidScope = ['collectionName'];
 
+	Marbles.Utils.extend(Collection, Marbles.Events);
+
 	Marbles.CIDMapping.initConstructor(Collection);
 
 	Collection.buildModel = function (attrs, options) {
