@@ -140,7 +140,7 @@
 			var models = [], model;
 			for (var i = json.length-1; i >= 0; i--) {
 				model = this.constructor.buildModel(json[i]);
-				if (this.options.unique || this.modelCIDs.indexOf(model.cid) === -1) {
+				if (!this.options.unique || this.modelCIDs.indexOf(model.cid) === -1) {
 					this.modelCIDs.unshift(model.cid);
 					models.unshift(model);
 				}
@@ -220,7 +220,7 @@
 			var models = [], model;
 			for (var i = 0, _len = json.length; i < _len; i++) {
 				model = this.constructor.buildModel(json[i]);
-				if (this.options.unique || this.modelCIDs.indexOf(model.cid) === -1) {
+				if (!this.options.unique || this.modelCIDs.indexOf(model.cid) === -1) {
 					this.modelCIDs.push(model.cid);
 					models.push(model);
 				}
