@@ -7,7 +7,6 @@
 #= require ./marbles/accessors
 #= require ./marbles/http
 #= require ./marbles/http/middleware
-#= require ./marbles/http/client
 #= require ./marbles/object
 #= require ./marbles/model
 #= require ./marbles/collection

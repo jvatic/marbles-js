@@ -48,6 +48,41 @@ Marbles.QueryParams = {
 		return params;
 	},
 
+	// function (params, otherParams [, otherParams])
+	// combines the first params array with the contents
+	// of all the others. nothing is overwritten, duplicates
+	// are simply pushed into the next param object they do
+	// not comflict with.
+	combineParams: function (params) {
+		var others = Array.prototype.slice.call(arguments, 1);
+
+		function addValue(key, val) {
+			// loop through param objects until we find one without key
+			for (var i = 0, _len = params.length; i < _len; i++) {
+				if (params[i].hasOwnProperty(key)) {
+					if (i === _len-1) {
+						// create additional param objects as needed
+						params.push({});
+						_len++;
+					}
+					continue;
+				} else {
+					params[i][key] = val;
+					break;
+				}
+			}
+		}
+
+		var key;
+		for (var i = 0, _len = others.length; i < _len; i++) {
+			for (key in others[i]) {
+				addValue(key, others[i][key]);
+			}
+		}
+
+		return params;
+	},
+
 	// transforms an array of param objects
 	// into a query string.
 	serializeParams: function (params) {
