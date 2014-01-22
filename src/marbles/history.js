@@ -220,7 +220,7 @@
 			var query = [];
 			for (var i = 0, _len = params.length; i < _len; i++) {
 				for (var key in params[i]) {
-					var val = (params[i][key] || '').trim();
+					var val = params[i][key];
 
 					if (!val) {
 						// ignore empty values
