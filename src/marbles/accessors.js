@@ -21,7 +21,9 @@
 			var keys = parseKeypath(keypath);
 			var lastKey = keys.pop();
 			var ref = this;
-			for (var k in keys) {
+			var k, i, _len;
+			for (i = 0, _len = keys.length; i < _len; i++) {
+				k = keys[i];
 				ref[k] = ref[k] || {};
 				ref = ref[k];
 			}
@@ -38,10 +40,12 @@
 			var keys = parseKeypath(keypath);
 			var lastKey = keys.pop();
 			var ref = this;
-			for (var k in keys) {
-				if (!ref || !ref.hasOwnProperty(k)) {
+			var k, i, _len;
+			for (i = 0, _len = keys.length; i < _len; i++) {
+				if (!ref) {
 					break;
 				}
+				k = keys[i];
 				ref = ref[k];
 			}
 
