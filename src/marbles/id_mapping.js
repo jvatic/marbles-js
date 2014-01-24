@@ -56,7 +56,8 @@
 			ctor.cidCounter = new Marbles.IDCounter(ctor.cidName);
 		}
 
-		Marbles.Utils.extend(ctor.prototype, CIDMappingProto);
+		// Add CIDMappingProto methods to ctor.prototype unless overriden
+		Marbles.Utils.lazyExtend(ctor.prototype, CIDMappingProto);
 	};
 
 	CIDMapping.find = function (params, options) {

@@ -4,21 +4,37 @@
 
 	var __hasProp = {}.hasOwnProperty;
 
+	var __extend = function (obj, others, options) {
+		var override = options.override;
+
+		for (var i = 0, _len = others.length; i < _len; i++) {
+			var other = others[i];
+
+			for (var key in other) {
+				if (override === false && __hasProp.call(obj, key)) {
+					continue;
+				}
+
+				if (__hasProp.call(other, key)) {
+					obj[key] = other[key];
+				}
+			}
+		}
+
+		return obj;
+	};
+
+
 	Marbles.Utils = {
 		// @function (obj, [other [, other...]])
 		extend: function (obj) {
 			var others = Array.prototype.slice.call(arguments, 1);
-			for (var i = 0, _len = others.length; i < _len; i++) {
-				var other = others[i];
+			return __extend(obj, others, {override: true});
+		},
 
-				for (var key in other) {
-					if (__hasProp.call(other, key)) {
-						obj[key] = other[key];
-					}
-				}
-			}
-
-			return obj;
+		lazyExtend: function (obj) {
+			var others = Array.prototype.slice.call(arguments, 1);
+			return __extend(obj, others, {override: false});
 		},
 
 		// @function (child, parent)
