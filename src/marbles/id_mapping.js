@@ -9,12 +9,14 @@
 			CIDMappingProto = {};
 	Marbles.CIDMapping = CIDMapping;
 	Marbles.CIDMappingProto = CIDMappingProto;
+	var classMethods = ['find', 'fetch', 'detach', '__generateCIDName', '__buildCIDMappingScipe'];
 	CIDMapping.initConstructor = function (ctor) {
-		ctor.find = CIDMapping.find.bind(ctor);
-		ctor.fetch = CIDMapping.fetch.bind(ctor);
-		ctor.detach = CIDMapping.detach.bind(ctor);
-		ctor.__generateCIDName = CIDMapping.__generateCIDName.bind(ctor);
-		ctor.__buildCIDMappingScipe = CIDMapping.__buildCIDMappingScipe.bind(ctor);
+		classMethods.forEach(function (method) {
+			if (ctor.hasOwnProperty(method)) {
+				return;
+			}
+			ctor[method] = CIDMapping[method].bind(ctor);
+		});
 
 		// instance cid mapping
 		// (cid -> instance)
