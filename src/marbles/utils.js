@@ -59,7 +59,8 @@
 		createClass: function (proto) {
 			var ctor,
 					willInitialize = proto.willInitialize,
-					didInitialize = proto.didInitialize;
+					didInitialize = proto.didInitialize,
+					k, i, _len, mixin;
 
 			delete proto.willInitialize;
 			delete proto.didInitialize;
@@ -130,15 +131,29 @@
 
 			// Add all remaining properties
 			// on proto to the prototype
-			for (var k in proto) {
+			for (k in proto) {
 				if (!proto.hasOwnProperty(k)) {
 					continue;
 				}
 				ctor.prototype[k] = proto[k];
 			}
 
-			// Extend the prototype with any given mixins
-			Marbles.Utils.extend.apply(null, [].concat([ctor.prototype]).concat(mixins));
+			// Extend the prototype and/or ctor with any given mixins
+			for (i = 0, _len = mixins.length; i < _len; i++) {
+				mixin = mixins[i];
+				if (mixin.hasOwnProperty('ctor') || mixin.hasOwnProperty('proto')) {
+					if (mixin.hasOwnProperty('ctor')) {
+						Marbles.Utils.extend(ctor, mixin.ctor);
+					}
+					if (mixin.hasOwnProperty('proto')) {
+						Marbles.Utils.extend(ctor.prototype, mixin.proto);
+					}
+				} else {
+					// It's a plain old object
+					// extend the prototype with it
+					Marbles.Utils.extend(ctor.prototype, mixin);
+				}
+			}
 
 			return ctor;
 		}
