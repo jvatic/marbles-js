@@ -9,7 +9,6 @@ module MarblesJS
     ).freeze
 
     VENDOR_ASSET_NAMES = %w(
-      lodash.js
     ).freeze
 
     attr_accessor :sprockets_environment, :assets_dir, :compile_vendor

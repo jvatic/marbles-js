@@ -10,7 +10,6 @@ module MarblesJS
     unless self.settings[:asset_paths]
       self.settings[:asset_paths] = [ File.expand_path('../../src', __FILE__) ]
     end
-    self.settings[:asset_paths] << File.expand_path('../../vendor', __FILE__) if options[:vendor]
     self.settings[:asset_paths].uniq!
   end
 
