@@ -121,6 +121,13 @@
 				delete proto.mixins;
 			}
 
+			// Convenience method for creating subclass
+			ctor.createClass = function (proto) {
+				return Marbles.Utils.createClass(Marbles.Utils.extend({}, proto, {
+					parentClass: ctor
+				}));
+			};
+
 			// Add all remaining properties
 			// on proto to the prototype
 			for (var k in proto) {
