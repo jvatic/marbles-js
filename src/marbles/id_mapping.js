@@ -5,201 +5,197 @@
 
 (function () {
 
-	var CIDMapping = {},
-			CIDMappingProto = {};
-	Marbles.CIDMapping = CIDMapping;
-	Marbles.CIDMappingProto = CIDMappingProto;
-	var classMethods = ['find', 'fetch', 'detach', '__generateCIDName', '__buildCIDMappingScipe'];
-	CIDMapping.initConstructor = function (ctor) {
-		classMethods.forEach(function (method) {
-			if (ctor.hasOwnProperty(method)) {
-				return;
-			}
-			ctor[method] = CIDMapping[method].bind(ctor);
-		});
+	var __generateCIDName,
+			__buildCIDMappingScope,
+			__trackInstance,
+			__updateCIDMapping;
 
-		// instance cid mapping
-		// (cid -> instance)
-		if (!ctor.instances) {
+	Marbles.CIDMapping = {
+
+		didExtendCtor: function (ctor) {
+			// instance cid mapping
+			// (cid -> instance)
 			ctor.instances = {all: {}};
-		}
-		if (!ctor.instances.all) {
-			ctor.instances.all = {};
-		}
 
-		// instance lookup mapping
-		// (lookup key -> cid)
-		if (!ctor.cidMapping) {
-			ctor.cidMapping = {};
-		}
+			// instance lookup mapping
+			// (lookup key -> cid)
+			ctor.__cidMapping = {};
 
-		// used to generate instance lookup key
-		if (!ctor.cidMappingScope) {
-			ctor.cidMappingScope = [];
-		}
+			// used to generate instance lookup key
+			if (ctor.cidMappingScope === undefined) {
+				ctor.cidMappingScope = [];
+			}
 
-		// used to generate cid
-		if (!ctor.cidScope) {
-			ctor.cidScope = [];
-		}
-
-		// generated from cidScope
-		// used for cidCounter
-		if (!ctor.cidName) {
-			if (ctor.cidScope.length) {
-				ctor.cidName = ctor.__generateCIDName();
+			// generated from cidScope
+			// used for cidCounter
+			if (ctor.cidScope) {
+				ctor.__cidName = __generateCIDName.call(ctor);
 			} else {
-				ctor.cidName = '_default';
+				ctor.__cidName = '_default';
+			}
+
+			// used to generate instance cid
+			ctor.__cidCounter = new Marbles.IDCounter(ctor.__cidName);
+		},
+
+		ctor: {
+			find: function (params, options) {
+				var _cidMappingScope = __buildCIDMappingScope.call(this, params),
+						_cidMapping = this.__cidMapping,
+						_cidName = this.__cidName,
+						_cid, _instance,
+						_should_fetch = (!options || options.fetch !== false);
+
+				if (!options) {
+					options = {};
+				}
+
+				if (params.hasOwnProperty('cid')) {
+					_cid = params.cid;
+					_should_fetch = false;
+				} else {
+					if (_cidMappingScope) {
+						_cid = (_cidMapping[_cidName] || {})[_cidMappingScope];
+					}
+				}
+
+				if (_cid !== undefined && _cid !== null) {
+					_instance = this.instances.all[_cid];
+					if (_instance) {
+						return _instance;
+					}
+				}
+
+				if (_should_fetch === true) {
+					this.fetch(params, options);
+				}
+
+				return null;
+			},
+
+			fetch: function (params, options) {
+				throw Error("You need to define " + this.displayName + ".fetch(params, options)");
+			},
+
+			detach: function (cid) {
+				var _instances = this.instances,
+						_instance = _instances.all[cid],
+						_cidName = this.__cidName,
+						_cidMapping = this.__cidMapping,
+						_index, _tmp, k, _cidMappingScope;
+
+				delete _instances.all[cid];
+				delete _cidMapping[cid];
+
+				_cidMappingScope = __buildCIDMappingScope.call(this, _instance);
+				delete (_cidMapping[_cidName] || {})[_cidMappingScope];
+
+				if (_instances[_cidName]) {
+					_index = _instances[_cidName].indexOf(cid);
+					if (_index !== -1) {
+						_tmp = _instances[_cidName];
+						_tmp = _tmp.slice(0, _index).concat(
+							_tmp.slice(_index + 1, _tmp.length)
+						);
+						_instances[_cidName] = _tmp;
+					}
+				}
+
+				_instance.trigger('detach');
+				this.trigger('detach', cid, _instance);
+			}
+		},
+
+		proto: {
+			initCIDMapping: function () {
+				if (this.cid === undefined) {
+					this.cid = this.constructor.__cidCounter.nextID();
+				}
+
+				__trackInstance.call(this);
+			},
+
+			detach: function () {
+				this.constructor.detach(this.cid);
 			}
 		}
 
-		// used to generate instance cid
-		if (!ctor.cidCounter) {
-			ctor.cidCounter = new Marbles.IDCounter(ctor.cidName);
-		}
-
-		// Add CIDMappingProto methods to ctor.prototype unless overriden
-		Marbles.Utils.lazyExtend(ctor.prototype, CIDMappingProto);
 	};
 
-	CIDMapping.find = function (params, options) {
-		if (!options) {
-			options = {};
+	__generateCIDName = function () {
+		var _parts = [],
+				i,
+				_ref = this.cidScope,
+				_len;
+		for (i = 0, _len = _ref.length; i < _len; i++) {
+			_parts.push(this[ _ref[i] ]);
 		}
-
-		var cidMappingScope = this.__buildCIDMappingScipe(params);
-		if (cidMappingScope) {
-			var cid = (this.cidMapping[this.cidName] || {})[cidMappingScope];
-			if (cid) {
-				params.cid = cid;
-			}
-		}
-
-		if (params.cid) {
-			var instance = this.instances.all[params.cid];
-			if (instance) {
-				return instance;
-			}
-		}
-
-		if (!params.hasOwnProperty('cid') && options.fetch !== false) {
-			this.fetch(params, options);
-		}
-
-		return null;
+		return _parts.join(':');
 	};
 
-	CIDMapping.fetch = function (params, options) {
-		throw Error("You need to define " + (this.displayName || this.name) + ".fetch(params, options)");
-	};
-
-	CIDMapping.detach = function (cid) {
-		var instance = this.instances.all[cid];
-		delete this.instances.all[cid];
-
-		if (this.instances[this.cidName]) {
-			var index = this.instances[this.cidName].indexOf(cid);
-			if (index !== -1) {
-				instances = this.instances[this.cidName];
-				instances = instances.slice(0, index).concat(
-					instances.slice(index + 1, instances.length)
-				);
-				this.instances[this.cidName] = instances;
-			}
-		}
-
-		var _ref = this.cidMapping[this.cidName];
-		for (var k in _ref) {
-			var _cid = _ref[k];
-			if (_cid === cid) {
-				delete _ref[k];
-				break;
-			}
-		}
-
-		var cidMappingScope = this.__buildCIDMappingScipe(instance);
-		delete (this.cidMapping[this.cidName] || {})[cidMappingScope];
-
-		this.trigger('detach', cid, instance);
-	};
-
-	CIDMapping.__generateCIDName = function () {
-		var parts = [];
-		for (var i = 0, _ref = this.cidScope, _len = _ref.length; i < _len; i++) {
-			parts.push(this[_ref[i]]);
-		}
-		return parts.join(':');
-	};
-
-	CIDMapping.__buildCIDMappingScipe = function (params) {
-		var scope = [];
-		for (var i = 0, _ref = this.cidMappingScope, _len = _ref.length; i < _len; i++) {
-			if (!params.hasOwnProperty(_ref[i])) {
+	__buildCIDMappingScope = function (attrs) {
+		var _scope = [],
+				i,
+				_ref = this.cidMappingScope,
+				_len;
+		for (i = 0, _len = _ref.length; i < _len; i++) {
+			if ( !attrs.hasOwnProperty(_ref[i]) ) {
+				// Can't build a partial scope
 				return null;
 			} else {
-				scope.push(params[_ref[i]]);
+				_scope.push(attrs[ _ref[i] ]);
 			}
 		}
-		return scope.join(':');
+		return _scope.join(':');
 	};
 
-	CIDMappingProto = {
-		initCIDMapping: function () {
-			CIDMapping.initConstructor(this.constructor);
+	__trackInstance = function () {
+		var _ctor = this.constructor,
+				_instances = _ctor.instances,
+				_cidName = _ctor.__cidName,
+				_cidMappingScope = _ctor.cidMappingScope,
+				i, _ref;
 
-			// generate cid if it's not already defined
-			if (!this.cid) {
-				this.cid = this.constructor.cidCounter.nextID();
-			}
+		_instances.all[this.cid] = this;
 
-			// add instance to cid and lookup mappings
-			this.__trackInstance();
-		},
-
-		detach: function () {
-			this.constructor.detach(this.cid);
-			this.trigger('detach', this);
-		},
-
-		__trackInstance: function () {
-			var ctor = this.constructor;
-			ctor.instances.all[this.cid] = this;
-			if (!ctor.instances[ctor.cidName]) {
-				ctor.instances[ctor.cidName] = [];
-			}
-			ctor.instances[ctor.cidName].push(this.cid);
-
-			for (var i = 0, _ref = ctor.cidMappingScope, _len = _ref.length; i < _len; i++) {
-				this.on('change:' + _ref[i], this.__updateCIDMapping, this);
-			}
-		},
-
-		__updateCIDMapping: function (newValue, oldValue, attr) {
-			var oldScope = [],
-					newScope = [],
-					ctor = this.constructor;
-
-			var key, val;
-			for (var i = 0, _ref = ctor.cidMappingScope, _len = _ref.length; i < _len; i++) {
-				key = _ref[i];
-				if (key === attr) {
-					oldScope.push(oldValue);
-					newScope.push(newValue);
-				} else {
-					val = this.get(key);
-					oldScope.push(val);
-					newScope.push(val);
-				}
-			}
-			oldScope = oldScope.join(':');
-			newScope = newScope.join(':');
-
-			if (!ctor.cidMapping[ctor.cidName]) {
-				ctor.cidMapping[ctor.cidName] = {};
-			}
-			ctor.cidMapping[ctor.cidName][newScope] = this.cid;
-			delete ctor.cidMapping[ctor.cidName][oldScope];
+		if (_instances[_cidName] === undefined) {
+			_instances[_cidName] = [];
 		}
+		_instances[_cidName].push(this.cid);
+
+		for (i = 0, _len = _cidMappingScope.length; i < _len; i++) {
+			this.on('change:'+ _cidMappingScope[i], __updateCIDMapping, this);
+		}
+	};
+
+	__updateCIDMapping = function (new_val, old_val, attr) {
+		var _old_scope = [],
+				_new_scope = [],
+				_ctor = this.constructor,
+				_cidMapping = _ctor.__cidMapping,
+				_cidName = _ctor.__cidName,
+				i, _ref, _len, _val;
+
+		_ref = _ctor.cidMappingScope;
+		for (i = 0, _len = _ref.length; i < _len; i++) {
+			if (_ref[i] === attr) {
+				_old_scope.push(old_val);
+				_new_scope.push(new_val);
+			} else {
+				_val = this.get(_ref[i]);
+				_old_scope.push(_val);
+				_new_scope.push(_val);
+			}
+		}
+
+		_old_scope = _old_scope.join(':');
+		_new_scope = _new_scope.join(':');
+
+		if (_cidMapping[_cidName] === undefined) {
+			_cidMapping[_cidName] = {};
+		}
+		_cidMapping[_cidName][_new_scope] = this.cid;
+		delete _cidMapping[_cidName][_old_scope];
 	};
 
 })();
