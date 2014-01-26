@@ -60,7 +60,12 @@
 			var ctor,
 					willInitialize = proto.willInitialize,
 					didInitialize = proto.didInitialize,
-					k, i, _len, mixin;
+					k, i, _len, mixin, mixin_callbacks;
+
+			mixin_callbacks = {
+				didExtendCtor: [],
+				didExtendProto: []
+			}
 
 			delete proto.willInitialize;
 			delete proto.didInitialize;
@@ -124,9 +129,17 @@
 
 			// Convenience method for creating subclass
 			ctor.createClass = function (proto) {
-				return Marbles.Utils.createClass(Marbles.Utils.extend({}, proto, {
+				var _child_ctor = Marbles.Utils.createClass(Marbles.Utils.extend({}, proto, {
 					parentClass: ctor
 				}));
+
+				['didExtendCtor', 'didExtendProto'].forEach(function (callback_name) {
+					mixin_callbacks[callback_name].forEach(function (callback) {
+						callback(_child_ctor);
+					});
+				});
+
+				return _child_ctor;
 			};
 
 			// Add all remaining properties
@@ -142,11 +155,24 @@
 			for (i = 0, _len = mixins.length; i < _len; i++) {
 				mixin = mixins[i];
 				if (mixin.hasOwnProperty('ctor') || mixin.hasOwnProperty('proto')) {
+					// extend ctor
 					if (mixin.hasOwnProperty('ctor')) {
 						Marbles.Utils.extend(ctor, mixin.ctor);
+
+						if (typeof mixin.didExtendCtor === 'function') {
+							mixin_callbacks.didExtendCtor.push(mixin.didExtendCtor);
+							mixin.didExtendCtor(ctor);
+						}
 					}
+
+					// extend proto
 					if (mixin.hasOwnProperty('proto')) {
 						Marbles.Utils.extend(ctor.prototype, mixin.proto);
+
+						if (typeof mixin.didExtendProto === 'function') {
+							mixin_callbacks.didExtendCtor.push(mixin.didExtendProto);
+							mixin.didExtendProto(ctor);
+						}
 					}
 				} else {
 					// It's a plain old object
