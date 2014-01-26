@@ -9,4 +9,3 @@
 //= require ./marbles/object
 //= require ./marbles/model
 //= require ./marbles/collection
-//= require ./marbles/unified_collection
