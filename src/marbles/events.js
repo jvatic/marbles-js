@@ -56,6 +56,12 @@
 		},
 
 		off: function (events, callback, context) {
+			// Allow unbinding all events at once
+			if (arguments.length === 0) {
+				delete this.__events;
+				return this; // chainable
+			}
+
 			if (!Array.isArray(events)) {
 				events = events.split(EVENT_SPLITTER);
 			}

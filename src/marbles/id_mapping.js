@@ -100,6 +100,9 @@
 
 				_instance.trigger('detach');
 				this.trigger('detach', cid, _instance);
+
+				// clear all event bindings
+				this.off();
 			}
 		},
 
