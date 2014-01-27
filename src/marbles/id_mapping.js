@@ -15,7 +15,7 @@
 		didExtendCtor: function (ctor) {
 			// instance cid mapping
 			// (cid -> instance)
-			ctor.instances = {all: {}};
+			ctor.instances = {};
 
 			// instance lookup mapping
 			// (lookup key -> cid)
@@ -60,7 +60,7 @@
 				}
 
 				if (_cid !== undefined && _cid !== null) {
-					_instance = this.instances.all[_cid];
+					_instance = this.instances[_cid];
 					if (_instance) {
 						return _instance;
 					}
@@ -79,16 +79,13 @@
 
 			detach: function (cid) {
 				var _instances = this.instances,
-						_instance = _instances.all[cid],
+						_instance = _instances[cid],
 						_cidName = this.__cidName,
 						_cidMapping = this.__cidMapping,
 						_index, _tmp, k, _cidMappingScope;
 
-				delete _instances.all[cid];
+				delete _instances[cid];
 				delete _cidMapping[cid];
-
-				_cidMappingScope = __buildCIDMappingScope.call(this, _instance);
-				delete (_cidMapping[_cidName] || {})[_cidMappingScope];
 
 				if (_instances[_cidName]) {
 					_index = _instances[_cidName].indexOf(cid);
@@ -156,12 +153,7 @@
 				_cidMappingScope = _ctor.cidMappingScope,
 				i, _ref;
 
-		_instances.all[this.cid] = this;
-
-		if (_instances[_cidName] === undefined) {
-			_instances[_cidName] = [];
-		}
-		_instances[_cidName].push(this.cid);
+		_instances[this.cid] = this;
 
 		for (i = 0, _len = _cidMappingScope.length; i < _len; i++) {
 			this.on('change:'+ _cidMappingScope[i], __updateCIDMapping, this);
