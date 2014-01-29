@@ -65,7 +65,7 @@
 			mixin_callbacks = {
 				didExtendCtor: [],
 				didExtendProto: []
-			}
+			};
 
 			delete proto.willInitialize;
 			delete proto.didInitialize;
