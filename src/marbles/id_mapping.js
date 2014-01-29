@@ -98,7 +98,9 @@
 					}
 				}
 
-				_instance.trigger('detach');
+				if (_instance) {
+					_instance.trigger('detach');
+				}
 				this.trigger('detach', cid, _instance);
 
 				// clear all event bindings
