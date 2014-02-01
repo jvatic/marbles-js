@@ -113,7 +113,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 			options = {};
 		}
 		this.modelCIDs = [];
-		models = this.appendModels(json, {silent:true});
+		models = this.appendModels(models, {silent:true});
 		if (!options.silent) {
 			this.trigger('reset', models);
 		}
