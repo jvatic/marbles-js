@@ -29,7 +29,7 @@
 		},
 
 		didReceiveResponse: function (request) {
-			var contentType = request.getRequestHeader('Content-Type');
+			var contentType = request.getResponseHeader('Content-Type');
 			if (contentType !== CONTENT_TYPE) {
 				return;
 			}
