@@ -117,6 +117,9 @@
 			if (!options) {
 				options = {};
 			}
+			if (!options.hasOwnProperty('trigger')) {
+				options.trigger = true;
+			}
 
 			if (!Marbles.history) {
 				Marbles.history = this;
@@ -138,7 +141,7 @@
 			this.started = true;
 			this.trigger('start');
 
-			if (!options.silent) {
+			if (options.trigger) {
 				this.loadURL();
 			}
 		},
