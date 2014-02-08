@@ -12,17 +12,17 @@ There is no view component, it's recomended you use [React](http://reactjs.org/)
 
 Most Marbles objects are evented. The following methods are available on such objects.
 
-### `on(String events, Function callback [, Object context [, Object options ]])`
+**`on(String events, Function callback [, Object context [, Object options ]])`**
 
 Takes a space delimited string of events to listen to. `callback` is called with any arguments passed to `trigger()`, and will be bound to `context` if given.
 
 `options.args` may be set to `false` to have any arguments passed to `trigger()` ignored.
 
-### `once(String events, Function callback [, Object context [, Object options ]])`
+**`once(String events, Function callback [, Object context [, Object options ]])`**
 
 The same as `on()`, except `callback` is only called once for each event (after which it is unbound with `off()`).
 
-### `off(String events [, Function callback [, Object context ]])`
+**`off(String events [, Function callback [, Object context ]])`**
 
 Takes a space delimited string of events to be unbound.
 
@@ -30,7 +30,7 @@ If `callback` is given, only events bound to it will be unbound.
 
 If `context` is given, only events bound to it will be unbound.
 
-### `trigger(String events, args...)`
+**`trigger(String events, args...)`**
 
 **NOTE: You should avoid calling this outside the scope of the object on which it is defined.**
 
