@@ -74,7 +74,7 @@
 			},
 
 			fetch: function (params, options) {
-				throw Error("You need to define " + this.displayName + ".fetch(params, options)");
+				throw new Error("You need to define " + this.displayName + ".fetch(params, options)");
 			},
 
 			detach: function (cid) {

@@ -166,7 +166,7 @@
 				this.trigger('before:send');
 				if (this.multipart === true) {
 					if (typeof this.xhr.sendAsBinary !== 'function') {
-						throw Error(this.constructor.displayName +': '+ this.xhr.constructor.name +'.prototype.sendAsBinary is not a function!');
+						throw new Error(this.constructor.displayName +': '+ this.xhr.constructor.name +'.prototype.sendAsBinary is not a function!');
 					}
 					this.xhr.sendAsBinary(this.requestBody);
 				} else {

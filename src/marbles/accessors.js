@@ -69,7 +69,7 @@
 			}
 
 			if (!ref) {
-				throw Error(displayName +"("+ this.constructor.displayName +"): Can't remove property "+ JSON.stringify(lastKey) +" from undefined keypath: "+ keys.join(KEYPATH_SEP));
+				throw new Error(displayName +"("+ this.constructor.displayName +"): Can't remove property "+ JSON.stringify(lastKey) +" from undefined keypath: "+ keys.join(KEYPATH_SEP));
 			}
 
 			var oldValue = ref[lastKey];

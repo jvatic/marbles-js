@@ -33,11 +33,11 @@
 		// be called
 		route: function (route, callback) {
 			if (typeof callback !== 'function') {
-				throw Error(this.constructor.displayName + ".prototype.route(): callback is not a function: "+ JSON.stringify(callback));
+				throw new Error(this.constructor.displayName + ".prototype.route(): callback is not a function: "+ JSON.stringify(callback));
 			}
 
 			if (typeof route.test !== 'function') {
-				throw Error(this.constructor.displayName + ".prototype.route(): expected route to be a RegExp: "+ JSON.stringify(route));
+				throw new Error(this.constructor.displayName + ".prototype.route(): expected route to be a RegExp: "+ JSON.stringify(route));
 			}
 
 			this.handlers.unshift({ route: route, callback: callback });
@@ -58,7 +58,7 @@
 		// already loaded
 		navigate: function (path, options) {
 			if (Marbles.history !== this || !this.started) {
-				throw Error("Marbles.history has not been started or is set to a different instance");
+				throw new Error("Marbles.history has not been started or is set to a different instance");
 			}
 
 			if (!options) {
@@ -111,7 +111,7 @@
 		// start pushState handling
 		start: function (options) {
 			if (Marbles.history && Marbles.history.started) {
-				throw Error("Marbles.history has already been started");
+				throw new Error("Marbles.history has already been started");
 			}
 
 			if (!options) {

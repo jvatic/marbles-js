@@ -56,7 +56,7 @@
 		bindRoutes: function () {
 			var ctor = this.constructor;
 			if (!ctor.routes) {
-				throw Error("You need to define "+ ctor.displayName || ctor.name +".routes");
+				throw new Error("You need to define "+ ctor.displayName || ctor.name +".routes");
 			}
 
 			for (var i = 0, _ref = ctor.routes, _len = _ref.length; i < _len; i++) {
