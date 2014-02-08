@@ -2,7 +2,7 @@
 
 **NOTE: The API is currently still in flux, stay aware of changes before updating.**
 
-Marbles is a JavaScript framework inspired by [Backbone.js](http://backbonejs.org) and [React](http://facebook.github.io).
+Marbles is a JavaScript framework inspired by [Backbone.js](http://backbonejs.org) and [React](http://reactjs.org/).
 
 ## Events
 
