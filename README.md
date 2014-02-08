@@ -4,6 +4,8 @@
 
 Marbles is a JavaScript framework inspired by [Backbone.js](http://backbonejs.org) and [React](http://reactjs.org/).
 
+There is no view component, it's recomended you use [React](http://reactjs.org/).
+
 ## Events
 
 `Marbles.Events` (class mixin).
