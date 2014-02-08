@@ -145,12 +145,16 @@
 		},
 
 		open: function () {
+			// The request is already open
+			if (this.xhr && this.xhr.readyState !== 4) {
+				return;
+			}
+
 			this.setXMLHTTPRequest();
 			var url = this.uri.toString();
 			var async = true;
-			var ret = this.xhr.open(this.method, url, async);
+			this.xhr.open(this.method, url, async);
 			this.trigger('open', this.method, url, async);
-			return ret;
 		},
 
 		send: function () {
