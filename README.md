@@ -2,7 +2,7 @@
 
 **NOTE: The API is currently still in flux, stay aware of changes before updating.**
 
-Marbles is a JavaScript framework inspired by Backbone.js and React.
+Marbles is a JavaScript framework inspired by [Backbone.js](http://backbonejs.org) and [React](http://facebook.github.io).
 
 ## Events
 
@@ -43,11 +43,11 @@ Easily map URL patterns to functions.
 ```
 new Marbles.Router.createClass({
   displayName: "MyRouter",
-  
+
   routes: [
   	{ path: "posts/:id", handler: "postSingleton" }
   ],
-  
+
   postSingleton: function (params) {
   	console.log(params);
   	//=> [{ id: "..." }]
@@ -105,8 +105,6 @@ Name | Arguments | Description
 `handler:after` | `handler`, `path`, `params` | Route matched, handle has been called.
 `route` | `router`, `route`, `params` | Handler was just called. `router` is the instance of `Marbles.Router` who's route matched, `route` is the compiled regex, and `params` is the params array.
 
-
-`Marbles.View` and most of `Marbles.DOM` (except for event binding) have been removed in favour of [React](http://facebook.github.io).
 
 ## HTTPRequest
 
@@ -247,7 +245,7 @@ Name | Arguments | Description
 
 Method |
 ------ |
-`set(String keypath, Object value, Object options)` | 
+`set(String keypath, Object value, Object options)` |
 `get(String keypath, Object options)` |
 `remove(String keypath, Object options)` |
 `hasKey(String keypath, Object options)` |
