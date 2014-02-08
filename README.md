@@ -410,6 +410,17 @@ Mixin objects are generally just plain objects that extend the prototype. Howeve
 
 **`creteClass`** also adds a `createClass` method to the returned constructor for easily ‘sub-classing’ it. This method also ensures any mixin `didExtend...` hooks are called with the new (child) constructor.
 
+## Some TODOs
+
+- Write tests (API is nearing completion and is no longer likely to drastically change).
+- Write proper documentation and update README to only contain basic usage examples
+- Write more in-depth usage examples
+- Finalize API / work out inconsistencies
+	- Move away from callbacks and use events instead
+	- It may make sense to return promise objects from some methods
+- Make compatible with node.js (the HTTP lib at minimum, but the router could also be useful in that context, everything else should already be compatible and just need to be made accessible)
+- Look into using ES6 modules instead of sprockets directives (sprockets integration is still required)
+
 
 ## Contributing
 
