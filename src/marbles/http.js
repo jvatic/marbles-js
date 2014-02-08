@@ -158,7 +158,7 @@
 		},
 
 		send: function () {
-			if (this.xhr.readyState === 4) {
+			if (this.xhr.readyState !== 1) {
 				return;
 			}
 
