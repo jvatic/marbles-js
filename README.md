@@ -1,53 +1,415 @@
 # Marbles.js
 
-**NOTE: The API is currently being refactored for consistancy and to remove dependence on LoDash/Underscore. It's not quite ready for production use.**
+**NOTE: The API is currently still in flux, stay aware of changes before updating.**
 
-`Marbles.View` and most of `Marbles.DOM` (except for event binding) have been removed in favor of [React](http://facebook.github.io).
+Marbles is a JavaScript framework inspired by Backbone.js and React.
 
-Designed with the assumption you
+## Events
 
-- Write JavaScript, not jQuery (but it's okay if you do)
-- Build real web applications
-- Need the option to pick and choose the parts you want
-- Want a framework to do the heavy lifting without becoming opaque
-- Are human and sometimes need to debug things
+`Marbles.Events` (class mixin).
 
-There are five major components to make your life easier when working with the HTTP requests, data, and routing.
+Most Marbles objects are evented. The following methods are available on such objects.
 
-## `Marbles.HTTP`
+### `on(String events, Function callback [, Object context [, Object options ]])`
 
-Sometimes your application needs to generically process requests and responses before they are sent and received. The optional middleware stack gives you the power of manipulation, allowing you to sign requests and verify response signatures, handle data serialization however you see fit, etc.
+Takes a space delimited string of events to listen to. `callback` is called with any arguments passed to `trigger()`, and will be bound to `context` if given.
 
-Because servers are sometimes unreliable, `GET` and `HEAD` requests are retried a few times when service is unavailable or the server explodes with a 5xx status (you may disable this feature by simply setting `Marbles.HTTP.prototype.MAX_NUM_RETRIES = 0` or on the individual requests).
+`options.args` may be set to `false` to have any arguments passed to `trigger()` ignored.
 
-Multi-part requests are first-class citizens, allowing you to push those binary blobs and JSON together with ease.
+### `once(String events, Function callback [, Object context [, Object options ]])`
 
-If you need to add the same middleware to multiple requests and don't want to set them all up individually, `HTTP.Client` provides a small abstraction to do just that.
+The same as `on()`, except `callback` is only called once for each event (after which it is unbound with `off()`).
 
-It also includes a small but powerful URI parsing library.
+### `off(String events [, Function callback [, Object context ]])`
 
-But if you don't need all that, the core of the lib may be used on it's own for a small sugar coating atop the native API.
+Takes a space delimited string of events to be unbound.
 
-## `Marbles.Model`
+If `callback` is given, only events bound to it will be unbound.
 
-Standard getters and setters with keypath support, dirty tracking, change events (supports exact keypaths, no bubbling), and designed to avoid duplication of data through global instance tracking.
+If `context` is given, only events bound to it will be unbound.
 
-It's opinionated as to how you manage your data locally, but doesn't do more than give you a method signature for fetching it.
+### `trigger(String events, args...)`
 
-## `Marbles.Collection`
+**NOTE: You should avoid calling this outside the scope of the object on which it is defined.**
 
-A powerful tool for managing feeds involving a single model type.
+Takes a space delimited string of events to be fired.
 
-## `Marbles.UnifiedCollection`
+Any additional arguments are passed to the callback functions.
 
-Ever need to merge data from multiple sources into a single view without loosing sort order? The `UnifiedCollection` is not for everyday use, but is there when you need it.
+## Router
 
-## `Marbles.Router`
+Easily map URL patterns to functions.
 
-Sort of like the Backbone router but with a few notable differences:
+```
+new Marbles.Router.createClass({
+  displayName: "MyRouter",
+  
+  routes: [
+  	{ path: "posts/:id", handler: "postSingleton" }
+  ],
+  
+  postSingleton: function (params) {
+  	console.log(params);
+  	//=> [{ id: "..." }]
+  }
+});
+```
 
-1. The named params of the route are combined with those of the URL query and presented to your callback as an Object instead of separate arguments.
-2. It's pushState or nothing. URL fragments are for jumping to a page section, not a fallback for pushSate routing. As a result your app will be slightly slower in the few browsers in use today that don't support pushState as it will have to reload for each route.
+### Routes
+
+Routes are defined as an array of route objects, each containing a `path` and `handler` member. The path may include named segments (e.g. `posts/:id` would match `/posts/foo`, `/posts/bar`, etc.) and splats (e.g. `/posts/*` would match `/posts`, `/posts/foo`, `/posts/foo/bar`, etc.).
+
+Named segments become available to the route handler via the first object of the params array. Query params are also available in the params array.
+
+### Params
+
+Params are represented as an array of objects, which usually has a length of `1`, but will have more as needed to hold multiple params of the same name (this only applies to query params, named route segments must have unique names). Each param is always stored in the first object which doesn't contain a param of the same name (e.g. `?a=1&b=2` would both be found at index `0`, where as `?a=1&a=2&b=3` would be split into two objects containing the first `a` and `b`, and the second `a` respectively).
+
+### Events
+
+Name | Arguments | Description
+---- | --------- | -----------
+`route` | `route`, `params` | Handler was just called. `route` is the compiled regex, and `params` is the params array.
+
+## History
+
+`Marbles.History` is responsible for capturing pushState events and finding a matching route each time the URL changes.
+
+Typically you'll only need to call `Marbles.History.start({})` which takes an optional options object as the first argument.
+
+Available options are as follows
+
+Property | Default | Description
+-------- | ------- | -----------
+`pushState` | `true` | Determines if pushState should be used. `window.location` is manipulated for triggering routes when set to `false` or pushState is not supported.
+`root` | `/` | Allows specifying a path prefix if the app is not mounted at the domain root. All routes defined in a Router are relative to this path.
+`trigger` | `true` | Calls any associated route handler for the initial path when `true`.
+
+If you need to stop handling routes at any point, you may call `Marbles.history.stop()`.
+
+`Marbles.history.navigate("", {})` may be used to load a new URL, it takes the path (relative to `root`) and an options argument.
+
+Property | Default | Description
+-------- | ------- | -----------
+`trigger` | `true` | Calls any associated route handler when `true`.
+`replace` | `false` | Replaces the current history item (only works if pushState is enabled/supported) when `true`.
+`force` | `false` | Set to `true` if you need it to fire even when the `path` provided is the current one.
+
+### Events
+
+Name | Arguments | Description
+---- | --------- | -----------
+`start` | (none) | History started, no route handler has been called yet.
+`stop` | (none) | History stopped.
+`handler:before` | `handler`, `path`, `params` | Route matched, handler is about to be called. `handler` is an object containing `route` (compiled into a regex), and `callback` (the handler function).
+`handler:after` | `handler`, `path`, `params` | Route matched, handle has been called.
+`route` | `router`, `route`, `params` | Handler was just called. `router` is the instance of `Marbles.Router` who's route matched, `route` is the compiled regex, and `params` is the params array.
+
+
+`Marbles.View` and most of `Marbles.DOM` (except for event binding) have been removed in favour of [React](http://facebook.github.io).
+
+## HTTPRequest
+
+`Marbles.HTTPRequest` provides a wrapper around `XMLHTTPRequest` with support for multipart requests and request/response middleware.
+
+```
+var request = new Marbles.HTTPRequest({
+	method: "POST",
+	url: "http://example.com",
+	params: [{
+		a: 1,
+		b: 2
+	}, {
+		a: 3
+	}],
+	headers: {
+		"Content-Type": "application/json"
+	},
+	body: "{\"a\":2}"
+});
+request.once('complete', function (res, xhr) {
+	console.log(res, xhr);
+});
+request.open();
+request.send();
+```
+```
+POST http://example.com?a=1&b=2&a=3
+Content-Type: application/json
+
+{"a":2}
+```
+
+Property | Required | Default | Description
+-------- | -------- | ------- | -----------
+`method` | Optional | `GET` | HTTP method to be used.
+`url` | Required | | URL the request is for.
+`params` | Optional | `[{}]` | Array of objects representing URL parameters to be merged with `url`.
+`headers` | Optional | `{}` | Object representing request headers.
+`body` | Optional | | String (or any object supported by specified `middleware`) to be used as the request body. If an Array is given, it's assumed to be a collection of `Blob` objects.
+`middleware` | Optional | `[]` | An array of middleware objects.
+
+**TODO:** Add `multipart` option and require it to be set to `true` to treat `body` as multipart.
+
+Consumable properties/methods on `HTTPRequest` instances:
+
+Name | Type | Description
+---- | ---- | -----------
+`multipart` | Boolean | Indicates if the request is multipart.
+`getRequestHeader(String header)` | Function | Returns the value of the request header.
+`setRequestHeader(String header, String value)` | Function | Sets the request header.
+`getResponseHeader(String header)` | Function | Returns the value of the response header.
+`terminate(Error err)` | Function | Aborts request or causes the response to fail.
+`resend([Error err])` | Function | Terminates request with given error (optional), and resends the request.
+`responseData` | Any | Middleware should write to this property to override the response value in the `complete` event.
+`xhr` | XMLHTTPRequest | Underlying request object.
+`open()` | Function | Initializes and opens an `XMLHTTPRequest` object. It must be called before `send()`. Calling it multiple times before `send()` is called has no effect.
+`send()` | Function | Sends the request. Multipart requests use `xhr.sendAsBinary()` (**TODO:** use `xhr.send()` with a `Blob` or `FormData` instead). Calling it while the request is already in progress or completed has no effect.
+
+If you instantiate a new `HTTPRequest` using `GET` or `HEAD` methods, and a duplicate request has already been opened, the existing request will be used.
+
+### HTTP
+
+`Marbles.HTTP(Object options)` provides a wrapper around `Marbles.HTTPRequest`. The following is equivalent to the above example.
+
+```
+Marbles.HTTP({
+	method: "POST",
+	url: "http://example.com",
+	params: [{
+		a: 1,
+		b: 2
+	}, {
+		a: 3
+	}],
+	headers: {
+		"Content-Type": "application/json"
+	},
+	body: "{\"a\":2}",
+	complete: function (res, xhr) {
+		console.log(res, xhr);
+	}
+});
+```
+```
+POST http://example.com?a=1&b=2&a=3
+Content-Type: application/json
+
+{"a":2}
+```
+
+`callback` is optional and is called with a response data object (either produced through middleware or taken directly from `xhr.response`) and the xhr (`XMLHTTPRequest`) object.
+
+### Middleware
+
+Any object with `willSendRequest(Marbles.HTTPRequest request)` and/or `didReceiveResponse(Marbles.HTTPRequest request)` methods may be used as middleware.
+
+There are a few middleware objects provided.
+
+#### SerializeJSON
+
+`Marbles.HTTP.Middleware.SerializeJSON`
+
+Calls `JSON.stringify` and `JSON.parse` on requests and responses where the `Content-Type` header matches. If `JSON.parse` throws an error, the response will be terminated with the same error.
+
+#### FormEncoded
+
+`Marbles.HTTP.Middleware.FormEncoded`
+
+Serializes/deserializes the request/response when the `Content-Type` header is `application/x-www-form-urlencoded`.
+
+Note that you may wish to use [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) instead (you may set `body` to a `FormData` object).
+
+#### WithCredentials
+
+`Marbles.HTTP.Middleware.WithCredentials`
+
+Does nothing more than set `xhr.withCredentials` to `true`.
+
+### Events
+
+Name | Arguments | Description
+---- | --------- | -----------
+`open` | `method`, `url` | Fired when a new xhr request is opened.
+`before:send` | (none) | Request is about to be sent (all request middleware will have been called at this point).
+`after:send` | (none) | Request has just been sent.
+`terminated` | `err` | Request has been terminated (usually via middleware). `err` contains the error.
+`before:complete` | `xhr` | Response has been received and middleware has been called.
+`success` | `res`, `xhr` | Response received with a 2xx or 3xx status.
+`failure` | `res`, `xhr` | Response received with a non- 2xx or 3xx status.
+`complete` | `res`, `xhr` | Response received (success or failure event has already been triggered).
+
+**TODO:** Add event for when response status and headers are available. Also allow middleware to hook into this.
+
+## Accessors
+
+`Marbles.Accessors` is a class mixin and adds the following instance methods:
+
+Method |
+------ |
+`set(String keypath, Object value, Object options)` | 
+`get(String keypath, Object options)` |
+`remove(String keypath, Object options)` |
+`hasKey(String keypath, Object options)` |
+
+If `options.keypath` is set to the default value of `true`, `keypath` will be split on `.` and each segment will be treated as a property on the preceding one (starting with the instance object).
+
+```
+var myObject = new Marbles.Utils.createClass({
+	mixins: [Marbles.Accessors]
+});
+
+myObject.set("a.b.c", [1, 2, 3]);
+
+myObject.set("a.b.c", "foo", {keypath: false});
+
+console.log(myObject["a.b.c"]);
+//=> "foo"
+
+console.log(myObject.get("a.b"));
+//=> { c: [1, 2, 3] }
+
+console.log(myObject.a.b);
+//=> { c: [1, 2, 3] }
+
+console.log(myObject.get("a.b.c.1"));
+//=> 2
+
+console.log(myObject.hasKey("foo"));
+//=> false
+
+console.log(myObject.hasKey("a.b"));
+//=> true
+
+myObject.remove("a.b");
+
+console.log(myObject.hasKey("a.b"));
+//=> false
+
+console.log(myObject.hasKey("a"));
+//=> true
+```
+
+If the object has a `trigger` method (e.g. via the `Marbles.Events` mixin), the `change` event is fired with `newValue`, `oldValue`, `keypath`, and `options`. The `change:{keypath}` event is also fired in this case with the same arguments (`keypath` is interpolated into the event name).
+
+```
+var myObject = new Marbles.Utils.createClass({
+	mixins: [Marbles.Accessors, Marbles.Events]
+});
+
+myObject.on("change:a.b.c", console.log);
+
+myObject.set("a.b.c", [1, 2, 3]);
+
+//=> [1, 2, 3]	undefined	"a.b.c"	undefined
+```
+
+## Object
+
+`Marbles.Object`
+
+Very simple constructor which includes `Marbles.Accessors` and `Marbles.Events`, and takes an Object containing any initial properties as a single argument.
+
+```
+var myObject = new Marbles.Object({
+  a: {
+  	b: 2
+  }
+});
+
+console.log(myObject.get("a.b"));
+//=> 2
+```
+
+## Model
+
+`Marbles.Model`
+
+Similar to `Marbles.Object`, but with a few additions.
+
+- Instances are tracked in an `instances` property of the constructor.
+- Instances are also indexed by a set of properties via `cidMappingScope` on the constructor (must be set via a mixin).
+- Instances have a unique `cid` property to identify them.
+- Instances have a `toJSON()` method. By default it returns all properties, but `JSONKeys` may be set on the constructor (via a mixin) to an array of whitelisted properties.
+- `modelName` may also be set on the constructor (via a mixin) and is used in creation of `cid`s
+- Instances have a `detach()` method to un-track them.
+- The constructor has a `find(Object params, Object options)` method. `params` may include properties in `cidMappingScope` or a `cid` to perform a local lookup. If `cid` is not given, and no instance is found, the `fetch()` method is called. `options` may include a `fetch` property set to `false` to prevent `fetch()` from being called.
+- The constructor has a `fetch(Object params, Object options)` method. By default it throws an error, you should override this or always pass `fetch: false` to `find()`.
+- The constructor has a `detach(String cid)` method.
+
+**TODO:** Accept an Array for the `params` arg of `find()` (the first member would contain what's currently in the params Object). This would allow defining a `fetch()` method taking either an Array or Object.
+
+
+## Collection
+
+`Marbles.Collection`
+
+Useful for working with many instances of the same `Marbles.Model`.
+
+- Each collection instance is tracked in the same fashion as models.
+- Collections only keep weak references to the models they track (via `cid`s).
+- Models are automatically removed when detached.
+- Collections know how to build models out of JSON.
+
+The following methods are provided:
+
+- `indexOf(Marbles.Model model)`
+- `first()`
+- `last()`
+- `forEach(Function callback, Object thisArg)`
+- `models()`
+- `resetJSON(Object json, Object options)`
+- `resetModels(Array models, Object options)`
+- `reset(Object options)`
+- `removeAtIndex(Number index)`
+- `removeCIDs(Array cids)`
+- `remove(Marbles.Model model [, Marbles.Model model2 [, ...]])`
+- `prependJSON(Object json, Object options)`
+- `prependModels(Array models, Object options)`
+- `prependCIDs(Array cids, Object options)`
+- `unshift(Marbles.Model model [, ...])`
+- `appendJSON(Object json, Object options)`
+- `appendModels(Array models, Object options)`
+- `appendCIDs(Array cids, Object options)`
+- `push(Marbles.Model model [, ...])`
+
+### Events
+
+Event | Arguments
+----- | ---------
+`reset` | `models`
+`remove` | `cid`
+`prepend` | `models`
+`append` | `models`
+
+
+## Utils
+
+`Marbles.Utils`
+
+### `extend(Object obj [, Object source1 [, Object source2 [, ...] ]])`
+
+Copies all enumerable properties from all sources to the object passed as the first argument.
+
+Returns the object being extended.
+
+### `createClass(Object proto)`
+
+Creates and returns a constructor function, using `proto` as the prototype.
+
+The following properties of `proto` are special and will not be part of the prototype:
+
+- `displayName` - sets the `displayName` property of the constructor.
+- `parentClass` - another constructor to inherit from. The parent's prototype will be available via the `__super__` property of the constructor.
+- `willInitialize` and `didInitialize` - called before/after generated constructor does it's thing (calling the parent constructor if there is one) with any arguments it's called with.
+- `mixins` - an Array of mixin objects.
+
+**Mixins**
+
+Mixin objects are generally just plain objects that extend the prototype. However, when using `createClass`, mixin objects with `ctor` and/or `proto` properties will extend the constructor and/or the prototype respectively. Such mixin objects may also define `didExtendCtor` and `didExtendProto` methods to be called after extending the constructor and prototype respectively (both are passed the constructor as a single argument).
+
+**`creteClass`** also adds a `createClass` method to the returned constructor for easily ‘sub-classing’ it. This method also ensures any mixin `didExtend...` hooks are called with the new (child) constructor.
+
 
 ## Contributing
 
