@@ -45,7 +45,7 @@
 			Marbles.history.route(route, function (path, params) {
 				params = [this.extractNamedParams(route, path, paramNames)].concat(params);
 
-				handler.apply(this, params);
+				handler.apply(this, [params]);
 				this.trigger('route', route, params);
 				Marbles.history.trigger('route', this, route, params);
 
