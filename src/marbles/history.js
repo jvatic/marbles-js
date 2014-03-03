@@ -40,7 +40,7 @@
 				throw new Error(this.constructor.displayName + ".prototype.route(): expected route to be a RegExp: "+ JSON.stringify(route));
 			}
 
-			this.handlers.unshift({ route: route, callback: callback });
+			this.handlers.push({ route: route, callback: callback });
 		},
 
 		// navigate to given path via pushState
