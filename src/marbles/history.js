@@ -210,9 +210,15 @@
 				}
 			}
 			if (handler) {
-				this.trigger('handler:before', handler, path, params);
-				handler.callback(path, params);
-				this.trigger('handler:after', handler, path, params);
+				var __handlerAbort = false;
+				this.trigger('handler:before', handler, path, params, function () {
+					__handlerAbort = true;
+				});
+
+				if ( !__handlerAbort ) {
+					handler.callback(path, params);
+					this.trigger('handler:after', handler, path, params);
+				}
 			}
 			return handler;
 		},
