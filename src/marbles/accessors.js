@@ -18,7 +18,7 @@
 
 	Marbles.Accessors = {
 		set: function (keypath, value, options) {
-			var keys = parseKeypath(keypath);
+			var keys = parseKeypath(keypath, options);
 			var lastKey = keys.pop();
 			var ref = this;
 			var k, i, _len;
@@ -37,7 +37,7 @@
 		},
 
 		get: function (keypath, options) {
-			var keys = parseKeypath(keypath);
+			var keys = parseKeypath(keypath, options);
 			var lastKey = keys.pop();
 			var ref = this;
 			var k, i, _len;
@@ -60,7 +60,7 @@
 			if (!this.hasKey(keypath, options)) {
 				return;
 			}
-			var keys = parseKeypath(keypath);
+			var keys = parseKeypath(keypath, options);
 			var lastKey = keys.pop();
 
 			var ref = this;
@@ -82,7 +82,7 @@
 		},
 
 		hasKey: function (keypath, options) {
-			var keys = parseKeypath(keypath);
+			var keys = parseKeypath(keypath, options);
 			var lastKey = keys.pop();
 			var ref = this.get(keys.join(KEYPATH_SEP));
 			if (!ref || !ref.hasOwnProperty(lastKey)) {
