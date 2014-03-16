@@ -30,7 +30,7 @@
 
 			var oldValue = ref[lastKey];
 			ref[lastKey] = value;
-			if (value !== oldValue && typeof this.trigger === 'function') {
+			if (((options || {}).silent !== true) && value !== oldValue && typeof this.trigger === 'function') {
 				this.trigger('change', value, oldValue, keypath, options);
 				this.trigger('change:'+ keypath, value, oldValue, keypath, options);
 			}
@@ -75,7 +75,7 @@
 			var oldValue = ref[lastKey];
 			delete ref[lastKey];
 
-			if (oldValue !== undefined && typeof this.trigger === 'function') {
+			if (((options || {}).silent !== true) && oldValue !== undefined && typeof this.trigger === 'function') {
 				this.trigger('change', undefined, oldValue, keypath, options);
 				this.trigger('change'+ keypath, undefined, oldValue, keypath, options);
 			}
