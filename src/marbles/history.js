@@ -79,15 +79,7 @@
 				return;
 			}
 
-			// add path root if it's not already there
-			var root = this.options.root;
-			if (root && path.substr(0, root.length) !== root) {
-				if (root.substring(root.length-1) !== '/' && path.substr(0, 1) !== '/') {
-					// add path seperator if not present in root or path
-					path = '/' + path;
-				}
-				path = this.options.root + path;
-			}
+			path = this.pathWithRoot(path);
 
 			if (!this.options.pushState) {
 				// pushState is unavailable/disabled
@@ -106,6 +98,23 @@
 				// cause route handler to be called
 				this.loadURL();
 			}
+		},
+
+		pathWithRoot: function (path) {
+			// add path root if it's not already there
+			var root = this.options.root;
+			if (root && path.substr(0, root.length) !== root) {
+				if (root.substring(root.length-1) !== '/' && path.substr(0, 1) !== '/') {
+					// add path seperator if not present in root or path
+					path = '/' + path;
+				}
+				path = this.options.root + path;
+			}
+			return path;
+		},
+
+		getURLFromPath: function (path) {
+			return window.location.protocol +'//'+ window.location.host + this.pathWithRoot(path);
 		},
 
 		// start pushState handling
