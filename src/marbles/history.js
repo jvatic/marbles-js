@@ -79,6 +79,10 @@
 				return;
 			}
 
+			if (options.params) {
+				path = this.pathWithParams(path, options.params);
+			}
+
 			path = this.pathWithRoot(path);
 
 			if (!this.options.pushState) {
@@ -98,6 +102,41 @@
 				// cause route handler to be called
 				this.loadURL();
 			}
+		},
+
+		pathWithParams: function (path, params) {
+			if (params.length === 0) {
+				return path;
+			}
+
+			// clone params array
+			params = [].concat(params);
+			// we mutate the first param obj, so clone that
+			params[0] = Marbles.Utils.extend({}, params[0]);
+
+			// expand named params in path
+			path = path.replace(/:([^\/]+)/, function (m, key) {
+				var paramObj = params[0];
+				if (paramObj.hasOwnProperty(key)) {
+					var val = paramObj[key];
+					delete paramObj[key];
+					return encodeURIComponent(val);
+				} else {
+					return key;
+				}
+			});
+
+			// add remaining params to query string
+			var queryString = this.serializeParams(params);
+			if (queryString.length > 1) {
+				if (path.indexOf('?') !== -1) {
+					path = path +'&'+ queryString.substring(1);
+				} else {
+					path = path + queryString;
+				}
+			}
+
+			return path;
 		},
 
 		pathWithRoot: function (path) {
