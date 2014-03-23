@@ -152,7 +152,10 @@
 			return path;
 		},
 
-		getURLFromPath: function (path) {
+		getURLFromPath: function (path, params) {
+			if (params && params.length !== 0) {
+				path = this.pathWithParams(path, params);
+			}
 			return window.location.protocol +'//'+ window.location.host + this.pathWithRoot(path);
 		},
 
