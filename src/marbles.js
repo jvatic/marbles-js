@@ -6,6 +6,7 @@
 //= require ./marbles/accessors
 //= require ./marbles/http
 //= require ./marbles/http/middleware
+//= require ./marbles/http/link_header
 //= require ./marbles/object
 //= require ./marbles/model
 //= require ./marbles/collection
