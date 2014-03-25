@@ -91,7 +91,7 @@ Marbles.QueryParams = {
 			for (var key in params[i]) {
 				var val = params[i][key];
 
-				if (typeof val === 'string' && !val) {
+				if ((typeof val === 'string' && !val) || val === undefined || val === null) {
 					// ignore empty values
 					continue;
 				}
