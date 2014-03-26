@@ -83,6 +83,28 @@ Marbles.QueryParams = {
 		return params;
 	},
 
+	// function (params, otherParams [, otherParams])
+	// combines the first params array with the contents
+	// of all the others. duplicates are overwritten if
+	// they are at the same params index.
+	replaceParams: function (params) {
+		var others = Array.prototype.slice.call(arguments, 1);
+
+		function replaceValue(index, key, val) {
+			params[index] = params[index] || {};
+			params[index][key] = val;
+		};
+
+		var key;
+		for (var i = 0, _len = others.length; i < _len; i++) {
+			for (key in others[i]) {
+				replaceValue(i, key, others[i][key]);
+			}
+		}
+
+		return params;
+	},
+
 	// transforms an array of param objects
 	// into a query string.
 	serializeParams: function (params) {
