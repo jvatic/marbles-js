@@ -74,6 +74,11 @@
 				options.force = false;
 			}
 
+			if (path[0] === "/") {
+				// trim / prefix
+				path = path.substring(1);
+			}
+
 			if (path === this.path && !options.force) {
 				// we are already there and handler is not forced
 				return;

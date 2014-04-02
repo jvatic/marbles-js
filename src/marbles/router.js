@@ -65,6 +65,11 @@
 		},
 
 		routeToRegExp: function (route) {
+			if (route[0] === "/") {
+				// trim / prefix
+				route = route.substring(1);
+			}
+
 			var ctor = this.constructor;
 			route = route.replace(ctor.regex.escape, '\\$&').
 										replace(ctor.regex.namedParam, '([^\/]+)').
