@@ -2,6 +2,10 @@
 //= require ./id_mapping
 //= require_self
 
+(function () {
+
+"use strict";
+
 Marbles.Collection = Marbles.Utils.createClass({
 	displayName: 'Marbles.Collection',
 
@@ -319,3 +323,5 @@ Marbles.Collection = Marbles.Utils.createClass({
 		return this.appendModels(Array.prototype.slice.call(arguments, 0));
 	}
 });
+
+})();

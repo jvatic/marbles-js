@@ -1,6 +1,10 @@
 //= require ./core
 //= require_self
 
+(function () {
+
+"use strict";
+
 Marbles.HTTP.Middleware.SerializeJSON = {
 	willSendRequest: function (request) {
 		if (request.multipart) {
@@ -33,3 +37,5 @@ Marbles.HTTP.Middleware.SerializeJSON = {
 		}
 	}
 };
+
+})();

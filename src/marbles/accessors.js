@@ -2,6 +2,9 @@
 //= require_self
 
 (function () {
+
+	"use strict";
+
 	var KEYPATH_SEP = '.';
 	var displayName = 'Marbles.Accessors';
 
@@ -73,7 +76,9 @@
 			}
 
 			var oldValue = ref[lastKey];
-			delete ref[lastKey];
+			if (ref.hasOwnProperty(lastKey)) {
+				delete ref[lastKey];
+			}
 
 			if (((options || {}).silent !== true) && oldValue !== undefined && typeof this.trigger === 'function') {
 				this.trigger('change', undefined, oldValue, keypath, options);

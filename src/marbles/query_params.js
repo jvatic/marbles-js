@@ -1,5 +1,9 @@
 //= require ./core
 
+(function () {
+
+"use strict";
+
 Marbles.QueryParams = {
 	// transforms a query string into an
 	// array of param objects (the first
@@ -130,3 +134,5 @@ Marbles.QueryParams = {
 		return "?" + query.join('&');
 	}
 };
+
+})();

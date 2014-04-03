@@ -4,6 +4,10 @@
 //= require ./events
 //= require_self
 
+(function () {
+
+"use strict";
+
 Marbles.Object = Marbles.Utils.createClass({
 	displayName: 'Marbles.Object',
 
@@ -19,3 +23,5 @@ Marbles.Object = Marbles.Utils.createClass({
 		}
 	}
 });
+
+})();

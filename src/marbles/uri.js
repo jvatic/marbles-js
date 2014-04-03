@@ -3,6 +3,9 @@
 //= require ./query_params
 
 (function () {
+
+	"use strict";
+
 	var URI = Marbles.Utils.createClass({
 		displayName: 'Marbles.URI',
 

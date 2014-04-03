@@ -2,6 +2,8 @@
 
 (function () {
 
+	"use strict";
+
 	var __hasProp = {}.hasOwnProperty;
 
 	var __extend = function (obj, others, options) {
@@ -67,8 +69,12 @@
 				didExtendProto: []
 			};
 
-			delete proto.willInitialize;
-			delete proto.didInitialize;
+			if (proto.hasOwnProperty('willInitialize')) {
+				delete proto.willInitialize;
+			}
+			if (proto.hasOwnProperty('didInitialize')) {
+				delete proto.didInitialize;
+			}
 
 			if (proto.hasOwnProperty('parentClass')) {
 				var parent = proto.parentClass;

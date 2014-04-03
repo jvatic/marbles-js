@@ -5,6 +5,8 @@
 
 (function () {
 
+	"use strict";
+
 	var __generateCIDName,
 			__buildCIDMappingScope,
 			__trackInstance,
@@ -84,8 +86,12 @@
 						_cidMapping = this.__cidMapping,
 						_index, _tmp, k, _cidMappingScope;
 
-				delete _instances[cid];
-				delete _cidMapping[cid];
+				if (_instances.hasOwnProperty(cid)) {
+					delete _instances[cid];
+				}
+				if (_cidMapping.hasOwnProperty(cid)) {
+					delete _cidMapping[cid];
+				}
 
 				if (_instances[_cidName]) {
 					_index = _instances[_cidName].indexOf(cid);
@@ -156,7 +162,7 @@
 				_instances = _ctor.instances,
 				_cidName = _ctor.__cidName,
 				_cidMappingScope = _ctor.cidMappingScope,
-				i, _ref;
+				i, _len, _ref;
 
 		_instances[this.cid] = this;
 
@@ -192,7 +198,9 @@
 			_cidMapping[_cidName] = {};
 		}
 		_cidMapping[_cidName][_new_scope] = this.cid;
-		delete _cidMapping[_cidName][_old_scope];
+		if (_cidMapping[_cidName].hasOwnProperty(_old_scope)) {
+			delete _cidMapping[_cidName][_old_scope];
+		}
 	};
 
 })();

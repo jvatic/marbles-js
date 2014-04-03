@@ -3,6 +3,8 @@
 
 (function () {
 
+	"use strict";
+
 	var IDCounter = Marbles.Utils.createClass({
 		displayName: 'Marbles.IDCounter',
 

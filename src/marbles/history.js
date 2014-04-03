@@ -12,6 +12,8 @@
 
 (function () {
 
+	"use strict";
+
 	var History = Marbles.Utils.createClass({
 		displayName: 'Marbles.History',
 

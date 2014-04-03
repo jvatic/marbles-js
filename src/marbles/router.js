@@ -10,6 +10,8 @@
 
 (function () {
 
+	"use strict";
+
 	var Router = Marbles.Utils.createClass({
 		displayName: 'Marbles.Router',
 

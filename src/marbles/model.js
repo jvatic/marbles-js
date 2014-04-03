@@ -5,6 +5,10 @@
 //= require ./events
 //= require_self
 
+(function () {
+
+"use strict";
+
 Marbles.Model = Marbles.Utils.createClass({
 	displayName: 'Marbles.Model',
 
@@ -62,7 +66,7 @@ Marbles.Model = Marbles.Utils.createClass({
 	},
 
 	toJSON: function () {
-		var keys, attrs = {}, i, k;
+		var keys, attrs = {}, i, _len, k;
 
 		if (this.constructor.JSONKeys === 'all') {
 			keys = Object.keys(this);
@@ -80,3 +84,5 @@ Marbles.Model = Marbles.Utils.createClass({
 		return attrs;
 	}
 });
+
+})();

@@ -3,6 +3,8 @@
 
 (function () {
 
+	"use strict";
+
 	var EVENT_SPLITTER = /\s+/;
 
 	function initEvents(obj) {
@@ -58,7 +60,9 @@
 		off: function (events, callback, context) {
 			// Allow unbinding all events at once
 			if (arguments.length === 0) {
-				delete this.__events;
+				if (this.hasOwnProperty('__events')) {
+					delete this.__events;
+				}
 				return this; // chainable
 			}
 
@@ -85,7 +89,9 @@
 				name = events[i];
 
 				if (callback === undefined && context === undefined) {
-					delete this.__events[name];
+					if (this.__events.hasOwnProperty(name)) {
+						delete this.__events[name];
+					}
 					continue;
 				}
 

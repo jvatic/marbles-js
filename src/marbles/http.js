@@ -5,6 +5,8 @@
 
 (function () {
 
+	"use strict";
+
 	Marbles.HTTP = function (options) {
 		var request = new Request({
 			method: options.method,
@@ -113,7 +115,9 @@
 		},
 
 		untrackRequest: function () {
-			delete this.constructor.activeRequests[this.id];
+			if (this.constructor.activeRequests.hasOwnProperty(this.id)) {
+				delete this.constructor.activeRequests[this.id];
+			}
 		},
 
 		setXMLHTTPRequest: function () {
