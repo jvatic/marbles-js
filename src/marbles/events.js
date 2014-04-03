@@ -117,7 +117,7 @@
 				return this; // chainable
 			}
 
-			var name, bindings, binding, i, j, _len, _l;
+			var bindings, binding, i, j, _len, _l;
 			for (i = 0, _len = events.length; i < _len; i++) {
 				bindings = this.__events[events[i]];
 				if (!bindings) {

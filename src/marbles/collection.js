@@ -130,7 +130,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 		}
 		this.modelCIDs = [];
 		if (!options.silent) {
-			this.trigger('reset', models);
+			this.trigger('reset', []);
 		}
 	},
 

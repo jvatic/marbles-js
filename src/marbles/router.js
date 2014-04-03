@@ -17,7 +17,7 @@
 
 		mixins: [Marbles.Events],
 
-		willInitialize: function (options) {
+		willInitialize: function () {
 			this.bindRoutes();
 		},
 
