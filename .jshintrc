@@ -1,0 +1,23 @@
+{
+  "bitwise": true,
+  "curly": true,
+  "eqeqeq": true,
+  "forin": true,
+  "freeze": true,
+  "immed": true,
+  "latedef": true,
+  "undef": true,
+  "unused": true,
+  "newcap": true,
+  "noarg": true,
+  "nonew": true,
+  "strict": true,
+  "trailing": true,
+	"funcscope": true,
+	"validthis": true,
+	"boss": true,
+  "browser": true,
+	"globals": {
+		"Marbles": false
+	}
+}
