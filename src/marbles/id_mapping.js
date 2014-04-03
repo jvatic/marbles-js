@@ -75,7 +75,7 @@
 				return null;
 			},
 
-			fetch: function (params, options) {
+			fetch: function () {
 				throw new Error("You need to define " + this.displayName + ".fetch(params, options)");
 			},
 
@@ -84,7 +84,7 @@
 						_instance = _instances[cid],
 						_cidName = this.__cidName,
 						_cidMapping = this.__cidMapping,
-						_index, _tmp, k, _cidMappingScope;
+						_index, _tmp;
 
 				if (_instances.hasOwnProperty(cid)) {
 					delete _instances[cid];
@@ -160,9 +160,8 @@
 	__trackInstance = function () {
 		var _ctor = this.constructor,
 				_instances = _ctor.instances,
-				_cidName = _ctor.__cidName,
 				_cidMappingScope = _ctor.cidMappingScope,
-				i, _len, _ref;
+				i, _len;
 
 		_instances[this.cid] = this;
 

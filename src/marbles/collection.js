@@ -18,12 +18,12 @@ Marbles.Collection = Marbles.Utils.createClass({
 				model: Marbles.Model,
 
 				buildModel: function (attrs, options) {
-					var _modelCtor = (options || {}).model || this.model,
-							_instance = _modelCtor.find(attrs, {fetch:false});
+					var ModelCtor = (options || {}).model || this.model,
+							_instance = ModelCtor.find(attrs, {fetch:false});
 					if (_instance) {
 						_instance.parseAttributes(attrs);
 					} else {
-						_instance = new _modelCtor(attrs);
+						_instance = new ModelCtor(attrs);
 					}
 					return _instance;
 				}

@@ -80,7 +80,9 @@ Marbles.QueryParams = {
 		var key;
 		for (var i = 0, _len = others.length; i < _len; i++) {
 			for (key in others[i]) {
-				addValue(key, others[i][key]);
+				if (others[i].hasOwnProperty(key)) {
+					addValue(key, others[i][key]);
+				}
 			}
 		}
 
@@ -97,12 +99,14 @@ Marbles.QueryParams = {
 		function replaceValue(index, key, val) {
 			params[index] = params[index] || {};
 			params[index][key] = val;
-		};
+		}
 
 		var key;
 		for (var i = 0, _len = others.length; i < _len; i++) {
 			for (key in others[i]) {
-				replaceValue(i, key, others[i][key]);
+				if (others[i].hasOwnProperty(key)) {
+					replaceValue(i, key, others[i][key]);
+				}
 			}
 		}
 
@@ -115,19 +119,21 @@ Marbles.QueryParams = {
 		var query = [];
 		for (var i = 0, _len = params.length; i < _len; i++) {
 			for (var key in params[i]) {
-				var val = params[i][key];
+				if (params[i].hasOwnProperty(key)) {
+					var val = params[i][key];
 
-				if ((typeof val === 'string' && !val) || val === undefined || val === null) {
-					// ignore empty values
-					continue;
+					if ((typeof val === 'string' && !val) || val === undefined || val === null) {
+						// ignore empty values
+						continue;
+					}
+
+					if (typeof val === 'object' && val.hasOwnProperty('length')) {
+						// encode arrays as comma delemited strings
+						val = val.join(',');
+					}
+
+					query.push(encodeURIComponent(key) + '=' + encodeURIComponent(val));
 				}
-
-				if (typeof val === 'object' && val.hasOwnProperty('length')) {
-					// encode arrays as comma delemited strings
-					val = val.join(',');
-				}
-
-				query.push(encodeURIComponent(key) + '=' + encodeURIComponent(val));
 			}
 		}
 

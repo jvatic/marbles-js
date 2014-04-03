@@ -4,8 +4,6 @@
 
 	"use strict";
 
-	var __hasProp = {}.hasOwnProperty;
-
 	var __extend = function (obj, others, options) {
 		var override = options.override;
 
@@ -13,11 +11,10 @@
 			var other = others[i];
 
 			for (var key in other) {
-				if (override === false && __hasProp.call(obj, key)) {
-					continue;
-				}
-
-				if (__hasProp.call(other, key)) {
+				if (other.hasOwnProperty(key)) {
+					if (override === false) {
+						continue;
+					}
 					obj[key] = other[key];
 				}
 			}
@@ -47,11 +44,11 @@
 		inheritPrototype: function(child, parent) {
 			Marbles.Utils.extend(child, parent);
 
-			function ctor() {
+			function Ctor() {
 				this.constructor = child;
 			}
-			ctor.prototype = parent.prototype;
-			child.prototype = new ctor();
+			Ctor.prototype = parent.prototype;
+			child.prototype = new Ctor();
 			child.__super__ = parent.prototype;
 			return child;
 		},
@@ -151,10 +148,9 @@
 			// Add all remaining properties
 			// on proto to the prototype
 			for (k in proto) {
-				if (!proto.hasOwnProperty(k)) {
-					continue;
+				if (proto.hasOwnProperty(k)) {
+					ctor.prototype[k] = proto[k];
 				}
-				ctor.prototype[k] = proto[k];
 			}
 
 			// Extend the prototype and/or ctor with any given mixins

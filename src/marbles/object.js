@@ -19,7 +19,9 @@ Marbles.Object = Marbles.Utils.createClass({
 
 	parseAttributes: function (attrs) {
 		for (var k in attrs) {
-			this.set(k, attrs[k]);
+			if (attrs.hasOwnProperty(k)) {
+				this.set(k, attrs[k]);
+			}
 		}
 	}
 });

@@ -2,13 +2,8 @@
 
 "use strict";
 
-if (typeof global === 'undefined') {
-  var global = window;
-}
-
-global.Marbles = {
-  VERSION: '0.0.4',
-  global: global
+window.Marbles = {
+  VERSION: '0.0.4'
 };
 
 })();

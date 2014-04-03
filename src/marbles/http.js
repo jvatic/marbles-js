@@ -127,7 +127,9 @@
 
 		setXMLHTTPRequestHeaders: function () {
 			for (var key in this.requestHeaders) {
-				this.xhr.setRequestHeader(key, this.requestHeaders[key]);
+				if (this.requestHeaders.hasOwnProperty(key)) {
+					this.xhr.setRequestHeader(key, this.requestHeaders[key]);
+				}
 			}
 		},
 
