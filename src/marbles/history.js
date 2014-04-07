@@ -122,7 +122,7 @@
 			params[0] = Marbles.Utils.extend({}, params[0]);
 
 			// expand named params in path
-			path = path.replace(/:([^\/]+)/, function (m, key) {
+			path = path.replace(/:([^\/]+)/g, function (m, key) {
 				var paramObj = params[0];
 				if (paramObj.hasOwnProperty(key)) {
 					var val = paramObj[key];
