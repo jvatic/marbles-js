@@ -24,6 +24,7 @@
 			this.handlers = [];
 			this.options = {};
 			this.path = null;
+			this.prevPath = null;
 
 			this.handlePopState = this.handlePopState.bind(this);
 		},
@@ -246,6 +247,7 @@
 		// Attempt to find handler for current path
 		// returns matched handler or null
 		loadURL: function () {
+			this.prevPath = this.path;
 			var path = this.path = this.getPath();
 			var parts = path.match(this.constructor.regex.routeParts);
 			path = parts[1];
