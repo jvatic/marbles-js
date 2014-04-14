@@ -75,6 +75,14 @@
 				return null;
 			},
 
+			findOrNew: function (attrs) {
+				var model = this.find(attrs, {fetch:false});
+				if ( !model ) {
+					model = new this(attrs);
+				}
+				return model;
+			},
+
 			fetch: function () {
 				throw new Error("You need to define " + this.displayName + ".fetch(params, options)");
 			},
