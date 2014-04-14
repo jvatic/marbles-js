@@ -44,7 +44,6 @@ Marbles.Model = Marbles.Utils.createClass({
 		if (!options) {
 			options = {};
 		}
-		this.options = options;
 
 		if (options.cid) {
 			this.cid = options.cid;
