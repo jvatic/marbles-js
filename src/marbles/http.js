@@ -14,7 +14,8 @@
 			params: options.params,
 			body: options.body,
 			headers: options.headers,
-			middleware: options.middleware
+			middleware: options.middleware,
+			auth: options.auth
 		});
 		if (typeof options.callback === 'function') {
 			request.once('complete', options.callback);
@@ -42,6 +43,8 @@
 			this.uri = new Marbles.URI(options.url, options.params || [{}]);
 
 			this.requestHeaders = options.headers || {};
+
+			this.auth = options.auth;
 
 			this.requestBody = options.body || null;
 
@@ -159,7 +162,11 @@
 			this.setXMLHTTPRequest();
 			var url = this.uri.toString();
 			var async = true;
-			this.xhr.open(this.method, url, async);
+			if (this.auth) {
+				this.xhr.open(this.method, url, async, this.auth.username, this.auth.password);
+			} else {
+				this.xhr.open(this.method, url, async);
+			}
 			this.trigger('open', this.method, url, async);
 		},
 
