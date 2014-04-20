@@ -7,7 +7,13 @@
 
 Marbles.HTTP.Middleware.WithCredentials = {
 	willSendRequest: function (request) {
-		request.xhr.withCredentials = true;
+		try {
+			request.xhr.withCredentials = true;
+		} catch (e) {
+			setTimeout(function () {
+				throw e;
+			}, 0);
+		}
 	}
 };
 

@@ -176,7 +176,13 @@
 					}
 					this.xhr.sendAsBinary(this.requestBody);
 				} else {
-					this.xhr.send(this.requestBody);
+					try {
+						this.xhr.send(this.requestBody);
+					} catch (e) {
+						setTimeout(function () {
+							throw e;
+						}, 0);
+					}
 				}
 				this.trigger('after:send');
 			}.bind(this);
