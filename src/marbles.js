@@ -4,6 +4,7 @@
 //= require ./marbles/history
 //= require ./marbles/router
 //= require ./marbles/accessors
+//= require ./marbles/transaction
 //= require ./marbles/http
 //= require ./marbles/http/middleware
 //= require ./marbles/http/link_header
