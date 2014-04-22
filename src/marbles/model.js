@@ -32,6 +32,9 @@ Marbles.Model = Marbles.Utils.createClass({
 		// Extend ptoto with accessor methods
 		Marbles.Accessors,
 
+		// Extend proto with transaction method
+		Marbles.Transaction,
+
 		// CIDMapping extends both ctor and proto
 		Marbles.CIDMapping
 	],
@@ -51,7 +54,9 @@ Marbles.Model = Marbles.Utils.createClass({
 
 		this.initCIDMapping();
 
-		this.parseAttributes(attrs);
+		this.transaction(function () {
+			this.parseAttributes(attrs);
+		});
 
 		return this;
 	},
