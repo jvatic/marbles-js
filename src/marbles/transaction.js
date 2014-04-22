@@ -14,9 +14,19 @@
 				eventQueue.push(arguments);
 			};
 
+			var shouldAbort = false;
+			tmp.abortTransaction = function () {
+				shouldAbort = true;
+			};
+
 			operationFn.call(tmp, tmp);
 
+			if (shouldAbort) {
+				return;
+			}
+
 			delete tmp.trigger;
+			delete tmp.abortTransaction;
 
 			for (var k in tmp) {
 				if (tmp.hasOwnProperty(k)) {
@@ -29,6 +39,10 @@
 				args = eventQueue.shift();
 				this.trigger.apply(this, args);
 			}
+		},
+
+		abortTransaction: function () {
+			throw new Error("Must be inside a transaction to abort one.");
 		}
 	};
 
