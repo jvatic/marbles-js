@@ -63,7 +63,8 @@
 
 			mixin_callbacks = {
 				didExtendCtor: [],
-				didExtendProto: []
+				didExtendProto: [],
+				willInitialize: []
 			};
 
 			if (proto.hasOwnProperty('willInitialize')) {
@@ -73,6 +74,19 @@
 				delete proto.didInitialize;
 			}
 
+			// Override willInitialize hook to
+			// call mixin hooks first
+			var __willInitialize = willInitialize;
+			willInitialize = function () {
+				var args = arguments;
+				mixin_callbacks.willInitialize.forEach(function (callback) {
+					callback.apply(this, args);
+				}.bind(this));
+				if (__willInitialize) {
+					return __willInitialize.apply(this, args);
+				}
+			};
+
 			if (proto.hasOwnProperty('parentClass')) {
 				var parent = proto.parentClass;
 				delete proto.parentClass;
@@ -80,11 +94,9 @@
 				ctor = function () {
 					// Handle any initialization before
 					// we call the parent constructor
-					if (typeof willInitialize === 'function') {
-						var res = willInitialize.apply(this, arguments);
-						if (res) {
-							return res;
-						}
+					var res = willInitialize.apply(this, arguments);
+					if (res) {
+						return res;
 					}
 
 					// Call the parent constructor
@@ -175,6 +187,10 @@
 							mixin_callbacks.didExtendCtor.push(mixin.didExtendProto);
 							mixin.didExtendProto(ctor);
 						}
+					}
+
+					if (typeof mixin.willInitialize === 'function') {
+						mixin_callbacks.willInitialize.push(mixin.willInitialize);
 					}
 				} else {
 					// It's a plain old object
