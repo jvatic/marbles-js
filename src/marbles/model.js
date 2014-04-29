@@ -1,5 +1,6 @@
 //= require ./core
 //= require ./utils
+//= require ./transaction
 //= require ./id_mapping
 //= require ./accessors
 //= require ./events
