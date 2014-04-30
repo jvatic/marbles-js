@@ -82,7 +82,7 @@
 
 			if (((options || {}).silent !== true) && oldValue !== undefined && typeof this.trigger === 'function') {
 				this.trigger('change', undefined, oldValue, keypath, options);
-				this.trigger('change'+ keypath, undefined, oldValue, keypath, options);
+				this.trigger('change:'+ keypath, undefined, oldValue, keypath, options);
 			}
 		},
 
