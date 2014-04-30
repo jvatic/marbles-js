@@ -60,30 +60,24 @@
 			this.resetDirtyTracking();
 
 			// track changes
-			keypaths.forEach(function (__keypath) {
-				// changes via root object
-				var __baseKeypath = __keypath.split('.')[0];
-				var __endKeypath = __keypath.split('.')[1];
-				this.on("change:"+ __baseKeypath, function (value) {
-					var __value;
-					if (value) {
-						__value = value[__endKeypath];
-					}
-					calculateDiff.call(this, __keypath, __value);
+			keypaths.forEach(function (keypath) {
+				var __parts = keypath.split('.');
+				var __keypath = "";
+				__parts.forEach(function (__part) {
+					__keypath = __keypath ? (__keypath +"."+ __part) : __part;
+					this.on("change:"+ __keypath, function () {
+						calculateDiff.call(this, keypath, this.get(keypath));
+					}.bind(this));
 				}.bind(this));
 
 				// changes via child objects
-				this.on("change", function (value, oldValue, keypath) {
+				this.on("change", function (value, oldValue, kpath) {
 					var __value, k;
-					if (keypath !== __keypath && keypath.substr(0, __keypath.length) === __keypath) {
-						k = keypath.substring(__keypath.length+1);
-						__value = this.get(__keypath);
-						calculateDiff.call(this, __keypath, __value);
+					if (kpath !== keypath && kpath.substr(0, keypath.length) === keypath) {
+						k = kpath.substring(keypath.length+1);
+						__value = this.get(keypath);
+						calculateDiff.call(this, keypath, __value);
 					}
-				}.bind(this));
-
-				this.on("change:"+ __keypath, function (value) {
-					calculateDiff.call(this, __keypath, value);
 				}.bind(this));
 			}.bind(this));
 		},
