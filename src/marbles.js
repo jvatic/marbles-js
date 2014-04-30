@@ -6,6 +6,7 @@
 //= require ./marbles/accessors
 //= require ./marbles/transaction
 //= require ./marbles/dirty_tracking
+//= require ./marbles/validation
 //= require ./marbles/http
 //= require ./marbles/http/middleware
 //= require ./marbles/http/link_header
