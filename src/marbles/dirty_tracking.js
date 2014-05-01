@@ -97,15 +97,19 @@
 				}.bind(this));
 			},
 
-			isDirty: function () {
-				for (var k in this.__hasChanges) {
-					if (this.__hasChanges.hasOwnProperty(k)) {
-						if (this.__hasChanges[k] === true) {
-							return true;
+			isDirty: function (keypath) {
+				if (keypath) {
+					return !!this.__hasChanges[keypath];
+				} else {
+					for (var k in this.__hasChanges) {
+						if (this.__hasChanges.hasOwnProperty(k)) {
+							if (this.__hasChanges[k] === true) {
+								return true;
+							}
 						}
 					}
+					return false;
 				}
-				return false;
 			}
 		}
 	};
