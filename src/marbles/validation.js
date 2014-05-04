@@ -73,11 +73,20 @@
 
 			isValid: function () {
 				var valid = true;
-				for (var k in this.validation) {
-					if (this.validation.hasOwnProperty(k)) {
-						if (this.validation[k].valid === false) {
-							valid = false;
-							break;
+				var requiredKeypaths = this.constructor.validationRequiredKeypaths || [];
+				for (var i = 0, len = requiredKeypaths.length; i < len; i++) {
+					if (this.get(requiredKeypaths[i]) === undefined) {
+						valid = false;
+						break;
+					}
+				}
+				if (valid) {
+					for (var k in this.validation) {
+						if (this.validation.hasOwnProperty(k)) {
+							if (this.validation[k].valid === false) {
+								valid = false;
+								break;
+							}
 						}
 					}
 				}
