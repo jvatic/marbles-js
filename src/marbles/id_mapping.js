@@ -94,6 +94,10 @@
 						_cidMapping = this.__cidMapping,
 						_index, _tmp;
 
+				if (_instance && _instance.willDetach) {
+					_instance.willDetach();
+				}
+
 				if (_instances.hasOwnProperty(cid)) {
 					delete _instances[cid];
 				}
@@ -114,6 +118,9 @@
 
 				if (_instance) {
 					_instance.trigger('detach');
+					if (_instance.didDetach) {
+						_instance.didDetach();
+					}
 				}
 				this.trigger('detach', cid, _instance);
 
