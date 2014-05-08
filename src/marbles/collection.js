@@ -56,6 +56,10 @@ Marbles.Collection = Marbles.Utils.createClass({
 		this.initCIDMapping();
 
 		this.watchModelMortality();
+
+		this.on("reset prepend append remove", function () {
+			this.trigger("change:models", this.models);
+		}, this);
 	},
 
 	watchModelMortality: function () {
