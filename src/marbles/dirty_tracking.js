@@ -87,10 +87,15 @@
 		},
 
 		proto: {
-			resetDirtyTracking: function () {
-				var keypaths = this.constructor.dirtyTrackingKeypaths;
-				this.__originalValues = {};
-				this.__hasChanges = {};
+			resetDirtyTracking: function (keypath) {
+				var keypaths;
+				if (keypath) {
+					keypaths = [keypath];
+				} else {
+					keypaths = this.constructor.dirtyTrackingKeypaths;
+					this.__originalValues = {};
+					this.__hasChanges = {};
+				}
 				keypaths.forEach(function (keypath) {
 					this.__originalValues[keypath] = this.get(keypath);
 					this.__hasChanges[keypath] = false;
