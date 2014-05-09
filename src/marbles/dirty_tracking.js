@@ -108,7 +108,9 @@
 				} else {
 					for (var k in this.__hasChanges) {
 						if (this.__hasChanges.hasOwnProperty(k)) {
-							if (this.__hasChanges[k] === true) {
+							// call isDirty so overriding logic for a single keypath
+							// is easier
+							if (this.isDirty(k)) {
 								return true;
 							}
 						}
