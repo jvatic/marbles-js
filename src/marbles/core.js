@@ -1,9 +1,3 @@
-(function () {
-
-"use strict";
-
-window.Marbles = {
+var Marbles = {
   VERSION: '0.0.4'
 };
-
-})();
