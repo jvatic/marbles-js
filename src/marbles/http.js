@@ -1,5 +1,6 @@
 //= require ./core
 //= require ./utils
+//= require ./events
 //= require ./uri
 //= require_self
 
