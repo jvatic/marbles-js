@@ -155,7 +155,7 @@
 					// add path seperator if not present in root or path
 					path = '/' + path;
 				}
-				path = this.options.root + path;
+				path = root + path;
 			}
 			return path;
 		},
