@@ -142,7 +142,7 @@
 			this.trigger('before:complete', this.xhr);
 
 			var responseData = this.responseData || this.xhr.response;
-			if (this.xhr.status >= 200 && this.xhr.status < 400) {
+			if (this.xhr.status >= 200 && this.xhr.status < 400 && this.xhr.status !== 0) {
 				this.trigger('success', responseData, this.xhr);
 			} else {
 				this.trigger('failure', responseData, this.xhr);
