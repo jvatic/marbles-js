@@ -18,6 +18,7 @@
 	"boss": true,
   "browser": true,
 	"globals": {
-		"Marbles": false
+		"Marbles": true,
+		"Promise": true
 	}
 }
