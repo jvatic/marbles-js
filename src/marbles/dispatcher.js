@@ -15,8 +15,7 @@ Marbles.Dispatcher = {
 	dispatch: function (event) {
 		var promises = __callbacks.map(function (callback) {
 			return new Promise(function (resolve) {
-				callback(event);
-				resolve(event);
+				resolve(callback(event));
 			});
 		});
 		return Promise.all(promises);
