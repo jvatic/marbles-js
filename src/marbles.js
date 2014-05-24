@@ -1,6 +1,7 @@
 //= require ./marbles/core
 //= require ./marbles/utils
 //= require ./marbles/dispatcher
+//= require ./marbles/state
 //= require ./marbles/events
 //= require ./marbles/history
 //= require ./marbles/router
