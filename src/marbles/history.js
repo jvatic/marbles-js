@@ -34,7 +34,7 @@
 		// they are defined, so if more than one
 		// matches, only the one defined last will
 		// be called
-		route: function (route, callback) {
+		route: function (route, callback, opts) {
 			if (typeof callback !== 'function') {
 				throw new Error(this.constructor.displayName + ".prototype.route(): callback is not a function: "+ JSON.stringify(callback));
 			}
@@ -43,7 +43,7 @@
 				throw new Error(this.constructor.displayName + ".prototype.route(): expected route to be a RegExp: "+ JSON.stringify(route));
 			}
 
-			this.handlers.push({ route: route, callback: callback });
+			this.handlers.push({ route: route, callback: callback, opts: opts });
 		},
 
 		// navigate to given path via pushState

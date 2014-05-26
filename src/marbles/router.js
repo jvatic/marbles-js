@@ -29,7 +29,7 @@
 		// handler will be called with an array
 		// of param objects, the first of which
 		// will contain any named params
-		route: function (route, handler) {
+		route: function (route, handler, opts) {
 			if (!Marbles.history) {
 				Marbles.history = new Marbles.History();
 			}
@@ -47,12 +47,12 @@
 			Marbles.history.route(route, function (path, params) {
 				params = Marbles.QueryParams.combineParams(params, this.extractNamedParams(route, path, paramNames));
 
-				handler.apply(this, [params]);
-				this.trigger('route', route, params);
-				Marbles.history.trigger('route', this, route, params);
+				handler.apply(this, [params, opts]);
+				this.trigger('route', route, params, opts);
+				Marbles.history.trigger('route', this, route, params, opts);
 
 				return this;
-			}.bind(this));
+			}.bind(this), opts);
 		},
 
 		bindRoutes: function () {
@@ -61,8 +61,15 @@
 				throw new Error("You need to define "+ ctor.displayName || ctor.name +".routes");
 			}
 
+			var opts, k;
 			for (var i = 0, _ref = ctor.routes, _len = _ref.length; i < _len; i++) {
-				this.route(_ref[i].path, _ref[i].handler);
+				opts = {};
+				for (k in _ref[i]) {
+					if (_ref[i].hasOwnProperty(k) && k !== "path" && k !== "handler") {
+						opts[k] = _ref[i][k];
+					}
+				}
+				this.route(_ref[i].path, _ref[i].handler, opts);
 			}
 		},
 

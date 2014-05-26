@@ -47,12 +47,14 @@ new Marbles.Router.createClass({
   displayName: "MyRouter",
 
   routes: [
-  	{ path: "posts/:id", handler: "postSingleton" }
+		{ path: "posts/:id", handler: "postSingleton", myKey: "myValue" }
   ],
 
-  postSingleton: function (params) {
-  	console.log(params);
-  	//=> [{ id: "..." }]
+  postSingleton: function (params, opts) {
+		console.log(params);
+		//=> [{ id: "..." }]
+		console.log(opts);
+		//=> { myKey: "myValue" }
   }
 });
 ```
@@ -103,7 +105,7 @@ Name | Arguments | Description
 ---- | --------- | -----------
 `start` | (none) | History started, no route handler has been called yet.
 `stop` | (none) | History stopped.
-`handler:before` | `handler`, `path`, `params` | Route matched, handler is about to be called. `handler` is an object containing `route` (compiled into a regex), and `callback` (the handler function).
+`handler:before` | `handler`, `path`, `params` | Route matched, handler is about to be called. `handler` is an object containing `route` (compiled into a regex), `callback` (the handler function), and `opts` (an object containing any custom properties).
 `handler:after` | `handler`, `path`, `params` | Route matched, handle has been called.
 `route` | `router`, `route`, `params` | Handler was just called. `router` is the instance of `Marbles.Router` who's route matched, `route` is the compiled regex, and `params` is the params array.
 
