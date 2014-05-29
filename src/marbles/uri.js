@@ -60,7 +60,8 @@
 			this.port = Number(m[3]) || this.defaultPort();
 			this.path = m[4] || '';
 			if (m[5]) {
-				this.combineParams(this.params, m[5]);
+				var params = this.deserializeParams(m[5]);
+				this.replaceParams.apply(this, [this.params].concat(params));
 			}
 			this.hash = m[6];
 		},
