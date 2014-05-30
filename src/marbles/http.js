@@ -20,8 +20,10 @@
 		if (typeof options.callback === 'function') {
 			request.once('complete', options.callback);
 		}
-		request.open();
-		request.send();
+		if ( !request.xhr ) {
+			request.open();
+			request.send();
+		}
 		return request;
 	};
 
