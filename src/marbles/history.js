@@ -130,7 +130,7 @@
 					delete paramObj[key];
 					return encodeURIComponent(val);
 				} else {
-					return key;
+					return ":"+ key;
 				}
 			});
 
