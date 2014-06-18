@@ -32,7 +32,9 @@ Marbles.Utils.extend(Store.prototype, Marbles.State, {
 
 	didBecomeActive: function () {},
 
-	didBecomeInactive: function () {}
+	didBecomeInactive: function () {},
+
+	handleEvent: function () {}
 });
 
 // Call didBecomeActive when first change listener added
