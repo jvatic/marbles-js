@@ -83,7 +83,7 @@ Store.removeChangeListener = function (id) {
 Store.dispatcherIndex = null;
 Store.registerWithDispatcher = function (dispatcher) {
 	this.dispatcherIndex = dispatcher.register(function (event) {
-		if (event.storeId) {
+		if (event.storeId && (!this.isValidId || this.isValidId(event.storeId))) {
 			var instance = this.__getInstance(event.storeId);
 			return instance.handleEvent(event);
 		} else {
