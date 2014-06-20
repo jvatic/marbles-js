@@ -83,8 +83,17 @@ Store.removeChangeListener = function (id) {
 Store.dispatcherIndex = null;
 Store.registerWithDispatcher = function (dispatcher) {
 	this.dispatcherIndex = dispatcher.register(function (event) {
-		var instance = this.__getInstance(event.storeId);
-		return instance.handleEvent(event);
+		if (event.storeId) {
+			var instance = this.__getInstance(event.storeId);
+			return instance.handleEvent(event);
+		} else {
+			return Promise.all(Object.keys(this.__instances).sort().map(function (key) {
+				var instance = this.__instances[key];
+				return new Promise(function (resolve) {
+					resolve(instance.handleEvent(event));
+				});
+			}.bind(this)));
+		}
 	}.bind(this));
 };
 
