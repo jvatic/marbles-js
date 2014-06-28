@@ -82,13 +82,13 @@
 				path = path.substring(1);
 			}
 
+			if (options.params) {
+				path = this.pathWithParams(path, options.params);
+			}
+
 			if (path === this.path && !options.force) {
 				// we are already there and handler is not forced
 				return;
-			}
-
-			if (options.params) {
-				path = this.pathWithParams(path, options.params);
 			}
 
 			path = this.pathWithRoot(path);
