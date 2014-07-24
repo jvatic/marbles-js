@@ -244,6 +244,18 @@
 			this.loadURL();
 		},
 
+		getHandler: function (path) {
+			path = path || this.getPath();
+			var handler = null;
+			for (var i = 0, _len = this.handlers.length; i < _len; i++) {
+				if (this.handlers[i].route.test(path)) {
+					handler = this.handlers[i];
+					break;
+				}
+			}
+			return handler;
+		},
+
 		// Attempt to find handler for current path
 		// returns matched handler or null
 		loadURL: function () {
@@ -253,13 +265,8 @@
 			path = parts[1];
 			var params = this.deserializeParams(parts[2] || '');
 
-			var handler = null;
-			for (var i = 0, _len = this.handlers.length; i < _len; i++) {
-				if (this.handlers[i].route.test(path)) {
-					handler = this.handlers[i];
-					break;
-				}
-			}
+			var handler = this.getHandler(path);
+
 			if (handler) {
 				var __handlerAbort = false;
 				this.trigger('handler:before', handler, path, params, function () {
