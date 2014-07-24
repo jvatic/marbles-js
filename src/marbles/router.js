@@ -40,11 +40,15 @@
 				route = this.routeToRegExp(route);
 			}
 
-			if (typeof handler !== 'function') {
+			var name;
+			if (typeof handler === 'function') {
+				name = handler.name || handler.displayName || null;
+			} else {
+				name = handler;
 				handler = this[handler];
 			}
 
-			Marbles.history.route(route, function (path, params) {
+			Marbles.history.route(route, name, function (path, params) {
 				params = Marbles.QueryParams.combineParams(params, this.extractNamedParams(route, path, paramNames));
 
 				handler.apply(this, [params, opts]);
