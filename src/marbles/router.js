@@ -95,6 +95,12 @@
 					paramNames.push(_ref[i].slice(1));
 				}
 			}
+			_ref = route.match(ctor.regex.splatParam);
+			if (_ref && _ref.length) {
+				for (i = 0, _len = _ref.length; i < _len; i++) {
+					paramNames.push("splat" + (i > 0 ? i+1 : ""));
+				}
+			}
 			return paramNames;
 		},
 
