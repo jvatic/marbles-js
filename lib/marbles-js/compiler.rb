@@ -14,18 +14,12 @@ module MarblesJS
     attr_accessor :sprockets_environment, :assets_dir, :compile_vendor
 
     def configure_app(options = {})
-      return if @app_configured
-
       MarblesJS.configure(options)
 
       self.compile_vendor ||= options[:vendor]
-
-      @app_configured = true
     end
 
     def configure_sprockets(options = {})
-      return if @sprockets_configured
-
       configure_app
 
       # Setup Sprockets Environment
@@ -45,8 +39,6 @@ module MarblesJS
       end
 
       self.assets_dir ||= options[:assets_dir] || MarblesJS.settings[:public_dir]
-
-      @sprockets_configured = true
     end
 
     def compile_assets(options = {})
@@ -60,6 +52,14 @@ module MarblesJS
 
       manifest.compile(ASSET_NAMES)
       manifest.compile(VENDOR_ASSET_NAMES) if compile_vendor
+
+      suffix = ""
+      suffix = ".min" if options[:compress]
+
+      p manifest.assets
+
+      marblesjs_compile_path = File.expand_path(File.join(assets_dir, manifest.assets["marbles.js"]))
+      system "cp #{marblesjs_compile_path} marbles#{suffix}.js"
     end
 
     def compress_assets

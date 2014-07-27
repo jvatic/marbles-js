@@ -5,6 +5,10 @@ namespace :assets do
     MarblesJS::Compiler.compile_assets
   end
 
+  task :compress do
+    MarblesJS::Compiler.compress_assets
+  end
+
   task :gzip do
     MarblesJS::Compiler.gzip_assets
   end
