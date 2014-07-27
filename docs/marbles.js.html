@@ -1,4 +1,31 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: marbles.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: marbles.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @global
  * @namespace Marbles
  */
@@ -14,7 +41,7 @@ var Marbles = {
 	var __extend = function (obj, others, options) {
 		var override = options.override;
 
-		for (var i = 0, _len = others.length; i < _len; i++) {
+		for (var i = 0, _len = others.length; i &lt; _len; i++) {
 			var other = others[i];
 
 			for (var key in other) {
@@ -172,7 +199,7 @@ var Marbles = {
 					// Call initialization functions
 					if (typeof willInitialize === 'function') {
 						var res = willInitialize.apply(this, arguments);
-						if (res && res.constructor === ctor) {
+						if (res &amp;&amp; res.constructor === ctor) {
 							return res;
 						}
 					}
@@ -221,7 +248,7 @@ var Marbles = {
 			}
 
 			// Extend the prototype and/or ctor with any given mixins
-			for (i = 0, _len = mixins.length; i < _len; i++) {
+			for (i = 0, _len = mixins.length; i &lt; _len; i++) {
 				mixin = mixins[i];
 				if (mixin.hasOwnProperty('ctor') || mixin.hasOwnProperty('proto')) {
 					// extend ctor
@@ -532,7 +559,7 @@ Store.dispatcherIndex = null;
  */
 Store.registerWithDispatcher = function (dispatcher) {
 	this.dispatcherIndex = dispatcher.register(function (event) {
-		if (event.storeId && (!this.isValidId || this.isValidId(event.storeId))) {
+		if (event.storeId &amp;&amp; (!this.isValidId || this.isValidId(event.storeId))) {
 			var instance = this.__getInstance(event.storeId);
 			return instance.handleEvent(event);
 		} else {
@@ -602,7 +629,7 @@ Store.createClass = function (proto) {
 	}
 
 	for (var k in proto) {
-		if (proto.hasOwnProperty(k) && k.slice(0, 1) !== "_" && typeof proto[k] === "function") {
+		if (proto.hasOwnProperty(k) &amp;&amp; k.slice(0, 1) !== "_" &amp;&amp; typeof proto[k] === "function") {
 			store[k] = wrappedFn.bind(store, k);
 		}
 	}
@@ -641,7 +668,7 @@ Store.createClass = function (proto) {
 			}
 
 			var name;
-			for (var i = 0, _len = events.length; i < _len; i++) {
+			for (var i = 0, _len = events.length; i &lt; _len; i++) {
 				name = events[i];
 				if (!this.__events[name]) {
 					this.__events[name] = [];
@@ -669,7 +696,7 @@ Store.createClass = function (proto) {
 				this.on(name, __callback, this, options);
 			}.bind(this);
 
-			for (var i = 0, _len = events.length; i < _len; i++) {
+			for (var i = 0, _len = events.length; i &lt; _len; i++) {
 				bindEvent(events[i]);
 			}
 
@@ -694,20 +721,20 @@ Store.createClass = function (proto) {
 			}
 
 			var __filterFn = function (binding) {
-				if (context && context !== binding.context) {
+				if (context &amp;&amp; context !== binding.context) {
 					return true;
 				}
-				if (callback && callback !== binding.callback) {
+				if (callback &amp;&amp; callback !== binding.callback) {
 					return true;
 				}
 				return false;
 			};
 
 			var name, i, _len, bindings;
-			for (i = 0, _len = events.length; i < _len; i++) {
+			for (i = 0, _len = events.length; i &lt; _len; i++) {
 				name = events[i];
 
-				if (callback === undefined && context === undefined) {
+				if (callback === undefined &amp;&amp; context === undefined) {
 					if (this.__events.hasOwnProperty(name)) {
 						delete this.__events[name];
 					}
@@ -737,12 +764,12 @@ Store.createClass = function (proto) {
 			}
 
 			var bindings, binding, i, j, _len, _l;
-			for (i = 0, _len = events.length; i < _len; i++) {
+			for (i = 0, _len = events.length; i &lt; _len; i++) {
 				bindings = this.__events[events[i]];
 				if (!bindings) {
 					continue;
 				}
-				for (j = 0, _l = bindings.length; j < _l; j++) {
+				for (j = 0, _l = bindings.length; j &lt; _l; j++) {
 					binding = bindings[j];
 					if (binding.options.args === false) {
 						binding.callback.call(binding.context);
@@ -773,29 +800,29 @@ Marbles.QueryParams = {
 	 * @returns {Array} params
 	 * @desc transforms a query string into an array of param objects (the first occurance of each param will be placed at index 0, the second at index 1, and so on).
 	 * @example
-	 *	Marbles.QueryParams.deserializeParams("?a=1&b=2&c=3");
+	 *	Marbles.QueryParams.deserializeParams("?a=1&amp;b=2&amp;c=3");
 	 *	//=> [{a: 1, b:2, c:3}]
 	 * @example
-	 *	Marbles.QueryParams.deserializeParams("a=1&b=2&c=3");
+	 *	Marbles.QueryParams.deserializeParams("a=1&amp;b=2&amp;c=3");
 	 *	//=> [{a: 1, b:2, c:3}]
 	 * @example
-	 *	Marbles.QueryParams.deserializeParams("?a=1&a=2&b=3&c=4&c=5");
+	 *	Marbles.QueryParams.deserializeParams("?a=1&amp;a=2&amp;b=3&amp;c=4&amp;c=5");
 	 *	//=> [{a: 1, b:3, c:4}, {a: 2, c: 5}]
 	 */
 	deserializeParams: function (query) {
 		if (query.substr(0, 1) === '?') {
-			query = query.substring(1).split('&');
+			query = query.substring(1).split('&amp;');
 		} else {
-			query = query.split('&');
+			query = query.split('&amp;');
 		}
 
 		var params = [{}];
-		for (var i = 0, _len = query.length; i < _len; i++) {
+		for (var i = 0, _len = query.length; i &lt; _len; i++) {
 			var q = query[i].split('='),
 					key = decodeURIComponent(q[0]),
 					val = decodeURIComponent(q[1] || '').replace('+', ' ').trim(); // + doesn't decode
 
-			if (typeof val === 'string' && !val) {
+			if (typeof val === 'string' &amp;&amp; !val) {
 				// ignore empty values
 				continue;
 			}
@@ -806,7 +833,7 @@ Marbles.QueryParams = {
 			}
 
 			// loop through param objects until we find one without key
-			for (var j = 0, _l = params.length; j < _l; j++) {
+			for (var j = 0, _l = params.length; j &lt; _l; j++) {
 				if (params[j].hasOwnProperty(key)) {
 					if (j === _l-1) {
 						// create additional param objects as needed
@@ -836,7 +863,7 @@ Marbles.QueryParams = {
 
 		function addValue(key, val) {
 			// loop through param objects until we find one without key
-			for (var i = 0, _len = params.length; i < _len; i++) {
+			for (var i = 0, _len = params.length; i &lt; _len; i++) {
 				if (params[i].hasOwnProperty(key)) {
 					if (i === _len-1) {
 						// create additional param objects as needed
@@ -852,7 +879,7 @@ Marbles.QueryParams = {
 		}
 
 		var key;
-		for (var i = 0, _len = others.length; i < _len; i++) {
+		for (var i = 0, _len = others.length; i &lt; _len; i++) {
 			for (key in others[i]) {
 				if (others[i].hasOwnProperty(key)) {
 					addValue(key, others[i][key]);
@@ -879,7 +906,7 @@ Marbles.QueryParams = {
 		}
 
 		var key;
-		for (var i = 0, _len = others.length; i < _len; i++) {
+		for (var i = 0, _len = others.length; i &lt; _len; i++) {
 			for (key in others[i]) {
 				if (others[i].hasOwnProperty(key)) {
 					replaceValue(i, key, others[i][key]);
@@ -897,21 +924,21 @@ Marbles.QueryParams = {
 	 * @retuns {String} queryString
 	 * @example
 	 *	Marbles.QueryParams.serializeParams([{a:1, b:2}, {a:3, b:4}]);
-	 *	//= "?a=1&b=2&a=3&b=4"
+	 *	//= "?a=1&amp;b=2&amp;a=3&amp;b=4"
 	 */
 	serializeParams: function (params) {
 		var query = [];
-		for (var i = 0, _len = params.length; i < _len; i++) {
+		for (var i = 0, _len = params.length; i &lt; _len; i++) {
 			for (var key in params[i]) {
 				if (params[i].hasOwnProperty(key)) {
 					var val = params[i][key];
 
-					if ((typeof val === 'string' && !val) || val === undefined || val === null) {
+					if ((typeof val === 'string' &amp;&amp; !val) || val === undefined || val === null) {
 						// ignore empty values
 						continue;
 					}
 
-					if (typeof val === 'object' && val.hasOwnProperty('length')) {
+					if (typeof val === 'object' &amp;&amp; val.hasOwnProperty('length')) {
 						// encode arrays as comma delemited strings
 						val = val.join(',');
 					}
@@ -921,7 +948,7 @@ Marbles.QueryParams = {
 			}
 		}
 
-		return "?" + query.join('&');
+		return "?" + query.join('&amp;');
 	}
 };
 
@@ -1021,7 +1048,7 @@ Marbles.QueryParams = {
 				path = this.pathWithParams(path, options.params);
 			}
 
-			if (path === this.path && !options.force) {
+			if (path === this.path &amp;&amp; !options.force) {
 				// we are already there and handler is not forced
 				return;
 			}
@@ -1073,7 +1100,7 @@ Marbles.QueryParams = {
 			var queryString = this.serializeParams(params);
 			if (queryString.length > 1) {
 				if (path.indexOf('?') !== -1) {
-					path = path +'&'+ queryString.substring(1);
+					path = path +'&amp;'+ queryString.substring(1);
 				} else {
 					path = path + queryString;
 				}
@@ -1085,8 +1112,8 @@ Marbles.QueryParams = {
 		pathWithRoot: function (path) {
 			// add path root if it's not already there
 			var root = this.options.root;
-			if (root && path.substr(0, root.length) !== root) {
-				if (root.substring(root.length-1) !== '/' && path.substr(0, 1) !== '/') {
+			if (root &amp;&amp; path.substr(0, root.length) !== root) {
+				if (root.substring(root.length-1) !== '/' &amp;&amp; path.substr(0, 1) !== '/') {
 					// add path seperator if not present in root or path
 					path = '/' + path;
 				}
@@ -1096,7 +1123,7 @@ Marbles.QueryParams = {
 		},
 
 		getURLFromPath: function (path, params) {
-			if (params && params.length !== 0) {
+			if (params &amp;&amp; params.length !== 0) {
 				path = this.pathWithParams(path, params);
 			}
 			return window.location.protocol +'//'+ window.location.host + this.pathWithRoot(path);
@@ -1104,7 +1131,7 @@ Marbles.QueryParams = {
 
 		// start pushState handling
 		start: function (options) {
-			if (Marbles.history && Marbles.history.started) {
+			if (Marbles.history &amp;&amp; Marbles.history.started) {
 				throw new Error("Marbles.history has already been started");
 			}
 
@@ -1124,7 +1151,7 @@ Marbles.QueryParams = {
 
 			if (this.options.pushState) {
 				// set pushState to false if it's not supported
-				this.options.pushState = !!(window.history && window.history.pushState);
+				this.options.pushState = !!(window.history &amp;&amp; window.history.pushState);
 			}
 
 			if (this.options.pushState) {
@@ -1182,7 +1209,7 @@ Marbles.QueryParams = {
 		getHandler: function (path) {
 			path = path || this.getPath();
 			var handler = null;
-			for (var i = 0, _len = this.handlers.length; i < _len; i++) {
+			for (var i = 0, _len = this.handlers.length; i &lt; _len; i++) {
 				if (this.handlers[i].route.test(path)) {
 					handler = this.handlers[i];
 					break;
@@ -1335,10 +1362,10 @@ Marbles.QueryParams = {
 			}
 
 			var opts, k;
-			for (var i = 0, _ref = ctor.routes, _len = _ref.length; i < _len; i++) {
+			for (var i = 0, _ref = ctor.routes, _len = _ref.length; i &lt; _len; i++) {
 				opts = {};
 				for (k in _ref[i]) {
-					if (_ref[i].hasOwnProperty(k) && k !== "path" && k !== "handler") {
+					if (_ref[i].hasOwnProperty(k) &amp;&amp; k !== "path" &amp;&amp; k !== "handler") {
 						opts[k] = _ref[i][k];
 					}
 				}
@@ -1353,7 +1380,7 @@ Marbles.QueryParams = {
 			}
 
 			var ctor = this.constructor;
-			route = route.replace(ctor.regex.escape, '\\$&').
+			route = route.replace(ctor.regex.escape, '\\$&amp;').
 										replace(ctor.regex.namedParam, '([^\/]+)').
 										replace(ctor.regex.splatParam, '(.*?)');
 			return new RegExp('^' + route + '$');
@@ -1363,14 +1390,14 @@ Marbles.QueryParams = {
 			var ctor = this.constructor;
 			var paramNames = [];
 			var _ref = route.match(ctor.regex.namedParam);
-			if (_ref && _ref.length) {
-				for (var i = 0, _len = _ref.length; i < _len; i++) {
+			if (_ref &amp;&amp; _ref.length) {
+				for (var i = 0, _len = _ref.length; i &lt; _len; i++) {
 					paramNames.push(_ref[i].slice(1));
 				}
 			}
 			_ref = route.match(ctor.regex.splatParam);
-			if (_ref && _ref.length) {
-				for (i = 0, _len = _ref.length; i < _len; i++) {
+			if (_ref &amp;&amp; _ref.length) {
+				for (i = 0, _len = _ref.length; i &lt; _len; i++) {
 					paramNames.push("splat" + (i > 0 ? i+1 : ""));
 				}
 			}
@@ -1381,11 +1408,11 @@ Marbles.QueryParams = {
 			var values = [],
 					params = {};
 
-			for (var i = 0, _ref = this.extractParams(route, path), _len = _ref.length; i < _len; i++) {
+			for (var i = 0, _ref = this.extractParams(route, path), _len = _ref.length; i &lt; _len; i++) {
 				values.push(decodeURIComponent(_ref[i]));
 			}
 
-			for (i = 0, _len = paramNames.length; i < _len; i++) {
+			for (i = 0, _len = paramNames.length; i &lt; _len; i++) {
 				params[paramNames[i]] = values[i];
 			}
 
@@ -1456,7 +1483,7 @@ Marbles.QueryParams = {
 			var lastKey = keys.pop();
 			var ref = this;
 			var k, i, _len;
-			for (i = 0, _len = keys.length; i < _len; i++) {
+			for (i = 0, _len = keys.length; i &lt; _len; i++) {
 				k = keys[i];
 				ref[k] = ref[k] || {};
 				ref = ref[k];
@@ -1464,7 +1491,7 @@ Marbles.QueryParams = {
 
 			var oldValue = ref[lastKey];
 			ref[lastKey] = value;
-			if (((options || {}).silent !== true) && value !== oldValue && typeof this.trigger === 'function') {
+			if (((options || {}).silent !== true) &amp;&amp; value !== oldValue &amp;&amp; typeof this.trigger === 'function') {
 				this.trigger('change', value, oldValue, keypath, options);
 				this.trigger('change:'+ keypath, value, oldValue, keypath, options);
 			}
@@ -1475,7 +1502,7 @@ Marbles.QueryParams = {
 			var lastKey = keys.pop();
 			var ref = this;
 			var k, i, _len;
-			for (i = 0, _len = keys.length; i < _len; i++) {
+			for (i = 0, _len = keys.length; i &lt; _len; i++) {
 				if (!ref) {
 					break;
 				}
@@ -1511,7 +1538,7 @@ Marbles.QueryParams = {
 				delete ref[lastKey];
 			}
 
-			if (((options || {}).silent !== true) && oldValue !== undefined && typeof this.trigger === 'function') {
+			if (((options || {}).silent !== true) &amp;&amp; oldValue !== undefined &amp;&amp; typeof this.trigger === 'function') {
 				this.trigger('change', undefined, oldValue, keypath, options);
 				this.trigger('change:'+ keypath, undefined, oldValue, keypath, options);
 			}
@@ -1566,7 +1593,7 @@ Marbles.QueryParams = {
 				}
 
 				var args;
-				for (var i = 0, len = eventQueue.length; i < len; i++) {
+				for (var i = 0, len = eventQueue.length; i &lt; len; i++) {
 					args = eventQueue.shift();
 					this.trigger.apply(this, args);
 				}
@@ -1665,7 +1692,7 @@ Marbles.QueryParams = {
 				// changes via child objects
 				this.on("change", function (value, oldValue, kpath) {
 					var __value, k;
-					if (kpath !== keypath && kpath.substr(0, keypath.length) === keypath) {
+					if (kpath !== keypath &amp;&amp; kpath.substr(0, keypath.length) === keypath) {
 						k = kpath.substring(keypath.length+1);
 						__value = this.get(keypath);
 						calculateDiff.call(this, keypath, __value);
@@ -1745,7 +1772,7 @@ Marbles.QueryParams = {
 				// changes via child objects
 				this.on("change", function (value, oldValue, kpath) {
 					var __value, k;
-					if (kpath !== keypath && kpath.substr(0, keypath.length) === keypath) {
+					if (kpath !== keypath &amp;&amp; kpath.substr(0, keypath.length) === keypath) {
 						k = kpath.substring(keypath.length+1);
 						__value = this.get(keypath);
 						this.performValidation(keypath, __value);
@@ -1790,7 +1817,7 @@ Marbles.QueryParams = {
 			isValid: function () {
 				var valid = true;
 				var requiredKeypaths = this.constructor.validationRequiredKeypaths || [];
-				for (var i = 0, len = requiredKeypaths.length; i < len; i++) {
+				for (var i = 0, len = requiredKeypaths.length; i &lt; len; i++) {
 					if (this.get(requiredKeypaths[i]) === undefined) {
 						valid = false;
 						break;
@@ -1836,7 +1863,7 @@ Marbles.QueryParams = {
 
 		toString: function () {
 			var portString = '';
-			if (this.port !== 443 && this.port !== 80) {
+			if (this.port !== 443 &amp;&amp; this.port !== 80) {
 				portString = ':'+ this.port;
 			}
 
@@ -1864,7 +1891,7 @@ Marbles.QueryParams = {
 				uri = new this.constructor(uriOrString);
 			}
 
-			return (uri.scheme === this.scheme) && (uri.hostname === this.hostname) && (uri.port === this.port) && (uri.path === this.path) && (uri.params === this.params) && (uri.hash === this.hash);
+			return (uri.scheme === this.scheme) &amp;&amp; (uri.hostname === this.hostname) &amp;&amp; (uri.port === this.port) &amp;&amp; (uri.path === this.path) &amp;&amp; (uri.params === this.params) &amp;&amp; (uri.hash === this.hash);
 		},
 
 		parse: function () {
@@ -1901,7 +1928,7 @@ Marbles.QueryParams = {
 		},
 
 		defaultPort: function () {
-			if (this.hostname === this.defaultHost() && typeof window !== 'undefined' && window.location.port) {
+			if (this.hostname === this.defaultHost() &amp;&amp; typeof window !== 'undefined' &amp;&amp; window.location.port) {
 				return window.location.port;
 			} else if (this.scheme === 'https') {
 				return 443;
@@ -2041,7 +2068,7 @@ Marbles.QueryParams = {
 		},
 
 		callRequestMiddleware: function () {
-			for (var i = 0, _ref = this.middleware, _len = _ref.length; i < _len; i++) {
+			for (var i = 0, _ref = this.middleware, _len = _ref.length; i &lt; _len; i++) {
 				if (this.terminated) {
 					break;
 				}
@@ -2052,7 +2079,7 @@ Marbles.QueryParams = {
 		},
 
 		callResponseMiddleware: function () {
-			for (var i = 0, _ref = this.middleware, _len = _ref.length; i < _len; i++) {
+			for (var i = 0, _ref = this.middleware, _len = _ref.length; i &lt; _len; i++) {
 				if (this.terminated) {
 					break;
 				}
@@ -2093,7 +2120,7 @@ Marbles.QueryParams = {
 			this.trigger('before:complete', this.xhr);
 
 			var responseData = this.responseData || this.xhr.response;
-			if (this.xhr.status >= 200 && this.xhr.status < 400 && this.xhr.status !== 0) {
+			if (this.xhr.status >= 200 &amp;&amp; this.xhr.status &lt; 400 &amp;&amp; this.xhr.status !== 0) {
 				this.trigger('success', responseData, this.xhr);
 			} else {
 				this.trigger('failure', responseData, this.xhr);
@@ -2104,7 +2131,7 @@ Marbles.QueryParams = {
 
 		open: function () {
 			// The request is already open
-			if (this.xhr && this.xhr.readyState !== 4) {
+			if (this.xhr &amp;&amp; this.xhr.readyState !== 4) {
 				return;
 			}
 
@@ -2139,7 +2166,7 @@ Marbles.QueryParams = {
 				this.trigger('after:send');
 			}.bind(this);
 
-			if (this.body && Array.isArray(this.body)) {
+			if (this.body &amp;&amp; Array.isArray(this.body)) {
 				this.setRequestHeader('Content-Type', 'multipart/form-data; boundary='+ this.constructor.MULTIPART_BOUNDARY);
 				this.multipart = true;
 				this.buildMultipartRequestBody(send);
@@ -2192,7 +2219,7 @@ Marbles.QueryParams = {
 				});
 			}
 
-			for (var i = 0, _len = this.body.length; i < _len; i++) {
+			for (var i = 0, _len = this.body.length; i &lt; _len; i++) {
 				buildAndAddPart(this.body[i]);
 			}
 		}
@@ -2362,7 +2389,7 @@ Marbles.HTTP.Middleware.WithCredentials = {
 	"use strict";
 
 	var LINK_SPLITTER = /,[\s\r\n]*/;
-	var LINK_MATCHER = /<([^>]+)>((?:[\s\r\n]|.)*)/;
+	var LINK_MATCHER = /&lt;([^>]+)>((?:[\s\r\n]|.)*)/;
 	var ATTR_SPLITTER = /[\s\r\n]*;[\s\r\n]*/;
 	var ATTR_MATCHER = /([^=]+)=['"]?([^'"]+)['"]?/;
 
@@ -2373,7 +2400,7 @@ Marbles.HTTP.Middleware.WithCredentials = {
 			var ref = linkHeaderStr.split(LINK_SPLITTER);
 			var i, _len, match, link;
 			var j, _r, _l;
-			for (i = 0, _len = ref.length; i < _len; i++) {
+			for (i = 0, _len = ref.length; i &lt; _len; i++) {
 				match = ref[i].match(LINK_MATCHER);
 				if (!match) {
 					continue;
@@ -2383,7 +2410,7 @@ Marbles.HTTP.Middleware.WithCredentials = {
 					href: match[1]
 				};
 				_r = match[2].split(ATTR_SPLITTER);
-				for (j = 0, _l = _r.length; j < _l; j++) {
+				for (j = 0, _l = _r.length; j &lt; _l; j++) {
 					match = _r[j].match(ATTR_MATCHER);
 					if (!match) {
 						continue;
@@ -2541,7 +2568,7 @@ Marbles.Object = Marbles.Utils.createClass({
 					}
 				}
 
-				if (_cid !== undefined && _cid !== null) {
+				if (_cid !== undefined &amp;&amp; _cid !== null) {
 					_instance = this.instances[_cid];
 					if (_instance) {
 						return _instance;
@@ -2574,7 +2601,7 @@ Marbles.Object = Marbles.Utils.createClass({
 						_cidMapping = this.__cidMapping,
 						_index, _tmp;
 
-				if (_instance && _instance.willDetach) {
+				if (_instance &amp;&amp; _instance.willDetach) {
 					_instance.willDetach();
 				}
 
@@ -2630,7 +2657,7 @@ Marbles.Object = Marbles.Utils.createClass({
 				i,
 				_ref = this.cidScope,
 				_len;
-		for (i = 0, _len = _ref.length; i < _len; i++) {
+		for (i = 0, _len = _ref.length; i &lt; _len; i++) {
 			_parts.push(this[ _ref[i] ]);
 		}
 		return _parts.join(':');
@@ -2641,7 +2668,7 @@ Marbles.Object = Marbles.Utils.createClass({
 				i,
 				_ref = this.cidMappingScope,
 				_len;
-		for (i = 0, _len = _ref.length; i < _len; i++) {
+		for (i = 0, _len = _ref.length; i &lt; _len; i++) {
 			if ( !attrs.hasOwnProperty(_ref[i]) ) {
 				// Can't build a partial scope
 				return null;
@@ -2660,7 +2687,7 @@ Marbles.Object = Marbles.Utils.createClass({
 
 		_instances[this.cid] = this;
 
-		for (i = 0, _len = _cidMappingScope.length; i < _len; i++) {
+		for (i = 0, _len = _cidMappingScope.length; i &lt; _len; i++) {
 			this.on('change:'+ _cidMappingScope[i], __updateCIDMapping, this);
 		}
 	};
@@ -2674,7 +2701,7 @@ Marbles.Object = Marbles.Utils.createClass({
 				i, _ref, _len, _val;
 
 		_ref = _ctor.cidMappingScope;
-		for (i = 0, _len = _ref.length; i < _len; i++) {
+		for (i = 0, _len = _ref.length; i &lt; _len; i++) {
 			if (_ref[i] === attr) {
 				_old_scope.push(old_val);
 				_new_scope.push(new_val);
@@ -2785,7 +2812,7 @@ Marbles.Model = Marbles.Utils.createClass({
 			keys = this.constructor.JSONKeys;
 		}
 
-		for (i = 0, _len = keys.length; i < _len; i++) {
+		for (i = 0, _len = keys.length; i &lt; _len; i++) {
 			k = keys[i];
 			if (this.hasOwnProperty(k)) {
 				attrs[k] = this[k];
@@ -2888,7 +2915,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 	forEach: function (callback, thisArg) {
 		var _ref = this.modelCIDs,
 				model;
-		for (var i = 0, _len = _ref.length; i < _len; i++) {
+		for (var i = 0, _len = _ref.length; i &lt; _len; i++) {
 			model = this.constructor.model.find({cid: _ref[i]});
 			if (model) {
 				callback.call(thisArg || this, model, i);
@@ -2900,7 +2927,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 		var _ref = this.modelCIDs,
 				models = [],
 				model;
-		for (var i = 0, _len = _ref.length; i < _len; i++) {
+		for (var i = 0, _len = _ref.length; i &lt; _len; i++) {
 			model = this.constructor.model.find({cid: _ref[i]});
 			if (model) {
 				models.push(model);
@@ -2954,7 +2981,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 
 	removeCIDs: function (cids) {
 		var index;
-		for (var i = 0, _len = cids.length; i < _len; i++) {
+		for (var i = 0, _len = cids.length; i &lt; _len; i++) {
 			index = this.modelCIDs.indexOf(cids[i]);
 			if (index === -1) {
 				continue;
@@ -2966,7 +2993,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 
 	remove: function () {
 		var models = Array.prototype.slice.call(arguments, 0);
-		for (var i = 0, _len = models.length; i < _len; i++) {
+		for (var i = 0, _len = models.length; i &lt; _len; i++) {
 			this.removeCIDs([models[i].cid]);
 		}
 		return this.modelCIDs.length;
@@ -3061,7 +3088,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 		}
 
 		var models = [], model;
-		for (var i = 0, _len = json.length; i < _len; i++) {
+		for (var i = 0, _len = json.length; i &lt; _len; i++) {
 			model = this.constructor.buildModel(json[i]);
 			if (!this.options.unique || this.modelCIDs.indexOf(model.cid) === -1) {
 				this.modelCIDs.push(model.cid);
@@ -3085,7 +3112,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 		}
 
 		var acceptedModels = [], model;
-		for (var i = 0, _len = models.length; i < _len; i++) {
+		for (var i = 0, _len = models.length; i &lt; _len; i++) {
 			model = models[i];
 			if (!this.options.unique || this.modelCIDs.indexOf(model.cid) === -1) {
 				this.modelCIDs.push(model.cid);
@@ -3109,7 +3136,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 		}
 
 		var acceptedModels = [], cid, model;
-		for (var i = 0, _len = cids.length; i < _len; i++) {
+		for (var i = 0, _len = cids.length; i &lt; _len; i++) {
 			cid = cids[i];
 			if (!this.options.unique || this.modelCIDs.indexOf(cid) === -1) {
 				model = this.constructor.find({cid: cid});
@@ -3152,3 +3179,26 @@ Marbles.Collection = Marbles.Utils.createClass({
 
 
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Marbles.Collection.html">Collection</a></li><li><a href="Marbles.History.html">History</a></li><li><a href="Marbles.HTTPRequest.html">HTTPRequest</a></li><li><a href="Marbles.Model.html">Model</a></li><li><a href="Marbles.Object.html">Object</a></li><li><a href="Marbles.Router.html">Router</a></li><li><a href="Marbles.Store.html">Store</a></li></ul><h3>Namespaces</h3><ul><li><a href="Marbles.html">Marbles</a></li><li><a href="Marbles.HTTP.Middleware.html">Middleware</a></li><li><a href="Marbles.Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="Marbles.Accessors.html">Accessors</a></li><li><a href="Marbles.Dispatcher.html">Dispatcher</a></li><li><a href="Marbles.Events.html">Events</a></li><li><a href="Marbles.QueryParams.html">QueryParams</a></li><li><a href="Marbles.State.html">State</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Jul 27 2014 19:42:21 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

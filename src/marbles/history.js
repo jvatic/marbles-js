@@ -14,6 +14,12 @@
 
 	"use strict";
 
+	/**
+	 * @memberof Marbles
+	 * @class
+	 * @see Marbles.Router
+	 * @desc You should never need to explicitly instantiate this class
+	 */
 	var History = Marbles.Utils.createClass({
 		displayName: 'Marbles.History',
 
@@ -290,6 +296,11 @@
     routeParts: /^([^?]*)(?:\?(.*))?$/ // 1: path, 2: params
 	};
 
+	/**
+	 * @memberof Marbles.History
+	 * @func
+	 * @desc Starts listenening to pushState events and calls route handlers when appropriate
+	 */
 	History.start = function () {
 		if (!Marbles.history) {
 			Marbles.history = new Marbles.History();

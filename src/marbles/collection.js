@@ -6,6 +6,12 @@
 
 "use strict";
 
+/**
+ * @deprecated Use the Store instead
+ * @see Marbles.Store
+ * @memberof Marbles
+ * @class
+ */
 Marbles.Collection = Marbles.Utils.createClass({
 	displayName: 'Marbles.Collection',
 

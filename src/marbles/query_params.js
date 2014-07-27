@@ -4,12 +4,26 @@
 
 "use strict";
 
+/**
+ * @memberof Marbles
+ * @mixin
+ */
 Marbles.QueryParams = {
-	// transforms a query string into an
-	// array of param objects (the first
-	// occurance of each param will be
-	// placed at index 0, the second at
-	// index 1, and so on).
+	/**
+	 * @method
+	 * @param {String} queryString
+	 * @returns {Array} params
+	 * @desc transforms a query string into an array of param objects (the first occurance of each param will be placed at index 0, the second at index 1, and so on).
+	 * @example
+	 *	Marbles.QueryParams.deserializeParams("?a=1&b=2&c=3");
+	 *	//=> [{a: 1, b:2, c:3}]
+	 * @example
+	 *	Marbles.QueryParams.deserializeParams("a=1&b=2&c=3");
+	 *	//=> [{a: 1, b:2, c:3}]
+	 * @example
+	 *	Marbles.QueryParams.deserializeParams("?a=1&a=2&b=3&c=4&c=5");
+	 *	//=> [{a: 1, b:3, c:4}, {a: 2, c: 5}]
+	 */
 	deserializeParams: function (query) {
 		if (query.substr(0, 1) === '?') {
 			query = query.substring(1).split('&');
@@ -52,11 +66,13 @@ Marbles.QueryParams = {
 		return params;
 	},
 
-	// function (params, otherParams [, otherParams])
-	// combines the first params array with the contents
-	// of all the others. nothing is overwritten, duplicates
-	// are simply pushed into the next param object they do
-	// not comflict with.
+	/**
+	 * @method
+	 * @desc Combines the first params array with the contents of all the others. Duplicate params are pushed into the next param object they do not comflict with. The mutated params array is returned.
+	 * @param {Array} params An array of param objects
+	 * @param {...Array} others Any number of param arrays
+	 * @retuns {Array} params
+	 */
 	combineParams: function (params) {
 		var others = Array.prototype.slice.call(arguments, 1);
 
@@ -89,10 +105,13 @@ Marbles.QueryParams = {
 		return params;
 	},
 
-	// function (params, otherParams [, otherParams])
-	// combines the first params array with the contents
-	// of all the others. duplicates are overwritten if
-	// they are at the same params index.
+	/**
+	 * @method
+	 * @desc Combines the first params array with the contents of all the others. Duplicate params are overwritten if they are at the same params index.
+	 * @param {Array} params An array of param objects
+	 * @param {...Array} others Any number of param arrays
+	 * @retuns {Array} params
+	 */
 	replaceParams: function (params) {
 		var others = Array.prototype.slice.call(arguments, 1);
 
@@ -113,8 +132,15 @@ Marbles.QueryParams = {
 		return params;
 	},
 
-	// transforms an array of param objects
-	// into a query string.
+	/**
+	 * @method
+	 * @desc Transforms an array of param objects into a query string.
+	 * @param {Array} params An array of param objects
+	 * @retuns {String} queryString
+	 * @example
+	 *	Marbles.QueryParams.serializeParams([{a:1, b:2}, {a:3, b:4}]);
+	 *	//= "?a=1&b=2&a=3&b=4"
+	 */
 	serializeParams: function (params) {
 		var query = [];
 		for (var i = 0, _len = params.length; i < _len; i++) {

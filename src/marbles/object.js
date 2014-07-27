@@ -8,6 +8,13 @@
 
 "use strict";
 
+/**
+ * @deprecated
+ * @see Marbles.State
+ * @see Marbles.Store
+ * @memberof Marbles
+ * @class
+ */
 Marbles.Object = Marbles.Utils.createClass({
 	displayName: 'Marbles.Object',
 

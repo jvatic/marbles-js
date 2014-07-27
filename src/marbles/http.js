@@ -8,6 +8,31 @@
 
 	"use strict";
 
+	/**
+	 * @memberof Marbles
+	 * @func
+	 * @params {Object} options
+	 * @returns {Marbles.HTTPRequest} request
+	 * @see Marbles.HTTP.Middleware
+	 * @example
+	 *	Marbles.HTTP({
+	 *		method: "POST",
+	 *		url: "http://example.com/posts",
+	 *		params: [{
+	 *			a: 1
+	 *		}],
+	 *		body: { title: "My Post", content: "Lorem ipsum..." },
+	 *		middleware: [
+	 *			Marbles.HTTP.Middleware.SerializeJSON
+	 *		],
+	 *		headers: {
+	 *			"Content-Type": "application/json",
+	 *		},
+	 *		callback: function (res, xhr) {
+	 *			// do something
+	 *		}
+	 *	});
+	 */
 	Marbles.HTTP = function (options) {
 		var request = new Request({
 			method: options.method,
@@ -27,6 +52,13 @@
 		return request;
 	};
 
+	/**
+	 * @memberof Marbles
+	 * @class
+	 * @name Marbles.HTTPRequest
+	 * @params {Object} options
+	 * @see Marbles.HTTP
+	 */
 	var Request = Marbles.Utils.createClass({
 		displayName: 'Marbles.HTTPRequest',
 

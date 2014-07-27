@@ -1,0 +1,6 @@
+{
+  "name": "Marbles",
+  "devDependencies": {
+    "jsdoc": "~3.3"
+  }
+}

@@ -7,11 +7,39 @@
  * Inspired by Backbone.js Router  *
  * * * * * * * * * * * * * * * * * *
  */
-
 (function () {
 
 	"use strict";
 
+	/**
+	 * @memberof Marbles
+	 * @class
+	 * @see Marbles.History
+	 * @example
+	 *	var MyRouter = Marbles.Router.createClass({
+	 *		displayName: "MyRouter",
+	 *
+	 *		// routes are evaluated in the order they are defined
+	 *		routes: [
+	 *			{ path: "posts", handler: "posts" },
+	 *
+	 *			// :id will be available in the params
+	 *			{ path: "posts/:id", handler: "posts" },
+	 *
+	 *			// * will be available in the params as `splat`
+	 *			{ path: "posts/:id/*", handler: "posts" },
+	 *		],
+	 *
+	 *		posts: function (params, opts) {
+	 *			// params is an array of objects,
+	 *			// params[0] should be all you need unless
+	 *			// you have multiple params of the same name
+	 *
+	 *			// opts contains any extra properties given in a route object
+	 *		}
+	 *	});
+	 *	new MyRouter(); // bring it to life
+	 */
 	var Router = Marbles.Utils.createClass({
 		displayName: 'Marbles.Router',
 

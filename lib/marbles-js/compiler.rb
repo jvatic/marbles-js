@@ -56,8 +56,6 @@ module MarblesJS
       suffix = ""
       suffix = ".min" if options[:compress]
 
-      p manifest.assets
-
       marblesjs_compile_path = File.expand_path(File.join(assets_dir, manifest.assets["marbles.js"]))
       system "cp #{marblesjs_compile_path} marbles#{suffix}.js"
     end

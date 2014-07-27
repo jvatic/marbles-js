@@ -24,8 +24,17 @@
 	};
 
 
+	/**
+	 * @memberof Marbles
+	 * @namespace Utils
+	 */
 	Marbles.Utils = {
-		// @function (obj, [other [, other...]])
+		/**
+		 * @memberof Marbles.Utils
+		 * @func
+		 * @param {Object} obj The object to extend
+		 * @param {...Object} other One or more objects to extend it with
+		 */
 		extend: function (obj) {
 			var others = Array.prototype.slice.call(arguments, 1);
 			return __extend(obj, others, {override: true});
@@ -36,11 +45,16 @@
 			return __extend(obj, others, {override: false});
 		},
 
-		// @function (child, parent)
-		// The prototype of child is made to inherit from parent.
-		// Returns child.
-		// A `__super__` property is added to child
-		// for access to the parent prototype.
+		/**
+		 * @memberof Marbles.Utils
+		 * @func
+		 * @param {Class} child
+		 * @param {Class} parent
+		 * @returns {Class} child
+		 * @private
+		 * @desc The prototype of child is made to inherit from parent.
+		 *	A `__super__` property is added to the child constructor to access the parent prototype.
+		 */
 		inheritPrototype: function(child, parent) {
 			Marbles.Utils.extend(child, parent);
 
@@ -53,8 +67,30 @@
 			return child;
 		},
 
-		// @function (proto)
-		// returns constructor function
+		/**
+		 * @memberof Marbles.Utils
+		 * @func
+		 * @param {Object} proto
+		 * @returns {Class} ctor
+		 * @desc Creates a constructor with given prototype
+		 * @example
+		 *	Marbles.Utils.createClass({
+		 *		displayName: "MyClass", // ctor.displayName
+		 *
+		 *		// Array of objects to mix-into prototype
+		 *		mixins: [
+		 *			Marbles.State
+		 *		],
+		 *
+		 *		parentClass: MyOtherClass, // inherit from MyOtherClass (optional)
+		 *
+		 *		willInitialize: function () {}, // called before parent ctor is called
+		 *
+		 *		didInitialize: function () {}, // called after parent ctor is called
+		 *
+		 *		myProperty: 123 // no special meaning
+		 *	});
+		 */
 		createClass: function (proto) {
 			var ctor,
 					willInitialize = proto.willInitialize,

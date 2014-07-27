@@ -19,6 +19,11 @@
 		return keys;
 	}
 
+	/**
+	 * @deprecated
+	 * @memberof Marbles
+	 * @mixin
+	 */
 	Marbles.Accessors = {
 		set: function (keypath, value, options) {
 			var keys = parseKeypath(keypath, options);

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Namespace: Middleware</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Namespace: Middleware</h1>
+
+    
+
+
+
+<section>
+
+<header>
+    <h2>
+        <span class="ancestors"><a href="Marbles.html">Marbles</a><a href="Marbles.html#HTTP">.HTTP</a>.</span>
+    
+    Middleware
+    </h2>
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+
+        
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line2211">line 2211</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Marbles.html#HTTP">Marbles.HTTP</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+        
+            <h3>Example</h3>
+            
+    <pre class="prettyprint"><code>var MyMiddleware = {
+	willSendRequest: function (request) {
+		// do something
+	},
+
+	didReceiveResponse: function (request) {
+		// do something
+	}
+};</code></pre>
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<dt>
+    <h4 class="name" id="FormEncoded"><span class="type-signature">(static) </span>FormEncoded<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Serializes the request body if the Content-Type header matches. Deserializes the response body if the Content-Type header matches.
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line2243">line 2243</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="SerializeJSON"><span class="type-signature">(static) </span>SerializeJSON<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Serializes the request body if the Content-Type header matches. Deserializes the response body if the Content-Type header matches.
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line2297">line 2297</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="WithCredentials"><span class="type-signature">(static) </span>WithCredentials<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Sets `withCredentials = true` on the XMLHttpRequest object
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line2342">line 2342</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Marbles.Collection.html">Collection</a></li><li><a href="Marbles.History.html">History</a></li><li><a href="Marbles.HTTPRequest.html">HTTPRequest</a></li><li><a href="Marbles.Model.html">Model</a></li><li><a href="Marbles.Object.html">Object</a></li><li><a href="Marbles.Router.html">Router</a></li><li><a href="Marbles.Store.html">Store</a></li></ul><h3>Namespaces</h3><ul><li><a href="Marbles.html">Marbles</a></li><li><a href="Marbles.HTTP.Middleware.html">Middleware</a></li><li><a href="Marbles.Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="Marbles.Accessors.html">Accessors</a></li><li><a href="Marbles.Dispatcher.html">Dispatcher</a></li><li><a href="Marbles.Events.html">Events</a></li><li><a href="Marbles.QueryParams.html">QueryParams</a></li><li><a href="Marbles.State.html">State</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Jul 27 2014 19:42:21 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

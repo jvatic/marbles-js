@@ -13,6 +13,12 @@
 		}
 	}
 
+	/**
+	 * @deprecated Use the Dispatcher instead
+	 * @see Marbles.Dispatcher
+	 * @memberof Marbles
+	 * @mixin
+	 */
 	Marbles.Events = {
 		on: function (events, callback, context, options) {
 			initEvents(this);
