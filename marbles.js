@@ -1963,10 +1963,15 @@ Marbles.QueryParams = {
 	 *		],
 	 *		headers: {
 	 *			"Content-Type": "application/json",
-	 *		},
-	 *		callback: function (res, xhr) {
-	 *			// do something
 	 *		}
+	 *	}).then(function (args) {
+	 *		var res = args[0];
+	 *		var xhr = args[1];
+	 *		// request complete
+	 *		// do something
+	 *	}).catch(function (err) {
+	 *		// request terminated
+	 *		// do something
 	 *	});
 	 */
 	Marbles.HTTP = function (options) {
@@ -2034,6 +2039,41 @@ Marbles.QueryParams = {
 
 			this.on('before:complete', this.callResponseMiddleware, this);
 			this.on('complete', this.untrackRequest, this);
+
+			this.on('before:send', function () {
+				var completeResolve, completeReject;
+				this.completePromise = new Promise(function (rs, rj) {
+					completeResolve = rs;
+					completeReject = rj;
+				});
+				var onComplete = function (res, xhr) {
+					this.off('terminated', onTerminated, this);
+					this.completePromise = null;
+					completeResolve([res, xhr]);
+				};
+				var onTerminated = function (err) {
+					this.off('complete', onComplete, this);
+					this.completePromise = null;
+					completeReject(err);
+				};
+				this.once('complete', onComplete, this);
+				this.once('terminated', onTerminated, this);
+			}, this);
+			this.completePromise = null;
+		},
+
+		then: function () {
+			var promise = this.completePromise || new Promise(function (resolve, reject) {
+				reject(new Error("Request not started!"));
+			});
+			return promise.then.apply(promise, arguments);
+		},
+
+		catch: function () {
+			var promise = this.completePromise || new Promise(function (resolve, reject) {
+				reject(new Error("Request not started!"));
+			});
+			return promise.catch.apply(promise, arguments);
 		},
 
 		setRequestHeader: function (key, val) {
