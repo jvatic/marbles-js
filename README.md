@@ -17,14 +17,13 @@ bundle exec rake compile
 
 ## Some TODOs
 
-- Write tests (API is nearing completion and is no longer likely to drastically change).
-- Write proper documentation and update README to only contain basic usage examples
-- Write more in-depth usage examples
 - Finalize API / work out inconsistencies
 	- Move away from callbacks and use events instead
 	- It may make sense to return promise objects from some methods
+- Write tests (API is nearing completion and is no longer likely to drastically change).
+- Write more in-depth usage examples
 - Make compatible with node.js (the HTTP lib at minimum, but the router could also be useful in that context, everything else should already be compatible and just need to be made accessible)
-- Look into using ES6 modules instead of sprockets directives (sprockets integration is still required)
+- Look into using ES6 modules instead of sprockets directives
 
 
 ## Contributing
