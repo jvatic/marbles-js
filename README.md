@@ -18,8 +18,7 @@ bundle exec rake compile
 ## Some TODOs
 
 - Finalize API / work out inconsistencies
-	- Move away from callbacks and use events instead
-	- It may make sense to return promise objects from some methods
+	- Move away from callbacks and use Dispatcher events and promises instead
 - Write tests (API is nearing completion and is no longer likely to drastically change).
 - Write more in-depth usage examples
 - Make compatible with node.js (the HTTP lib at minimum, but the router could also be useful in that context, everything else should already be compatible and just need to be made accessible)
