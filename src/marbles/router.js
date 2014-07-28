@@ -43,8 +43,6 @@
 	var Router = Marbles.Utils.createClass({
 		displayName: 'Marbles.Router',
 
-		mixins: [Marbles.Events],
-
 		willInitialize: function () {
 			this.bindRoutes();
 		},
@@ -78,11 +76,7 @@
 
 			Marbles.history.route(route, name, function (path, params) {
 				params = Marbles.QueryParams.combineParams(params, this.extractNamedParams(route, path, paramNames));
-
 				handler.apply(this, [params, opts]);
-				this.trigger('route', route, params, opts);
-				Marbles.history.trigger('route', this, route, params, opts);
-
 				return this;
 			}.bind(this), opts);
 		},

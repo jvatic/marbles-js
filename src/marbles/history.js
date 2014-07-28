@@ -23,7 +23,7 @@
 	var History = Marbles.Utils.createClass({
 		displayName: 'Marbles.History',
 
-		mixins: [Marbles.Events, Marbles.QueryParams],
+		mixins: [Marbles.QueryParams],
 
 		willInitialize: function () {
 			this.started = false;
@@ -190,6 +190,8 @@
 				Marbles.history = this;
 			}
 
+			this.dispatcher = options.dispatcher || Marbles.Dispatcher;
+
 			this.options = Marbles.Utils.extend({root: '/', pushState: true}, options);
 			this.path = this.getPath();
 
@@ -275,17 +277,33 @@
 
 			if (handler) {
 				var __handlerAbort = false;
-				this.trigger('handler:before', handler, path, params, function () {
-					__handlerAbort = true;
+				this.trigger('handler:before', {
+					handler: handler,
+					path: path,
+					params: params,
+					abort: function () {
+						__handlerAbort = true;
+					}
 				});
 
 				if ( !__handlerAbort ) {
 					handler.callback(path, params);
-					this.trigger('handler:after', handler, path, params);
+					this.trigger('handler:after', {
+						handler: handler,
+						path: path,
+						params: params
+					});
 				}
 			}
 			return handler;
 		},
+
+		trigger: function (eventName, args) {
+			return this.dispatcher.dispatch(Marbles.Utils.extend({
+				source: "Marbles.History",
+				name: eventName
+			}, args));
+		}
 
 	});
 
@@ -299,7 +317,14 @@
 	/**
 	 * @memberof Marbles.History
 	 * @func
+	 * @param {Object} options
 	 * @desc Starts listenening to pushState events and calls route handlers when appropriate
+	 * @example
+	 *	Marbles.History.start({
+	 *		root: "/", // if your app is mounted anywhere other than the domain root, enter the path prefix here
+	 *		pushState: true, // set to `false` in the unlikely event you wish to disable pushState (falls back to manipulating window.location)
+	 *		dispatcher: Marbles.Dispatcher // The Dispatcher all events are passed to
+	 *	})
 	 */
 	History.start = function () {
 		if (!Marbles.history) {
