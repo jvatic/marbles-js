@@ -70,7 +70,7 @@ Marbles.QueryParams = {
 	 * @method
 	 * @desc Combines the first params array with the contents of all the others. Duplicate params are pushed into the next param object they do not comflict with. The mutated params array is returned.
 	 * @param {Array} params An array of param objects
-	 * @param {...Array} others Any number of param arrays
+	 * @param {...Object} others Any number of param objects
 	 * @retuns {Array} params
 	 */
 	combineParams: function (params) {
@@ -109,7 +109,7 @@ Marbles.QueryParams = {
 	 * @method
 	 * @desc Combines the first params array with the contents of all the others. Duplicate params are overwritten if they are at the same params index.
 	 * @param {Array} params An array of param objects
-	 * @param {...Array} others Any number of param arrays
+	 * @param {...Object} others Any number of param objects
 	 * @retuns {Array} params
 	 */
 	replaceParams: function (params) {
