@@ -11,7 +11,21 @@
 	var ATTR_MATCHER = /([^=]+)=['"]?([^'"]+)['"]?/;
 
 	Marbles.HTTP = Marbles.HTTP || {};
+
+	/**
+	 * @memberof Marbles.HTTP
+	 * @mixin
+	 */
 	Marbles.HTTP.LinkHeader = {
+		/**
+		 * @memberof Marbles.HTTP.LinkHeader
+		 * @method
+		 * @param {String} linkHeader String returned from `xhr.getResponseHeader("Link")`
+		 * @returns {Array} Array of objects representing each link
+		 * @example
+		 *	Marbles.HTTP.LinkHeader.parse('<?page=2>; rel="next", <?page=1>; rel="prev"');
+		 *	//=> [{"href":"?page=2","rel":"next"},{"href":"?page=1","rel":"prev"}]
+		 */
 		parse: function (linkHeaderStr) {
 			var links = [];
 			var ref = linkHeaderStr.split(LINK_SPLITTER);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: Marbles</title>
+    <title>JSDoc: Mixin: LinkHeader</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: Marbles</h1>
+    <h1 class="page-title">Mixin: LinkHeader</h1>
 
     
 
@@ -27,7 +27,9 @@
 
 <header>
     <h2>
-    Marbles
+        <span class="ancestors"><a href="Marbles.html">Marbles</a><a href="Marbles.html#HTTP">.HTTP</a>.</span>
+    
+    LinkHeader
     </h2>
     
 </header>
@@ -62,7 +64,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line1">line 1</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line2434">line 2434</a>
     </li></ul></dd>
     
 
@@ -85,60 +87,9 @@
     
 
     
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="Marbles.Collection.html">Collection</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.History.html">History</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.HTTPRequest.html">HTTPRequest</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.Model.html">Model</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.Object.html">Object</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.Router.html">Router</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.Store.html">Store</a></dt>
-            <dd></dd>
-        </dl>
-    
 
      
-        <h3 class="subsection-title">Mixins</h3>
 
-        <dl>
-            <dt><a href="Marbles.Accessors.html">Accessors</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.Dispatcher.html">Dispatcher</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.Events.html">Events</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.QueryParams.html">QueryParams</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Marbles.State.html">State</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-        <h3 class="subsection-title">Namespaces</h3>
-
-        <dl>
-            <dt><a href="namespaces.html#Marbles.Utils"><a href="Marbles.Utils.html">Utils</a></a></dt>
-            <dd></dd>
-        </dl>
     
 
     
@@ -149,7 +100,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="HTTP"><span class="type-signature">(static) </span>HTTP<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Marbles.HTTPRequest.html">Marbles.HTTPRequest</a>}</span></h4>
+    <h4 class="name" id="parse"><span class="type-signature">(static) </span>parse<span class="signature">(linkHeader)</span><span class="type-signature"> &rarr; {Array}</span></h4>
 
     
 </dt>
@@ -161,6 +112,54 @@
 
     
 
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>linkHeader</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">String returned from `xhr.getResponseHeader("Link")`</td>
+        </tr>
+
+    
+    </tbody>
+</table>
     
 
     
@@ -186,19 +185,12 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line1977">line 1977</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line2444">line 2444</a>
     </li></ul></dd>
     
 
     
 
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="Marbles.HTTP.Middleware.html">Marbles.HTTP.Middleware</a></li>
-        </ul>
-    </dd>
     
 
     
@@ -220,7 +212,7 @@
     
             
 <div class="param-desc">
-    request
+    Array of objects representing each link
 </div>
 
 
@@ -231,7 +223,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="Marbles.HTTPRequest.html">Marbles.HTTPRequest</a></span>
+<span class="param-type">Array</span>
 
 
     </dd>
@@ -242,28 +234,8 @@
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>Marbles.HTTP({
-	method: "POST",
-	url: "http://example.com/posts",
-	params: [{
-		a: 1
-	}],
-	body: { title: "My Post", content: "Lorem ipsum..." },
-	middleware: [
-		Marbles.HTTP.Middleware.SerializeJSON
-	],
-	headers: {
-		"Content-Type": "application/json",
-	}
-}).then(function (args) {
-	var res = args[0];
-	var xhr = args[1];
-	// request complete
-	// do something
-}).catch(function (err) {
-	// request terminated
-	// do something
-});</code></pre>
+    <pre class="prettyprint"><code>Marbles.HTTP.LinkHeader.parse('&lt;?page=2>; rel="next", &lt;?page=1>; rel="prev"');
+//=> [{"href":"?page=2","rel":"next"},{"href":"?page=1","rel":"prev"}]</code></pre>
 
     
 </dd>
