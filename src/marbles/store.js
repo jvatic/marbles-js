@@ -154,7 +154,7 @@ Store.registerWithDispatcher = function (dispatcher) {
 	this.dispatcherIndex = dispatcher.register(function (event) {
 		if (event.storeId && (!this.isValidId || this.isValidId(event.storeId))) {
 			var instance = this.__getInstance(event.storeId);
-			return instance.handleEvent(event);
+			return Promise.resolve(instance.handleEvent(event));
 		} else {
 			return Promise.all(Object.keys(this.__instances).sort().map(function (key) {
 				var instance = this.__instances[key];
