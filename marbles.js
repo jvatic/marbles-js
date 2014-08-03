@@ -55,6 +55,54 @@ var Marbles = {
 		/**
 		 * @memberof Marbles.Utils
 		 * @func
+		 * @param {*} obj
+		 * @param {*} otherObj
+		 * @returns {bool}
+		 * @desc compare two objects of any type
+		 */
+		assertEqual: function (obj, other) {
+			if (typeof obj !== typeof other) {
+				return false;
+			}
+			if (typeof obj !== "object") {
+				return obj === other;
+			}
+			if (Array.isArray(obj)) {
+				if ( !Array.isArray(other) ) {
+					return false;
+				}
+				if (obj.length !== other.length) {
+					return false;
+				}
+				for (var i = 0, len = obj.length; i < len; i++) {
+					if ( !this.assertInstanceIdsEqual(obj[i], other[i]) ) {
+						return false;
+					}
+				}
+				return true;
+			}
+			// both ids are objects
+			for (var k in obj) {
+				if (obj.hasOwnProperty(k)) {
+					if (obj[k] !== other[k]) {
+						return false;
+					}
+				}
+			}
+			for (k in other) {
+				if (other.hasOwnProperty(k)) {
+					if (other[k] !== obj[k]) {
+						return false;
+					}
+				}
+			}
+			return true;
+		},
+
+
+		/**
+		 * @memberof Marbles.Utils
+		 * @func
 		 * @param {Class} child
 		 * @param {Class} parent
 		 * @returns {Class} child
@@ -534,7 +582,7 @@ Store.registerWithDispatcher = function (dispatcher) {
 	this.dispatcherIndex = dispatcher.register(function (event) {
 		if (event.storeId && (!this.isValidId || this.isValidId(event.storeId))) {
 			var instance = this.__getInstance(event.storeId);
-			return instance.handleEvent(event);
+			return Promise.resolve(instance.handleEvent(event));
 		} else {
 			return Promise.all(Object.keys(this.__instances).sort().map(function (key) {
 				var instance = this.__instances[key];
