@@ -98,13 +98,25 @@ Store.prototype.removeChangeListener = function () {
 
 Store.__instances = {};
 
+function stringifyStoreId(id) {
+	if (typeof id === "object" && !Array.isArray(id)) {
+		var keys = Object.keys(id);
+		var values = keys.map(function (k) {
+			return id[k];
+		});
+		return JSON.stringify(keys.sort().concat(values.sort()));
+	} else {
+		return JSON.stringify(id);
+	}
+}
+
 Store.__getInstance = function (id) {
-	var key = JSON.stringify(id);
+	var key = stringifyStoreId(id);
 	return this.__instances[key] || new this(id);
 };
 
 Store.__trackInstance = function (instance) {
-	var key = JSON.stringify(instance.id);
+	var key = stringifyStoreId(instance.id);
 	this.__instances[key] = instance;
 };
 
@@ -115,7 +127,7 @@ Store.__trackInstance = function (instance) {
  * @desc Give Store instance up for garbage collection
  */
 Store.discardInstance = function (instance) {
-	var key = JSON.stringify(instance.id);
+	var key = stringifyStoreId(instance.id);
 	delete this.__instances[key];
 };
 
