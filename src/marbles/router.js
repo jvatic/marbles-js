@@ -80,11 +80,7 @@
 				handler = this[handler];
 			}
 
-			Marbles.history.route(route, name, function (path, params) {
-				params = Marbles.QueryParams.combineParams(params, this.extractNamedParams(route, path, paramNames));
-				handler.apply(this, [params, opts]);
-				return this;
-			}.bind(this), opts, this);
+			Marbles.history.route(route, name, handler, paramNames, opts, this);
 		},
 
 		bindRoutes: function () {
