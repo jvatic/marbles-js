@@ -510,8 +510,10 @@ Marbles.Utils.extend(Store.prototype, Marbles.State, {
 
 // Call didBecomeActive when first change listener added
 Store.prototype.addChangeListener = function () {
+	this.__changeListenerExpected = false;
 	Marbles.State.addChangeListener.apply(this, arguments);
-	if (this.__changeListeners.length === 1) {
+	if ( !this.__active && this.__changeListeners.length === 1 ) {
+		this.__active = true;
 		this.didBecomeActive();
 	}
 };
@@ -519,9 +521,14 @@ Store.prototype.addChangeListener = function () {
 // Call didBecomeInactive when last change listener removed
 Store.prototype.removeChangeListener = function () {
 	Marbles.State.removeChangeListener.apply(this, arguments);
-	if (this.__changeListeners.length === 0) {
+	if (this.__changeListeners.length === 0 && !this.__changeListenerExpected) {
+		this.__active = false;
 		this.didBecomeInactive();
 	}
+};
+
+Store.prototype.expectChangeListener = function () {
+	this.__changeListenerExpected = true;
 };
 
 Store.__instances = {};
@@ -577,6 +584,19 @@ Store.addChangeListener = function (id) {
 Store.removeChangeListener = function (id) {
 	var instance = this.__getInstance(id);
 	return instance.removeChangeListener.apply(instance, Array.prototype.slice.call(arguments, 1));
+};
+
+/**
+ * @memberof Marbles.Store
+ * @func
+ * @param {Store#id} id
+ * @desc Force store to remain active until the next change listener is added
+ */
+Store.expectChangeListener = function (id) {
+	var instance = this.__getInstance(id, {allowNull: true});
+	if (instance) {
+		instance.expectChangeListener();
+	}
 };
 
 /**
