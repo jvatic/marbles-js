@@ -1049,7 +1049,7 @@ Marbles.QueryParams = {
 		// they are defined, so if more than one
 		// matches, only the one defined last will
 		// be called
-		route: function (route, name, callback, opts) {
+		route: function (route, name, callback, opts, router) {
 			if (typeof callback !== 'function') {
 				throw new Error(this.constructor.displayName + ".prototype.route(): callback is not a function: "+ JSON.stringify(callback));
 			}
@@ -1058,7 +1058,7 @@ Marbles.QueryParams = {
 				throw new Error(this.constructor.displayName + ".prototype.route(): expected route to be a RegExp: "+ JSON.stringify(route));
 			}
 
-			this.handlers.push({ route: route, name: name, callback: callback, opts: opts });
+			this.handlers.push({ route: route, name: name, callback: callback, opts: opts, router: router });
 		},
 
 		// navigate to given path via pushState
@@ -1283,17 +1283,22 @@ Marbles.QueryParams = {
 			var params = this.deserializeParams(parts[2] || '');
 
 			var handler = this.getHandler(path);
+			var __handlerAbort = false;
+			var event = {
+				handler: handler,
+				path: path,
+				params: params,
+				abort: function () {
+					__handlerAbort = true;
+				}
+			};
 
 			if (handler) {
-				var __handlerAbort = false;
-				this.trigger('handler:before', {
-					handler: handler,
-					path: path,
-					params: params,
-					abort: function () {
-						__handlerAbort = true;
-					}
-				});
+				if (handler.router.beforeHandler) {
+					handler.router.beforeHandler.call(handler.router, event);
+				}
+
+				this.trigger('handler:before', event);
 
 				if ( !__handlerAbort ) {
 					handler.callback(path, params);
@@ -1376,6 +1381,12 @@ Marbles.QueryParams = {
 	 *			{ path: "posts/:id/*", handler: "posts" },
 	 *		],
 	 *
+	 *		beforeHandler: function (event) { // optional before hook
+	 *			// same as handler:before event sent through dispatcher
+	 *			// but only called for the router the handler belongs to
+	 *			// and called before event is sent through dispatcher
+	 *		},
+	 *
 	 *		posts: function (params, opts) {
 	 *			// params is an array of objects,
 	 *			// params[0] should be all you need unless
@@ -1424,7 +1435,7 @@ Marbles.QueryParams = {
 				params = Marbles.QueryParams.combineParams(params, this.extractNamedParams(route, path, paramNames));
 				handler.apply(this, [params, opts]);
 				return this;
-			}.bind(this), opts);
+			}.bind(this), opts, this);
 		},
 
 		bindRoutes: function () {

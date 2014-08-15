@@ -30,6 +30,12 @@
 	 *			{ path: "posts/:id/*", handler: "posts" },
 	 *		],
 	 *
+	 *		beforeHandler: function (event) { // optional before hook
+	 *			// same as handler:before event sent through dispatcher
+	 *			// but only called for the router the handler belongs to
+	 *			// and called before event is sent through dispatcher
+	 *		},
+	 *
 	 *		posts: function (params, opts) {
 	 *			// params is an array of objects,
 	 *			// params[0] should be all you need unless
@@ -78,7 +84,7 @@
 				params = Marbles.QueryParams.combineParams(params, this.extractNamedParams(route, path, paramNames));
 				handler.apply(this, [params, opts]);
 				return this;
-			}.bind(this), opts);
+			}.bind(this), opts, this);
 		},
 
 		bindRoutes: function () {
