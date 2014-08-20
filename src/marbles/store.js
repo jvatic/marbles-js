@@ -106,12 +106,14 @@ Store.prototype.expectChangeListener = function () {
 Store.__instances = {};
 
 function stringifyStoreId(id) {
-	if (typeof id === "object" && !Array.isArray(id)) {
+	if (id && typeof id === "object" && !Array.isArray(id)) {
 		var keys = Object.keys(id);
 		var values = keys.map(function (k) {
 			return id[k];
 		});
 		return JSON.stringify(keys.sort().concat(values.sort()));
+	} else if (Array.isArray(id)) {
+		return "["+ id.map(stringifyStoreId).join(",") +"]";
 	} else {
 		return JSON.stringify(id);
 	}
