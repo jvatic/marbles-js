@@ -520,10 +520,12 @@ Store.prototype.addChangeListener = function () {
 
 // Call didBecomeInactive when last change listener removed
 Store.prototype.removeChangeListener = function () {
+	var done = function () {
+		this.__active = false;
+	}.bind(this);
 	Marbles.State.removeChangeListener.apply(this, arguments);
 	if (this.__changeListeners.length === 0 && !this.__changeListenerExpected) {
-		this.__active = false;
-		this.didBecomeInactive();
+		Promise.resolve(this.didBecomeInactive()).then(done);
 	}
 };
 
