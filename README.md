@@ -7,6 +7,15 @@ Marbles is a JavaScript framework inspired by [Backbone.js](http://backbonejs.or
 
 There is no view component, it's recomended you use [React](http://reactjs.org/).
 
+## Docs
+
+```
+cd docs
+python -m SimpleHTTPServer
+```
+
+and open [localhost:8000](http://localhost:8000) in your browser.
+
 ## Building
 
 ```
