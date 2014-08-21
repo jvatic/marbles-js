@@ -190,7 +190,19 @@ Store.registerWithDispatcher = function (dispatcher) {
 	this.dispatcherIndex = dispatcher.register(function (event) {
 		if (event.storeId && (!this.isValidId || this.isValidId(event.storeId))) {
 			var instance = this.__getInstance(event.storeId);
-			return Promise.resolve(instance.handleEvent(event));
+			var res = Promise.resolve(instance.handleEvent(event));
+			var after = function (isError, args) {
+				if (instance.__changeListeners.length === 0) {
+					instance.didBecomeInactive();
+				}
+				if (isError) {
+					return Promise.reject(args);
+				} else {
+					return Promise.resolve(args);
+				}
+			};
+			res.then(after.bind(null, false), after.bind(null, true));
+			return res;
 		} else {
 			return Promise.all(Object.keys(this.__instances).sort().map(function (key) {
 				var instance = this.__instances[key];
@@ -254,7 +266,19 @@ Store.createClass = function (proto) {
 
 	function wrappedFn(name, id) {
 		var instance = this.__getInstance(id);
-		return instance[name].apply(instance, Array.prototype.slice.call(arguments, 2));
+		var res = instance[name].apply(instance, Array.prototype.slice.call(arguments, 2));
+		var after = function (isError, args) {
+			if (instance.__changeListeners.length === 0) {
+				instance.didBecomeInactive();
+			}
+			if (isError) {
+				return Promise.reject(args);
+			} else {
+				return Promise.resolve(args);
+			}
+		};
+		Promise.resolve(res).then(after.bind(null, false), after.bind(null, true));
+		return res;
 	}
 
 	for (var k in proto) {
