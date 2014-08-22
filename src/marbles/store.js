@@ -105,6 +105,16 @@ Store.prototype.expectChangeListener = function () {
 	this.__changeListenerExpected = true;
 };
 
+Store.prototype.unexpectChangeListener = function () {
+	this.__changeListenerExpected = false;
+	console.log("unexpectChangeListener", this.__changeListeners.length);
+	if (this.__changeListeners.length === 0) {
+		Promise.resolve(this.didBecomeInactive()).then(function () {
+			this.__active = false;
+		}.bind(this));
+	}
+};
+
 Store.__instances = {};
 
 function stringifyStoreId(id) {
@@ -121,9 +131,10 @@ function stringifyStoreId(id) {
 	}
 }
 
-Store.__getInstance = function (id) {
+Store.__getInstance = function (id, opts) {
+	opts = opts || {};
 	var key = stringifyStoreId(id);
-	return this.__instances[key] || new this(id);
+	return this.__instances[key] || (opts.allowNull ? null : new this(id));
 };
 
 Store.__trackInstance = function (instance) {
@@ -172,6 +183,19 @@ Store.expectChangeListener = function (id) {
 	var instance = this.__getInstance(id, {allowNull: true});
 	if (instance) {
 		instance.expectChangeListener();
+	}
+};
+
+/**
+ * @memberof Marbles.Store
+ * @func
+ * @param {Store#id} id
+ * @desc Undo expectation from expectChangeListener
+ */
+Store.unexpectChangeListener = function (id) {
+	var instance = this.__getInstance(id, {allowNull: true});
+	if (instance) {
+		instance.unexpectChangeListener();
 	}
 };
 
