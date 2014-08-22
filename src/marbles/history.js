@@ -274,30 +274,62 @@
 		// Attempt to find handler for current path
 		// returns matched handler or null
 		loadURL: function () {
-			this.prevPath = this.path;
+			var prevPath = this.prevPath = this.path;
+			var prevParts = prevPath.match(this.constructor.regex.routeParts);
+			prevPath = prevParts[1];
+			var prevParams = this.deserializeParams(prevParts[2] || '');
+
 			var path = this.path = this.getPath();
 			var parts = path.match(this.constructor.regex.routeParts);
 			path = parts[1];
 			var params = this.deserializeParams(parts[2] || '');
 
+			var prevHandler;
+			if (this.path !== this.prevPath) {
+				prevHandler = this.getHandler(prevPath);
+			}
 			var handler = this.getHandler(path);
-			if (handler) {
-				var __handlerAbort = false;
+
+			var __handlerAbort = false;
+			var handlerAbort = function () {
+				__handlerAbort = true;
+			};
+
+			if (prevHandler) {
+				var handlerUnloadEvent = {
+					handler: prevHandler,
+					nextHandler: handler,
+					path: prevPath,
+					nextPath: path,
+					params: prevParams,
+					nextParams: params,
+					abort: handlerAbort
+				};
+				if (prevHandler.router.beforeHandlerUnlaod) {
+					prevHandler.router.beforeHandlerUnlaod.call(prevHandler.router, handlerUnloadEvent);
+				}
+
+				if ( !__handlerAbort ) {
+					this.trigger('handler:before-unload', handlerUnloadEvent);
+				}
+			}
+
+			if (handler && !__handlerAbort) {
 				var router = handler.router;
 				params = Marbles.QueryParams.combineParams(params, router.extractNamedParams.call(router, handler.route, path, handler.paramNames));
 				var event = {
 					handler: handler,
 					path: path,
 					params: params,
-					abort: function () {
-						__handlerAbort = true;
-					}
+					abort: handlerAbort
 				};
 				if (handler.router.beforeHandler) {
 					handler.router.beforeHandler.call(handler.router, event);
 				}
 
-				this.trigger('handler:before', event);
+				if ( !__handlerAbort ) {
+					this.trigger('handler:before', event);
+				}
 
 				if ( !__handlerAbort ) {
 					handler.callback.call(router, params, handler.opts);
