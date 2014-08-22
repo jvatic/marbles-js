@@ -107,7 +107,6 @@ Store.prototype.expectChangeListener = function () {
 
 Store.prototype.unexpectChangeListener = function () {
 	this.__changeListenerExpected = false;
-	console.log("unexpectChangeListener", this.__changeListeners.length);
 	if (this.__changeListeners.length === 0) {
 		Promise.resolve(this.didBecomeInactive()).then(function () {
 			this.__active = false;
