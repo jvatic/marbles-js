@@ -66,7 +66,7 @@ Marbles.Utils.extend(Store.prototype, Marbles.State, {
 	 * @memberof Marbles.Store
 	 * @instance
 	 * @method
-	 * @desc Called when last change listener is removed
+	 * @desc Called when last change listener is removed and when the instance is otherwise perceived as inactive
 	 */
 	didBecomeInactive: function () {},
 
