@@ -175,6 +175,7 @@
 		proto.parentClass = this;
 		var ctor =  Marbles.Utils.createClass(proto);
 		ctor.routes = routes;
+		ctor.createClass = Router.createClass.bind(ctor);
 		return ctor;
 	};
 
