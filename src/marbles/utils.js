@@ -68,7 +68,7 @@
 					return false;
 				}
 				for (var i = 0, len = obj.length; i < len; i++) {
-					if ( !this.assertInstanceIdsEqual(obj[i], other[i]) ) {
+					if ( !this.assertEqual(obj[i], other[i]) ) {
 						return false;
 					}
 				}
