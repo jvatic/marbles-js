@@ -75,7 +75,7 @@ var Marbles = {
 					return false;
 				}
 				for (var i = 0, len = obj.length; i < len; i++) {
-					if ( !this.assertInstanceIdsEqual(obj[i], other[i]) ) {
+					if ( !this.assertEqual(obj[i], other[i]) ) {
 						return false;
 					}
 				}
@@ -1335,14 +1335,13 @@ Marbles.QueryParams = {
 		// returns matched handler or null
 		loadURL: function () {
 			var prevPath = this.prevPath = this.path;
-			var prevParts = prevPath.match(this.constructor.regex.routeParts);
-			prevPath = prevParts[1];
-			var prevParams = this.deserializeParams(prevParts[2] || '');
+			var prevParams = this.prevPathParams = this.pathParams;
 
 			var path = this.path = this.getPath();
 			var parts = path.match(this.constructor.regex.routeParts);
 			path = parts[1];
 			var params = this.deserializeParams(parts[2] || '');
+			this.pathParams = params;
 
 			var prevHandler;
 			if (this.path !== this.prevPath) {
@@ -1617,6 +1616,7 @@ Marbles.QueryParams = {
 		proto.parentClass = this;
 		var ctor =  Marbles.Utils.createClass(proto);
 		ctor.routes = routes;
+		ctor.createClass = Router.createClass.bind(ctor);
 		return ctor;
 	};
 
@@ -2463,6 +2463,35 @@ Marbles.QueryParams = {
  */
 
 Marbles.HTTP.Middleware = Marbles.HTTP.Middleware || {};
+
+
+
+(function () {
+
+"use strict";
+
+/**
+ * @memberof Marbles.HTTP.Middleware
+ * @param {String} user
+ * @param {String} password
+ * @desc Returns middleware for setting `Authorize` header
+ */
+Marbles.HTTP.Middleware.BasicAuth = function (user, password) {
+	var authHeader = "Basic "+ window.btoa((user || "") +":"+ (password || ""));
+	return {
+		willSendRequest: function (request) {
+			try {
+				request.setRequestHeader("Authorization", authHeader);
+			} catch (e) {
+				setTimeout(function () {
+					throw e;
+				}, 0);
+			}
+		}
+	};
+};
+
+})();
 
 
 
