@@ -275,14 +275,13 @@
 		// returns matched handler or null
 		loadURL: function () {
 			var prevPath = this.prevPath = this.path;
-			var prevParts = prevPath.match(this.constructor.regex.routeParts);
-			prevPath = prevParts[1];
-			var prevParams = this.deserializeParams(prevParts[2] || '');
+			var prevParams = this.prevPathParams = this.pathParams;
 
 			var path = this.path = this.getPath();
 			var parts = path.match(this.constructor.regex.routeParts);
 			path = parts[1];
 			var params = this.deserializeParams(parts[2] || '');
+			this.pathParams = params;
 
 			var prevHandler;
 			if (this.path !== this.prevPath) {
