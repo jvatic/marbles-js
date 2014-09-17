@@ -1181,7 +1181,7 @@ Marbles.QueryParams = {
 
 			if (options.trigger) {
 				// cause route handler to be called
-				this.loadURL();
+				this.loadURL({ replace: options.replace });
 			}
 		},
 
@@ -1333,9 +1333,14 @@ Marbles.QueryParams = {
 
 		// Attempt to find handler for current path
 		// returns matched handler or null
-		loadURL: function () {
-			var prevPath = this.prevPath = this.path;
-			var prevParams = this.prevPathParams = this.pathParams;
+		loadURL: function (options) {
+			options = options || {};
+			var prevPath = this.path;
+			var prevParams = this.pathParams;
+			if ( !options.replace ) {
+				this.prevPath = prevPath;
+				this.prevParams = prevParams;
+			}
 
 			var path = this.path = this.getPath();
 			var parts = path.match(this.constructor.regex.routeParts);
