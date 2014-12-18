@@ -261,6 +261,7 @@
 
 		getHandler: function (path) {
 			path = path || this.getPath();
+			path = path.split('?')[0];
 			var handler = null;
 			for (var i = 0, _len = this.handlers.length; i < _len; i++) {
 				if (this.handlers[i].route.test(path)) {
