@@ -1,8 +1,3 @@
-//= require ./core
-
-(function () {
-"use strict";
-
 var __callbacks = [];
 
 /**
@@ -10,7 +5,7 @@ var __callbacks = [];
  * @mixin
  * @desc Simple FLUX Dispatcher
  */
-Marbles.Dispatcher = {
+var Dispatcher = {
 	/**
 	 * @method
 	 * @param {function} callback Function to call events with
@@ -37,4 +32,4 @@ Marbles.Dispatcher = {
 	}
 };
 
-})();
+export default Dispatcher;

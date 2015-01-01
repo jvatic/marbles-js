@@ -1,14 +1,8 @@
-//= require ./core
-//= require ./utils
-//= require ./transaction
-//= require ./id_mapping
-//= require ./accessors
-//= require ./events
-//= require_self
-
-(function () {
-
-"use strict";
+import Utils from "./utils";
+import Transaction from "./transaction";
+import CIDMapping from "./id_mapping";
+import Accessors from "./accessors";
+import Events from "./events";
 
 /**
  * @deprecated Use the Store instead
@@ -16,7 +10,7 @@
  * @memberof Marbles
  * @class
  */
-Marbles.Model = Marbles.Utils.createClass({
+var Model = Utils.createClass({
 	displayName: 'Marbles.Model',
 
 	mixins: [
@@ -32,18 +26,18 @@ Marbles.Model = Marbles.Utils.createClass({
 
 		// Make ctor and proto evented
 		{
-			ctor: Marbles.Events,
-			proto: Marbles.Events
+			ctor: Events,
+			proto: Events
 		},
 
 		// Extend ptoto with accessor methods
-		Marbles.Accessors,
+		Accessors,
 
 		// Extend proto with transaction method
-		Marbles.Transaction,
+		Transaction,
 
 		// CIDMapping extends both ctor and proto
-		Marbles.CIDMapping
+		CIDMapping
 	],
 
 	willInitialize: function (attrs, options) {
@@ -96,4 +90,4 @@ Marbles.Model = Marbles.Utils.createClass({
 	}
 });
 
-})();
+export default Model;

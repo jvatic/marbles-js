@@ -1,4 +1,5 @@
 require "marbles-js/version"
+require "es6-module-mapper"
 
 module MarblesJS
   def self.settings

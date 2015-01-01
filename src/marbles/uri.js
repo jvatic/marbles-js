@@ -1,103 +1,97 @@
-//= require ./core
-//= require ./utils
-//= require ./query_params
+import Utils from "./utils";
+import QueryParams from "./query_params";
 
-(function () {
+var URI = Utils.createClass({
+	displayName: 'Marbles.URI',
 
-	"use strict";
+	mixins: [QueryParams],
 
-	var URI = Marbles.Utils.createClass({
-		displayName: 'Marbles.URI',
+	willInitialize: function (url, params) {
+		this.url = url.trim();
+		this.params = params || [{}];
 
-		mixins: [Marbles.QueryParams],
+		this.parse();
 
-		willInitialize: function (url, params) {
-			this.url = url.trim();
-			this.params = params || [{}];
+		this.isURI = true;
+	},
 
-			this.parse();
+	toString: function () {
+		var portString = '';
+		if (this.port !== 443 && this.port !== 80) {
+			portString = ':'+ this.port;
+		}
 
-			this.isURI = true;
-		},
+		var schemeString = '';
+		if (this.scheme) {
+			schemeString = this.scheme + '://';
+		}
 
-		toString: function () {
-			var portString = '';
-			if (this.port !== 443 && this.port !== 80) {
-				portString = ':'+ this.port;
-			}
+		var queryString = this.serializeParams(this.params);
+		if (queryString === '?') {
+			queryString = '';
+		}
 
-			var schemeString = '';
-			if (this.scheme) {
-				schemeString = this.scheme + '://';
-			}
+		var hashString = '';
+		if (this.hash) {
+			hashString = '#'+ this.hash;
+		}
 
-			var queryString = this.serializeParams(this.params);
-			if (queryString === '?') {
-				queryString = '';
-			}
+		return (schemeString + this.hostname + portString + this.path + queryString + hashString).replace(/\/$/, '');
+	},
 
-			var hashString = '';
-			if (this.hash) {
-				hashString = '#'+ this.hash;
-			}
+	assertEqual: function (uriOrString) {
+		var uri = uriOrString;
+		if (uriOrString.isURI !== true) {
+			uri = new this.constructor(uriOrString);
+		}
 
-			return (schemeString + this.hostname + portString + this.path + queryString + hashString).replace(/\/$/, '');
-		},
+		return (uri.scheme === this.scheme) && (uri.hostname === this.hostname) && (uri.port === this.port) && (uri.path === this.path) && (uri.params === this.params) && (uri.hash === this.hash);
+	},
 
-		assertEqual: function (uriOrString) {
-			var uri = uriOrString;
-			if (uriOrString.isURI !== true) {
-				uri = new this.constructor(uriOrString);
-			}
+	parse: function () {
+		var m = this.url.match(this.constructor.REGEX);
+		this.hostname = m[2] || this.defaultHost();
+		this.scheme = (m[1] || this.defaultScheme()).replace(/:\/\/$/, '');
+		this.port = Number(m[3]) || this.defaultPort();
+		this.path = m[4] || '';
+		if (m[5]) {
+			var params = this.deserializeParams(m[5]);
+			this.replaceParams.apply(this, [this.params].concat(params));
+		}
+		this.hash = m[6];
+	},
 
-			return (uri.scheme === this.scheme) && (uri.hostname === this.hostname) && (uri.port === this.port) && (uri.path === this.path) && (uri.params === this.params) && (uri.hash === this.hash);
-		},
-
-		parse: function () {
-			var m = this.url.match(this.constructor.REGEX);
-			this.hostname = m[2] || this.defaultHost();
-			this.scheme = (m[1] || this.defaultScheme()).replace(/:\/\/$/, '');
-			this.port = Number(m[3]) || this.defaultPort();
-			this.path = m[4] || '';
-			if (m[5]) {
-				var params = this.deserializeParams(m[5]);
-				this.replaceParams.apply(this, [this.params].concat(params));
-			}
-			this.hash = m[6];
-		},
-
-		defaultScheme: function () {
-			if (typeof window !== 'undefined') {
-				return window.location.protocol + '//';
-			} else {
-				if (this.hostname) {
-					return 'http://';
-				} else {
-					return '';
-				}
-			}
-		},
-
-		defaultHost: function () {
-			if (typeof window !== 'undefined') {
-				return window.location.hostname;
+	defaultScheme: function () {
+		if (typeof window !== 'undefined') {
+			return window.location.protocol + '//';
+		} else {
+			if (this.hostname) {
+				return 'http://';
 			} else {
 				return '';
 			}
-		},
-
-		defaultPort: function () {
-			if (this.hostname === this.defaultHost() && typeof window !== 'undefined' && window.location.port) {
-				return window.location.port;
-			} else if (this.scheme === 'https') {
-				return 443;
-			} else {
-				return 80;
-			}
 		}
-	});
+	},
 
-	Marbles.URI = URI;
+	defaultHost: function () {
+		if (typeof window !== 'undefined') {
+			return window.location.hostname;
+		} else {
+			return '';
+		}
+	},
 
-	URI.REGEX = /^(https?:\/\/)?([^\/]+(:\d+)?)?([^\?#]+)?(\?[^#]+)?(#.+)?$/; // $1 = scheme, $2 = hostname, $3 = port, $4 = path, $5 = query, $6 = hash
-})();
+	defaultPort: function () {
+		if (this.hostname === this.defaultHost() && typeof window !== 'undefined' && window.location.port) {
+			return window.location.port;
+		} else if (this.scheme === 'https') {
+			return 443;
+		} else {
+			return 80;
+		}
+	}
+});
+
+URI.REGEX = /^(https?:\/\/)?([^\/]+(:\d+)?)?([^\?#]+)?(\?[^#]+)?(#.+)?$/; // $1 = scheme, $2 = hostname, $3 = port, $4 = path, $5 = query, $6 = hash
+
+export default URI;

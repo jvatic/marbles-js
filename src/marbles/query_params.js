@@ -1,14 +1,8 @@
-//= require ./core
-
-(function () {
-
-"use strict";
-
 /**
  * @memberof Marbles
  * @mixin
  */
-Marbles.QueryParams = {
+var QueryParams = {
 	/**
 	 * @method
 	 * @param {String} queryString
@@ -167,4 +161,4 @@ Marbles.QueryParams = {
 	}
 };
 
-})();
+export default QueryParams;

@@ -29,6 +29,10 @@ module MarblesJS
         env.context_class.class_eval do
           include MarblesJS::Sprockets::Helpers
         end
+
+        # we're not using the directive processor, so unregister it
+        env.unregister_preprocessor(
+          'application/javascript', ::Sprockets::DirectiveProcessor)
       end
       MarblesJS::Sprockets.setup(self.sprockets_environment, :vendor => !!compile_vendor)
 

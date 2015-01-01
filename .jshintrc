@@ -11,12 +11,12 @@
   "newcap": true,
   "noarg": true,
   "nonew": true,
-  "strict": true,
   "trailing": true,
 	"funcscope": true,
 	"validthis": true,
 	"boss": true,
   "browser": true,
+  "esnext": true,
 	"globals": {
 		"Marbles": true,
 		"Promise": true

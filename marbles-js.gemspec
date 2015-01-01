@@ -12,6 +12,8 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{A simple Backbone.js inspired JavaScript framework.}
   gem.homepage      = "https://github.com/jvatic/marbles-js"
 
+  gem.add_dependency 'es6-module-mapper'
+
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})

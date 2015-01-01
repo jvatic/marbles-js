@@ -1,24 +1,19 @@
-//= require ./core
-//= require ./utils
-//= require ./accessors
-//= require ./events
-//= require_self
-
-(function () {
-
-"use strict";
+import Utils from "./utils";
+import Accessors from "./accessors";
+import Events from "./events";
 
 /**
  * @deprecated
  * @see Marbles.State
  * @see Marbles.Store
+ * @name Object
  * @memberof Marbles
  * @class
  */
-Marbles.Object = Marbles.Utils.createClass({
+var MarblesObject = Utils.createClass({
 	displayName: 'Marbles.Object',
 
-	mixins: [Marbles.Accessors, Marbles.Events],
+	mixins: [Accessors, Events],
 
 	willInitialize: function (attrs) {
 		this.parseAttributes(attrs);
@@ -33,4 +28,4 @@ Marbles.Object = Marbles.Utils.createClass({
 	}
 });
 
-})();
+export default MarblesObject;

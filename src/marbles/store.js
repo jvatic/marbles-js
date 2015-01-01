@@ -1,10 +1,5 @@
-//= require ./core
-//= require ./utils
-//= require ./state
-
-(function () {
-
-"use strict";
+import Utils from "./utils";
+import State from "./state";
 
 /**
  * @memberof Marbles
@@ -12,7 +7,7 @@
  * @param {*} id Anything serializable as JSON
  * @desc This class is meant to be sub-classed using Store.createClass
  */
-var Store = Marbles.Store = function (id) {
+var Store = function (id) {
 	this.id = id;
 	this.constructor.__trackInstance(this);
 
@@ -27,7 +22,7 @@ var Store = Marbles.Store = function (id) {
 
 Store.displayName = "Marbles.Store";
 
-Marbles.Utils.extend(Store.prototype, Marbles.State, {
+Utils.extend(Store.prototype, State, {
 	/**
 	 * @memberof Marbles.Store
 	 * @instance
@@ -83,7 +78,7 @@ Marbles.Utils.extend(Store.prototype, Marbles.State, {
 // Call didBecomeActive when first change listener added
 Store.prototype.addChangeListener = function () {
 	this.__changeListenerExpected = false;
-	Marbles.State.addChangeListener.apply(this, arguments);
+	State.addChangeListener.apply(this, arguments);
 	if ( !this.__active && this.__changeListeners.length === 1 ) {
 		this.__active = true;
 		this.didBecomeActive();
@@ -95,7 +90,7 @@ Store.prototype.removeChangeListener = function () {
 	var done = function () {
 		this.__active = false;
 	}.bind(this);
-	Marbles.State.removeChangeListener.apply(this, arguments);
+	State.removeChangeListener.apply(this, arguments);
 	if (this.__changeListeners.length === 0 && !this.__changeListenerExpected) {
 		Promise.resolve(this.didBecomeInactive()).then(done);
 	}
@@ -274,7 +269,7 @@ Store.registerWithDispatcher = function (dispatcher) {
  */
 Store.createClass = function (proto) {
 	var parent = this;
-	var store = Marbles.Utils.inheritPrototype(function () {
+	var store = Utils.inheritPrototype(function () {
 		parent.apply(this, arguments);
 	}, parent);
 
@@ -285,7 +280,7 @@ Store.createClass = function (proto) {
 		delete proto.displayName;
 	}
 
-	Marbles.Utils.extend(store.prototype, proto);
+	Utils.extend(store.prototype, proto);
 
 	function wrappedFn(name, id) {
 		var instance = this.__getInstance(id);
@@ -313,4 +308,4 @@ Store.createClass = function (proto) {
 	return store;
 };
 
-})();
+export default Store;

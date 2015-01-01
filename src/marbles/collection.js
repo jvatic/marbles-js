@@ -1,10 +1,8 @@
-//= require ./model
-//= require ./id_mapping
-//= require_self
-
-(function () {
-
-"use strict";
+import Utils from "./utils";
+import Model from "./model";
+import Accessors from "./accessors";
+import Events from "./events";
+import CIDMapping from "./id_mapping";
 
 /**
  * @deprecated Use the Store instead
@@ -12,7 +10,7 @@
  * @memberof Marbles
  * @class
  */
-Marbles.Collection = Marbles.Utils.createClass({
+var Collection = Utils.createClass({
 	displayName: 'Marbles.Collection',
 
 	mixins: [
@@ -21,7 +19,7 @@ Marbles.Collection = Marbles.Utils.createClass({
 			ctor: {
 				collectionName: 'collection',
 				cidScope: ['collectionName'],
-				model: Marbles.Model,
+				model: Model,
 
 				buildModel: function (attrs, options) {
 					var ModelCtor = (options || {}).model || this.model,
@@ -38,15 +36,15 @@ Marbles.Collection = Marbles.Utils.createClass({
 
 		// Make ctor and proto evented
 		{
-			ctor: Marbles.Events,
-			proto: Marbles.Events
+			ctor: Events,
+			proto: Events
 		},
 
 		// Extend ptoto with accessor methods
-		Marbles.Accessors,
+		Accessors,
 
 		// CIDMapping extends both ctor and proto
-		Marbles.CIDMapping
+		CIDMapping
 	],
 
 	willInitialize: function (options) {
@@ -334,4 +332,4 @@ Marbles.Collection = Marbles.Utils.createClass({
 	}
 });
 
-})();
+export default Collection;

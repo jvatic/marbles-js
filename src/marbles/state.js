@@ -1,14 +1,9 @@
-//= require ./core
-
-(function () {
-"use strict";
-
 /**
  * @memberof Marbles
  * @mixin
  * @desc Manages a state object. You must define `state` {Object} and `__changeListeners` {Array} on the object this is mixed into.
  */
-Marbles.State = {
+var State = {
 	/**
 	 * @method
 	 * @param {function} handler Function to call when the state object changes
@@ -74,4 +69,4 @@ Marbles.State = {
 	didUpdate: function () {}
 };
 
-})();
+export default State;

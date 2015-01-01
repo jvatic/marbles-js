@@ -1,15 +1,8 @@
-//= require ./core
-//= require_self
-
-(function () {
-
-"use strict";
-
 /**
  * @memberof Marbles.HTTP.Middleware
  * @desc Serializes the request body if the Content-Type header matches. Deserializes the response body if the Content-Type header matches.
  */
-Marbles.HTTP.Middleware.SerializeJSON = {
+var SerializeJSON = {
 	willSendRequest: function (request) {
 		if (request.multipart) {
 			return;
@@ -42,4 +35,4 @@ Marbles.HTTP.Middleware.SerializeJSON = {
 	}
 };
 
-})();
+export default SerializeJSON;
