@@ -12,7 +12,9 @@ import History from "./history";
  * @class
  * @see Marbles.History
  * @example
- *	var MyRouter = Marbles.Router.createClass({
+ *	import Router from "marbles/router";
+ *	import History from "marbles/history";
+ *	var MyRouter = Router.createClass({
  *		displayName: "MyRouter",
  *
  *		// routes are evaluated in the order they are defined
@@ -40,13 +42,15 @@ import History from "./history";
  *			// opts contains any extra properties given in a route object
  *		}
  *	});
- *	new MyRouter(); // bring it to life
+ *	var history = new History();
+ *	history.register(new MyRouter()); // register router
+ *	history.start(); // bring it to life
  */
 var Router = Utils.createClass({
 	displayName: 'Marbles.Router',
 
 	willInitialize: function () {
-		this.bindRoutes();
+		this.compileRoutes();
 	},
 
 	navigate: function (path, options) {
@@ -58,10 +62,6 @@ var Router = Utils.createClass({
 	// of param objects, the first of which
 	// will contain any named params
 	route: function (route, handler, opts) {
-		if (!Marbles.history) {
-			Marbles.history = new History();
-		}
-
 		var paramNames = [];
 		if (typeof route.test !== 'function') {
 			paramNames = this.routeParamNames(route);
@@ -76,10 +76,17 @@ var Router = Utils.createClass({
 			handler = this[handler];
 		}
 
-		Marbles.history.route(route, name, handler, paramNames, opts, this);
+		this.routes.push({
+			route: route,
+			name: name,
+			handler: handler,
+			paramNames: paramNames,
+			opts: opts
+		});
 	},
 
-	bindRoutes: function () {
+	compileRoutes: function () {
+		this.routes = [];
 		var ctor = this.constructor;
 		if (!ctor.routes) {
 			throw new Error("You need to define "+ ctor.displayName || ctor.name +".routes");

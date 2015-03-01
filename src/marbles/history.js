@@ -12,7 +12,6 @@ import QueryParams from "./query_params";
  * @memberof Marbles
  * @class
  * @see Marbles.Router
- * @desc You should never need to explicitly instantiate this class
  */
 var History = Utils.createClass({
 	displayName: 'Marbles.History',
@@ -27,6 +26,20 @@ var History = Utils.createClass({
 		this.prevPath = null;
 
 		this.handlePopState = this.handlePopState.bind(this);
+	},
+
+	// register router
+	register: function (router) {
+		router.routes.forEach(function (route) {
+			this.route(
+				route.route,
+				route.name,
+				route.handler,
+				route.paramNames,
+				route.opts,
+				router
+			);
+		}.bind(this));
 	},
 
 	// register route handler
@@ -174,10 +187,21 @@ var History = Utils.createClass({
 		return window.location.protocol +'//'+ window.location.host + this.pathWithRoot(path);
 	},
 
-	// start pushState handling
+	/**
+	 * @func
+	 * @param {Object} options
+	 * @desc Starts listenening to pushState events and calls route handlers when appropriate
+	 * @example
+	 *	import History from "marbles/history";
+	 *	new History().start({
+	 *		root: "/", // if your app is mounted anywhere other than the domain root, enter the path prefix here
+	 *		pushState: true, // set to `false` in the unlikely event you wish to disable pushState (falls back to manipulating window.location)
+	 *		dispatcher: Marbles.Dispatcher // The Dispatcher all events are passed to
+	 *	});
+	 */
 	start: function (options) {
-		if (Marbles.history && Marbles.history.started) {
-			throw new Error("Marbles.history has already been started");
+		if (this.started) {
+			throw new Error("history has already been started");
 		}
 
 		if (!options) {
@@ -185,10 +209,6 @@ var History = Utils.createClass({
 		}
 		if (!options.hasOwnProperty('trigger')) {
 			options.trigger = true;
-		}
-
-		if (!Marbles.history) {
-			Marbles.history = this;
 		}
 
 		this.dispatcher = options.dispatcher || Dispatcher;
@@ -354,25 +374,6 @@ var History = Utils.createClass({
 History.regex = {
 	routeStripper: /^[\/]/,
 	routeParts: /^([^?]*)(?:\?(.*))?$/ // 1: path, 2: params
-};
-
-/**
- * @memberof Marbles.History
- * @func
- * @param {Object} options
- * @desc Starts listenening to pushState events and calls route handlers when appropriate
- * @example
- *	Marbles.History.start({
- *		root: "/", // if your app is mounted anywhere other than the domain root, enter the path prefix here
- *		pushState: true, // set to `false` in the unlikely event you wish to disable pushState (falls back to manipulating window.location)
- *		dispatcher: Marbles.Dispatcher // The Dispatcher all events are passed to
- *	})
- */
-History.start = function () {
-	if (!Marbles.history) {
-		Marbles.history = new History();
-	}
-	return Marbles.history.start.apply(Marbles.history, arguments);
 };
 
 export default History;
