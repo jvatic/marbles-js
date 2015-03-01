@@ -213,6 +213,8 @@ var History = Utils.createClass({
 
 		this.dispatcher = options.dispatcher || Dispatcher;
 
+		this.context = options.context || {};
+
 		this.options = Utils.extend({root: '/', pushState: true}, options);
 		this.path = this.getPath();
 
@@ -322,7 +324,8 @@ var History = Utils.createClass({
 				nextPath: path,
 				params: prevParams,
 				nextParams: params,
-				abort: handlerAbort
+				abort: handlerAbort,
+				context: this.context
 			};
 			if (prevHandler.router.beforeHandlerUnlaod) {
 				prevHandler.router.beforeHandlerUnlaod.call(prevHandler.router, handlerUnloadEvent);
@@ -340,7 +343,8 @@ var History = Utils.createClass({
 				handler: handler,
 				path: path,
 				params: params,
-				abort: handlerAbort
+				abort: handlerAbort,
+				context: this.context
 			};
 			if (handler.router.beforeHandler) {
 				handler.router.beforeHandler.call(handler.router, event);
@@ -351,7 +355,7 @@ var History = Utils.createClass({
 			}
 
 			if ( !__handlerAbort ) {
-				handler.callback.call(router, params, handler.opts);
+				handler.callback.call(router, params, handler.opts, this.context);
 				this.trigger('handler:after', {
 					handler: handler,
 					path: path,
