@@ -297,4 +297,9 @@ var Utils = {
 	}
 };
 
+var extend = Utils.extend;
+var lazyExtend = Utils.lazyExtend;
+var assertEqual = Utils.assertEqual;
+var createClass = Utils.createClass;
+export { extend, lazyExtend, assertEqual, createClass };
 export default Utils;
