@@ -30,6 +30,7 @@ var History = Utils.createClass({
 
 	// register router
 	register: function (router) {
+		router.history = this;
 		router.routes.forEach(function (route) {
 			this.route(
 				route.route,
@@ -80,8 +81,8 @@ var History = Utils.createClass({
 	// handler to be called even if path is
 	// already loaded
 	navigate: function (path, options) {
-		if (Marbles.history !== this || !this.started) {
-			throw new Error("Marbles.history has not been started or is set to a different instance");
+		if (!this.started) {
+			throw new Error("history has not been started");
 		}
 
 		if (!options) {

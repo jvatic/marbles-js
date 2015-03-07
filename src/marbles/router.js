@@ -53,10 +53,6 @@ var Router = Utils.createClass({
 		this.compileRoutes();
 	},
 
-	navigate: function (path, options) {
-		return Marbles.history.navigate(path, options);
-	},
-
 	// register route handler
 	// handler will be called with an array
 	// of param objects, the first of which
