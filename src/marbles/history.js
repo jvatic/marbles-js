@@ -8,6 +8,42 @@ import QueryParams from "./query_params";
  * * * * * * * * * * * * * * * * * *
  */
 
+var pathWithParams = function (path, params) {
+	if (params.length === 0) {
+		return path;
+	}
+
+	// clone params array
+	params = [].concat(params);
+	// we mutate the first param obj, so clone that
+	params[0] = Marbles.Utils.extend({}, params[0]);
+
+	// expand named params in path
+	path = path.replace(/:([^\/]+)/g, function (m, key) {
+		var paramObj = params[0];
+		if (paramObj.hasOwnProperty(key)) {
+			var val = paramObj[key];
+			delete paramObj[key];
+			return encodeURIComponent(val);
+		} else {
+			return ":"+ key;
+		}
+	});
+
+	// add remaining params to query string
+	var queryString = QueryParams.serializeParams(params);
+	if (queryString.length > 1) {
+		if (path.indexOf('?') !== -1) {
+			path = path +'&'+ queryString.substring(1);
+		} else {
+			path = path + queryString;
+		}
+	}
+
+	return path;
+};
+
+
 /**
  * @memberof Marbles
  * @class
@@ -15,8 +51,6 @@ import QueryParams from "./query_params";
  */
 var History = Utils.createClass({
 	displayName: 'Marbles.History',
-
-	mixins: [QueryParams],
 
 	willInitialize: function () {
 		this.started = false;
@@ -104,7 +138,7 @@ var History = Utils.createClass({
 		}
 
 		if (options.params) {
-			path = this.pathWithParams(path, options.params);
+			path = pathWithParams(path, options.params);
 		}
 
 		if (path === this.path && !options.force) {
@@ -133,41 +167,6 @@ var History = Utils.createClass({
 		}
 	},
 
-	pathWithParams: function (path, params) {
-		if (params.length === 0) {
-			return path;
-		}
-
-		// clone params array
-		params = [].concat(params);
-		// we mutate the first param obj, so clone that
-		params[0] = Marbles.Utils.extend({}, params[0]);
-
-		// expand named params in path
-		path = path.replace(/:([^\/]+)/g, function (m, key) {
-			var paramObj = params[0];
-			if (paramObj.hasOwnProperty(key)) {
-				var val = paramObj[key];
-				delete paramObj[key];
-				return encodeURIComponent(val);
-			} else {
-				return ":"+ key;
-			}
-		});
-
-		// add remaining params to query string
-		var queryString = this.serializeParams(params);
-		if (queryString.length > 1) {
-			if (path.indexOf('?') !== -1) {
-				path = path +'&'+ queryString.substring(1);
-			} else {
-				path = path + queryString;
-			}
-		}
-
-		return path;
-	},
-
 	pathWithRoot: function (path) {
 		// add path root if it's not already there
 		var root = this.options.root;
@@ -183,7 +182,7 @@ var History = Utils.createClass({
 
 	getURLFromPath: function (path, params) {
 		if (params && params.length !== 0) {
-			path = this.pathWithParams(path, params);
+			path = pathWithParams(path, params);
 		}
 		return window.location.protocol +'//'+ window.location.host + this.pathWithRoot(path);
 	},
@@ -303,7 +302,7 @@ var History = Utils.createClass({
 		var path = this.path = this.getPath();
 		var parts = path.match(this.constructor.regex.routeParts);
 		path = parts[1];
-		var params = this.deserializeParams(parts[2] || '');
+		var params = QueryParams.deserializeParams(parts[2] || '');
 		this.pathParams = params;
 
 		var prevHandler;
@@ -381,4 +380,5 @@ History.regex = {
 	routeParts: /^([^?]*)(?:\?(.*))?$/ // 1: path, 2: params
 };
 
+export { pathWithParams };
 export default History;
