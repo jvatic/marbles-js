@@ -16,7 +16,7 @@ var pathWithParams = function (path, params) {
 	// clone params array
 	params = [].concat(params);
 	// we mutate the first param obj, so clone that
-	params[0] = Marbles.Utils.extend({}, params[0]);
+	params[0] = Utils.extend({}, params[0]);
 
 	// expand named params in path
 	path = path.replace(/:([^\/]+)/g, function (m, key) {
@@ -42,7 +42,6 @@ var pathWithParams = function (path, params) {
 
 	return path;
 };
-
 
 /**
  * @memberof Marbles
