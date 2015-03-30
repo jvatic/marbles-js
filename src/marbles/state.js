@@ -25,17 +25,28 @@ var State = {
 
 	/**
 	 * @method
+	 * @param {function} changeFn
+	 * @desc Calls `willUpdate`, the passed in function, `handleChange`, then `didUpdate`
+	 */
+	withChange: function (changeFn) {
+		this.willUpdate();
+		changeFn.call(this);
+		this.handleChange();
+		this.didUpdate();
+	},
+
+	/**
+	 * @method
 	 * @param {Object} newState
 	 * @desc Copies properties of newState to the existing state object
 	 */
 	setState: function (newState) {
-		this.willUpdate();
-		var state = this.state;
-		Object.keys(newState).forEach(function (key) {
-			state[key] = newState[key];
+		this.withChange(function () {
+			var state = this.state;
+			Object.keys(newState).forEach(function (key) {
+				state[key] = newState[key];
+			});
 		});
-		this.handleChange();
-		this.didUpdate();
 	},
 
 	/**
@@ -44,10 +55,9 @@ var State = {
 	 * @desc Replaces the existing state object with newState
 	 */
 	replaceState: function (newState) {
-		this.willUpdate();
-		this.state = newState;
-		this.handleChange();
-		this.didUpdate();
+		this.withChange(function () {
+			this.state = newState;
+		});
 	},
 
 	handleChange: function () {
