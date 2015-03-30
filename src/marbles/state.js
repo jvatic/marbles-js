@@ -26,13 +26,13 @@ var State = {
 	/**
 	 * @method
 	 * @param {function} changeFn
-	 * @desc Calls `willUpdate`, the passed in function, `handleChange`, then `didUpdate`
+	 * @desc Calls `willChange`, the passed in function, `handleChange`, then `didChange`
 	 */
 	withChange: function (changeFn) {
-		this.willUpdate();
+		this.willChange();
 		changeFn.call(this);
 		this.handleChange();
-		this.didUpdate();
+		this.didChange();
 	},
 
 	/**
@@ -70,13 +70,13 @@ var State = {
 	 * @method
 	 * @desc Called before state object is mutated
 	 */
-	willUpdate: function () {},
+	willChange: function () {},
 
 	/**
 	 * @method
 	 * @desc Called after state object is mutated
 	 */
-	didUpdate: function () {}
+	didChange: function () {}
 };
 
 export default State;
