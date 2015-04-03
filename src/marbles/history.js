@@ -326,8 +326,8 @@ var History = Utils.createClass({
 				abort: handlerAbort,
 				context: this.context
 			};
-			if (prevHandler.router.beforeHandlerUnlaod) {
-				prevHandler.router.beforeHandlerUnlaod.call(prevHandler.router, handlerUnloadEvent);
+			if (prevHandler.router.beforeHandlerUnload) {
+				prevHandler.router.beforeHandlerUnload.call(prevHandler.router, handlerUnloadEvent);
 			}
 
 			if ( !__handlerAbort ) {
