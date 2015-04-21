@@ -1,6 +1,5 @@
 /* @flow weak */
 import Utils from "./utils";
-import History from "./history";
 
 /*
  * * * * * * * * * * * * * * * * * *
