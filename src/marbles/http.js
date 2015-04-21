@@ -238,85 +238,17 @@ var Request = Utils.createClass({
 			return;
 		}
 
-		var send = function () {
-			this.trigger('before:send');
-			if (this.multipart === true) {
-				if (typeof this.xhr.sendAsBinary !== 'function') {
-					throw new Error(this.constructor.displayName +': '+ this.xhr.constructor.name +'.prototype.sendAsBinary is not a function!');
-				}
-				this.xhr.sendAsBinary(this.requestBody);
-			} else {
-				try {
-					this.xhr.send(this.requestBody);
-				} catch (e) {
-					setTimeout(function () {
-						throw e;
-					}, 0);
-				}
-			}
-			this.trigger('after:send');
-		}.bind(this);
-
-		if (this.body && Array.isArray(this.body)) {
-			this.setRequestHeader('Content-Type', 'multipart/form-data; boundary='+ this.constructor.MULTIPART_BOUNDARY);
-			this.multipart = true;
-			this.buildMultipartRequestBody(send);
-		} else {
-			send();
+		this.trigger('before:send');
+		try {
+			this.xhr.send(this.requestBody);
+		} catch (e) {
+			setTimeout(function () {
+				throw e;
+			}, 0);
 		}
-	},
-
-	buildMultipartRequestBody: function (done) {
-		var startBoundary = "--"+ this.constructor.MULTIPART_BOUNDARY +"\r\n";
-		var closeBoundary = "--"+ this.constructor.MULTIPART_BOUNDARY +"--";
-		var parts = [];
-		var numPendingParts = this.body.length;
-
-		function readAsBinaryString(blob, callback) {
-			var reader = new FileReader();
-			reader.onload = function (e) {
-				callback(e.target.result);
-			};
-			reader.readAsBinaryString(blob);
-		}
-
-		function addPart(data) {
-			if (data) {
-				parts.push(data);
-			}
-			numPendingParts--;
-
-			if (numPendingParts === 0) {
-				this.body = startBoundary;
-				this.body += parts.join(startBoundary);
-				this.body += closeBoundary;
-				done();
-			}
-		}
-
-		function buildAndAddPart(part) {
-			var name = part[0];
-			var blob = part[1];
-			var filename = part[2];
-			var data = [
-				'Content-Disposition: form-data; name="'+ name +'"; filename="'+ filename +'"',
-				'Content-Type: '+ (blob.type || 'application/octet-stream'),
-				'Content-Length: '+ blob.size,
-			].join('\r\n');
-
-			readAsBinaryString(blob, function(str) {
-				data += str +'\r\n';
-				addPart(data);
-			});
-		}
-
-		for (var i = 0, _len = this.body.length; i < _len; i++) {
-			buildAndAddPart(this.body[i]);
-		}
+		this.trigger('after:send');
 	}
 });
-
-Request.MULTIPART_BOUNDARY = "-----------REQUEST_PART";
 
 Request.activeRequests = {};
 
