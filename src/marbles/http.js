@@ -238,17 +238,125 @@ var Request = Utils.createClass({
 			return;
 		}
 
-		this.trigger('before:send');
-		try {
-			this.xhr.send(this.requestBody);
-		} catch (e) {
-			setTimeout(function () {
-				throw e;
-			}, 0);
+		var send = function () {
+			this.trigger('before:send');
+			try {
+				this.xhr.send(this.requestBody);
+			} catch (e) {
+				setTimeout(function () {
+					throw e;
+				}, 0);
+			}
+			this.trigger('after:send');
+		}.bind(this);
+
+		if (this.requestBody && Array.isArray(this.requestBody)) {
+			this.setRequestHeader('Content-Type', 'multipart/form-data; boundary='+ this.constructor.MULTIPART_BOUNDARY);
+			this.multipart = true;
+			this.buildMultipartRequestBody(send);
+		} else {
+			send();
+		}
+	},
+
+	buildMultipartRequestBody: function (done) {
+		var startBoundary = "--"+ this.constructor.MULTIPART_BOUNDARY +"\r\n";
+		var closeBoundary = "--"+ this.constructor.MULTIPART_BOUNDARY +"--";
+		var parts = [];
+		var numPendingParts = this.requestBody.length;
+
+		function readAsArrayBuffer(blob) {
+			return new Promise(function (resolve, reject) {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					resolve(e.target.result);
+				};
+				reader.onerror = function (e) {
+					reject(e.target.error);
+				};
+				reader.readAsArrayBuffer(blob);
+			});
+		}
+
+		function readStringAsArrayBuffer(str) {
+			return new Promise(function (resolve) {
+				var len = str.length;
+				var buf = new ArrayBuffer(len*2);
+				var bufView = new Uint16Array(buf);
+				for (var i = 0; i < len; i++) {
+					bufView[i] = str.charCodeAt(i);
+				}
+				resolve(buf);
+			});
+		}
+
+		function joinBuffers(buffers) {
+			return new Promise(function (resolve) {
+				var size = 0;
+				var len = buffers.length;
+				var i, j, jlen, b;
+				for (i = 0; i < len; i++) {
+					size += buffers[i].byteLength;
+				}
+				var buf = new ArrayBuffer(size);
+				var bufView = new Uint16Array(buf);
+				var offset = 0;
+				for (i = 0; i < len; i++) {
+					b = buffers[i];
+					jlen = b.length;
+					for (j = 0; j < jlen; j++, offset++) {
+						bufView[offset+j] = b[j];
+					}
+				}
+				resolve(buf);
+			});
+		}
+
+		function addPart(buffer) {
+			if (buffer) {
+				parts.push(buffer);
+			}
+			numPendingParts--;
+
+			if (numPendingParts === 0) {
+				readStringAsArrayBuffer(closeBoundary).then(function (buf) {
+					return joinBuffers(parts.concat([buf]));
+				}).then(function (buf) {
+					var bufView = new Uint16Array(buf);
+					this.requestBody = bufView;
+					done();
+				}.bind(this));
+			}
+		}
+
+		function buildAndAddPart(part) {
+			var name = part[0];
+			var blob = part[1];
+			var filename = part[2];
+			Promise.all([
+				readStringAsArrayBuffer(startBoundary),
+				readStringAsArrayBuffer([
+					'Content-Disposition: form-data; name="'+ name +'"; filename="'+ filename +'"',
+					'Content-Type: '+ (blob.type || 'application/octet-stream'),
+					'Content-Length: '+ blob.size,
+					].join('\r\n')),
+				readAsArrayBuffer(blob),
+				readStringAsArrayBuffer('\r\n'),
+			]).then(function (buffers) {
+				return joinBuffers(buffers);
+			}).then(function (buffer) {
+				addPart.call(this, buffer);
+			}.bind(this));
+		}
+
+		for (var i = 0, _len = this.requestBody.length; i < _len; i++) {
+			buildAndAddPart.call(this, this.requestBody[i]);
 		}
 		this.trigger('after:send');
 	}
 });
+
+Request.MULTIPART_BOUNDARY = "-----------REQUEST_PART";
 
 Request.activeRequests = {};
 
