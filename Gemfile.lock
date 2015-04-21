@@ -1,0 +1,49 @@
+GIT
+  remote: https://github.com/jvatic/es6-module-mapper.git
+  revision: 227387a091915b396e2e5ca2b5c00737c1e917cf
+  branch: master
+  specs:
+    es6-module-mapper (0.0.1)
+      yajl-ruby (~> 1.2)
+
+GIT
+  remote: https://github.com/rails/sprockets.git
+  revision: aa5f8fee49c6afe7c8550b74f09c08e316368e06
+  branch: master
+  specs:
+    sprockets (3.0.1)
+      rack (~> 1.0)
+
+PATH
+  remote: .
+  specs:
+    marbles-js (0.0.5)
+      es6-module-mapper
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.6.3)
+    execjs (1.4.0)
+      multi_json (~> 1.0)
+    multi_json (1.7.9)
+    rack (1.6.0)
+    rake (10.1.0)
+    uglifier (2.1.2)
+      execjs (>= 0.3.0)
+      multi_json (~> 1.0, >= 1.0.2)
+    yajl-ruby (1.2.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  coffee-script
+  es6-module-mapper!
+  marbles-js!
+  rake
+  sprockets!
+  uglifier
