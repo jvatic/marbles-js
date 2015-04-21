@@ -53,6 +53,39 @@ var State = {
 	/**
 	 * @method
 	 * @param {Object} newState
+	 * @desc Same as setState, but waits up to 10ms for more changes to occur before calling change listeners
+	 */
+	setStateWithDelay: function (newState) {
+		this.willChange();
+		var state = this.state;
+		Object.keys(newState).forEach(function (key) {
+			state[key] = newState[key];
+		});
+		this.handleChangeWithDelay();
+	},
+
+	handleChangeWithDelay: function () {
+		clearTimeout(this.__handleChangeTimeout);
+		this.__handleChangeTimeout = setTimeout(function () {
+			this.handleChangeDelayed();
+		}.bind(this), 2);
+		if ( !this.__handleChangeMaxTimeout ) {
+			this.__handleChangeMaxTimeout = setTimeout(function () {
+				this.handleChangeDelayed();
+			}.bind(this), 10);
+		}
+	},
+
+	handleChangeDelayed: function () {
+		clearTimeout(this.__handleChangeMaxTimeout);
+		clearTimeout(this.__handleChangeTimeout);
+		this.handleChange();
+		this.didChange();
+	},
+
+	/**
+	 * @method
+	 * @param {Object} newState
 	 * @desc Replaces the existing state object with newState
 	 */
 	replaceState: function (newState) {
