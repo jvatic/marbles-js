@@ -1,3 +1,4 @@
+/* @flow weak */
 import Utils from "./utils";
 
 var IDCounter = Utils.createClass({

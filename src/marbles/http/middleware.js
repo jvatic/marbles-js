@@ -1,3 +1,4 @@
+/* @flow weak */
 import BasicAuth from "./middleware/basic_auth";
 import FormEncoded from "./middleware/form_encoded";
 import SerializeJSON from "./middleware/serialize_json";

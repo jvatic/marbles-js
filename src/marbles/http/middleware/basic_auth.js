@@ -1,3 +1,4 @@
+/* @flow weak */
 /**
  * @memberof Marbles.HTTP.Middleware
  * @param {String} user

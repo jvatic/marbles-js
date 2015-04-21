@@ -1,3 +1,4 @@
+/* @flow weak */
 /**
  * @global
  * @namespace Marbles

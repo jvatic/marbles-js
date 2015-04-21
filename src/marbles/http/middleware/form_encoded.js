@@ -1,3 +1,4 @@
+/* @flow weak */
 import QueryParams from "../../query_params";
 
 var CONTENT_TYPE = 'application/x-www-form-urlencoded';

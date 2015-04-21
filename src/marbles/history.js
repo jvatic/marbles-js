@@ -1,3 +1,4 @@
+/* @flow weak */
 import Utils from "./utils";
 import Dispatcher from "./dispatcher";
 import QueryParams from "./query_params";

@@ -1,3 +1,4 @@
+/* @flow weak */
 import Utils from "./utils";
 import Transaction from "./transaction";
 import CIDMapping from "./id_mapping";

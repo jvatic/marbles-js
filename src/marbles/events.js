@@ -1,3 +1,4 @@
+/* @flow weak */
 var EVENT_SPLITTER = /\s+/;
 
 function initEvents(obj) {

@@ -1,3 +1,4 @@
+/* @flow weak */
 /**
  * @memberof Marbles.HTTP.Middleware
  * @desc Sets `withCredentials = true` on the XMLHttpRequest object

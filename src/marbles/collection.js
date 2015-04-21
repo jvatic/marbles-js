@@ -1,3 +1,4 @@
+/* @flow weak */
 import Utils from "./utils";
 import Model from "./model";
 import Accessors from "./accessors";

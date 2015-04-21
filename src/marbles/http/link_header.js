@@ -1,3 +1,4 @@
+/* @flow weak */
 var LINK_SPLITTER = /,[\s\r\n]*/;
 var LINK_MATCHER = /<([^>]+)>((?:[\s\r\n]|.)*)/;
 var ATTR_SPLITTER = /[\s\r\n]*;[\s\r\n]*/;

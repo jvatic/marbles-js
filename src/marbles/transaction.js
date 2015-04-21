@@ -1,3 +1,4 @@
+/* @flow weak */
 var Transaction = {
 	transaction: function (operationFn) {
 		var tmp = Object.create(this);

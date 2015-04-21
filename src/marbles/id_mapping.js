@@ -1,3 +1,4 @@
+/* @flow weak */
 import IDCounter from "./id_counter";
 
 var __generateCIDName,

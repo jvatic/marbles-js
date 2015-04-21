@@ -1,3 +1,4 @@
+/* @flow weak */
 var __extend = function (obj, others, options) {
 	var override = options.override;
 

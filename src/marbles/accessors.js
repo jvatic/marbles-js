@@ -1,3 +1,4 @@
+/* @flow weak */
 var KEYPATH_SEP = '.';
 var displayName = 'Marbles.Accessors';
 

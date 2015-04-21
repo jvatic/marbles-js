@@ -1,3 +1,4 @@
+/* @flow weak */
 var escapeKeypath = function (keypath) {
 	return keypath.replace(".", "_");
 };

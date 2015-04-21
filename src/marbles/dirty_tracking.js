@@ -1,3 +1,4 @@
+/* @flow weak */
 import Utils from "./utils";
 
 var assertEqual = function (obj1, obj2) {
