@@ -5,55 +5,6 @@ import URI from "./uri";
 
 /**
  * @memberof Marbles
- * @func
- * @params {Object} options
- * @returns {Marbles.HTTPRequest} request
- * @see Marbles.HTTP.Middleware
- * @example
- *	Marbles.HTTP({
- *		method: "POST",
- *		url: "http://example.com/posts",
- *		params: [{
- *			a: 1
- *		}],
- *		body: { title: "My Post", content: "Lorem ipsum..." },
- *		middleware: [
- *			Marbles.HTTP.Middleware.SerializeJSON
- *		],
- *		headers: {
- *			"Content-Type": "application/json",
- *		}
- *	}).then(function (args) {
- *		var res = args[0];
- *		var xhr = args[1];
- *		// request complete
- *		// do something
- *	}).catch(function (err) {
- *		// request terminated
- *		// do something
- *	});
- */
-var HTTP = function (options) {
-	var request = new Request({
-		method: options.method,
-		url: options.url,
-		params: options.params,
-		body: options.body,
-		headers: options.headers,
-		middleware: options.middleware
-	});
-	if (typeof options.callback === 'function') {
-		request.once('complete', options.callback);
-	}
-	if ( !request.xhr ) {
-		request.open();
-		request.send();
-	}
-	return request;
-};
-
-/**
- * @memberof Marbles
  * @class
  * @name Marbles.HTTPRequest
  * @params {Object} options
@@ -251,6 +202,55 @@ var Request = Utils.createClass({
 });
 
 Request.activeRequests = {};
+
+/**
+ * @memberof Marbles
+ * @func
+ * @params {Object} options
+ * @returns {Marbles.HTTPRequest} request
+ * @see Marbles.HTTP.Middleware
+ * @example
+ *	Marbles.HTTP({
+ *		method: "POST",
+ *		url: "http://example.com/posts",
+ *		params: [{
+ *			a: 1
+ *		}],
+ *		body: { title: "My Post", content: "Lorem ipsum..." },
+ *		middleware: [
+ *			Marbles.HTTP.Middleware.SerializeJSON
+ *		],
+ *		headers: {
+ *			"Content-Type": "application/json",
+ *		}
+ *	}).then(function (args) {
+ *		var res = args[0];
+ *		var xhr = args[1];
+ *		// request complete
+ *		// do something
+ *	}).catch(function (err) {
+ *		// request terminated
+ *		// do something
+ *	});
+ */
+var HTTP = function (options) {
+	var request = new Request({
+		method: options.method,
+		url: options.url,
+		params: options.params,
+		body: options.body,
+		headers: options.headers,
+		middleware: options.middleware
+	});
+	if (typeof options.callback === 'function') {
+		request.once('complete', options.callback);
+	}
+	if ( !request.xhr ) {
+		request.open();
+		request.send();
+	}
+	return request;
+};
 
 export { Request, HTTP };
 export default HTTP;
