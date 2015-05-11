@@ -53,18 +53,20 @@ var State = {
 	/**
 	 * @method
 	 * @param {Object} newState
+	 * @param {Number} maxTimeout
 	 * @desc Same as setState, but waits up to 10ms for more changes to occur before calling change listeners
 	 */
-	setStateWithDelay: function (newState) {
+	setStateWithDelay: function (newState, maxTimeout) {
 		this.willChange();
 		var state = this.state;
 		Object.keys(newState).forEach(function (key) {
 			state[key] = newState[key];
 		});
-		this.handleChangeWithDelay();
+		this.handleChangeWithDelay(maxTimeout);
 	},
 
-	handleChangeWithDelay: function () {
+	handleChangeWithDelay: function (maxTimeout) {
+		maxTimeout = maxTimeout || 10;
 		clearTimeout(this.__handleChangeTimeout);
 		this.__handleChangeTimeout = setTimeout(function () {
 			this.handleChangeDelayed();
@@ -72,7 +74,7 @@ var State = {
 		if ( !this.__handleChangeMaxTimeout ) {
 			this.__handleChangeMaxTimeout = setTimeout(function () {
 				this.handleChangeDelayed();
-			}.bind(this), 10);
+			}.bind(this), maxTimeout);
 		}
 	},
 
