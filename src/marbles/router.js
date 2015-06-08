@@ -49,7 +49,9 @@ import Utils from "./utils";
 var Router = Utils.createClass({
 	displayName: 'Marbles.Router',
 
-	willInitialize: function () {
+	willInitialize: function (options) {
+		options = options || {};
+		this.context = options.context;
 		this.compileRoutes();
 	},
 
