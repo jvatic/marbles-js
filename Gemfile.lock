@@ -1,17 +1,18 @@
 GIT
   remote: https://github.com/jvatic/es6-module-mapper.git
-  revision: 227387a091915b396e2e5ca2b5c00737c1e917cf
+  revision: 513978c86df3785f5d37aa0cee4ec5c0fc980ced
   branch: master
   specs:
     es6-module-mapper (0.0.1)
+      sprockets (~> 3.2)
       yajl-ruby (~> 1.2)
 
 GIT
   remote: https://github.com/rails/sprockets.git
-  revision: aa5f8fee49c6afe7c8550b74f09c08e316368e06
-  branch: master
+  revision: 09a7f56fe403700301467d3b14ee08e3aa713643
+  tag: v3.2.0
   specs:
-    sprockets (3.0.1)
+    sprockets (3.2.0)
       rack (~> 1.0)
 
 PATH
@@ -23,18 +24,17 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    coffee-script (2.2.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.6.3)
-    execjs (1.4.0)
-      multi_json (~> 1.0)
-    multi_json (1.7.9)
-    rack (1.6.0)
-    rake (10.1.0)
-    uglifier (2.1.2)
+    coffee-script-source (1.9.1.1)
+    execjs (2.5.2)
+    json (1.8.3)
+    rack (1.6.1)
+    rake (10.4.2)
+    uglifier (2.7.1)
       execjs (>= 0.3.0)
-      multi_json (~> 1.0, >= 1.0.2)
+      json (>= 1.8.0)
     yajl-ruby (1.2.1)
 
 PLATFORMS
