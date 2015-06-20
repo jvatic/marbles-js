@@ -1,4 +1,5 @@
 require 'marbles-js'
+require "es6-module-mapper"
 
 module MarblesJS
   module Compiler
