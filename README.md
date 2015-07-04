@@ -7,6 +7,41 @@ Marbles is a JavaScript framework inspired by [Backbone.js](http://backbonejs.or
 
 There is no view component, it's recomended you use [React](http://reactjs.org/).
 
+## Usage
+
+### npm
+
+```
+npm install marbles
+```
+
+```javascript
+var Router = require('marbles/router');
+var extend = require('marbles/utils').extend;
+// ...
+```
+
+### Sprockets
+
+```ruby
+# Gemfile
+gem 'marbles-js', :git => 'https://github.com/jvatic/marbles-js.git'
+gem 'es6-module-mapper', :git => 'https://github.com/jvatic/es6-module-mapper.git';
+```
+
+```ruby
+require 'sprockets'
+require 'es6-module-mapper' # or some other means of ES6 module support
+require 'marbles-js'
+
+::Sprockets::Environment.new do |env|
+  # we're not using the directive processor, so unregister it
+  env.unregister_preprocessor(
+    'application/javascript', ::Sprockets::DirectiveProcessor)
+  ::MarblesJS::Sprockets.setup(env)
+end
+```
+
 ## Docs
 
 ```
@@ -30,8 +65,6 @@ bundle exec rake compile
 	- Move away from callbacks and use Dispatcher events and promises instead
 - Write tests (API is nearing completion and is no longer likely to drastically change).
 - Write more in-depth usage examples
-- Make compatible with node.js (the HTTP lib at minimum, but the router could also be useful in that context, everything else should already be compatible and just need to be made accessible)
-- Look into using ES6 modules instead of sprockets directives
 
 
 ## Contributing
