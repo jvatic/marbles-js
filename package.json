@@ -1,14 +1,14 @@
 {
   "name": "marbles",
   "description": "Front-end framework for routing, http, and data handling",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "keywords": ["framework", "http", "router", "routing", "browser"],
   "homepage": "https://github.com/jvatic/marbles-js",
   "repository": {
     "type": "git",
     "url": "https://github.com/jvatic/marbles-js.git"
   },
-  "license": "BSD",
+  "license": "BSD-3-Clause",
   "author": {
     "name": "Jesse Stuart",
     "url": "https://github.com/jvatic"
