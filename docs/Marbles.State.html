@@ -66,7 +66,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line378">line 378</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line402">line 402</a>
     </li></ul></dd>
     
 
@@ -187,7 +187,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line383">line 383</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line407">line 407</a>
     </li></ul></dd>
     
 
@@ -217,7 +217,7 @@
         
             
 <dt>
-    <h4 class="name" id="didUpdate"><span class="type-signature">(static) </span>didUpdate<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="didChange"><span class="type-signature">(static) </span>didChange<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 </dt>
@@ -258,7 +258,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line441">line 441</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line510">line 510</a>
     </li></ul></dd>
     
 
@@ -377,7 +377,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line392">line 392</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line416">line 416</a>
     </li></ul></dd>
     
 
@@ -496,7 +496,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line418">line 418</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line488">line 488</a>
     </li></ul></dd>
     
 
@@ -615,7 +615,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line403">line 403</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line439">line 439</a>
     </li></ul></dd>
     
 
@@ -645,7 +645,149 @@
         
             
 <dt>
-    <h4 class="name" id="willUpdate"><span class="type-signature">(static) </span>willUpdate<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setStateWithDelay"><span class="type-signature">(static) </span>setStateWithDelay<span class="signature">(newState, maxTimeout)</span><span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Same as setState, but waits up to 10ms for more changes to occur before calling change listeners
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>newState</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maxTimeout</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line454">line 454</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="willChange"><span class="type-signature">(static) </span>willChange<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 </dt>
@@ -686,7 +828,126 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line435">line 435</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line504">line 504</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="withChange"><span class="type-signature">(static) </span>withChange<span class="signature">(changeFn)</span><span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calls `willChange`, the passed in function, `handleChange`, then `didChange`
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>changeFn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line427">line 427</a>
     </li></ul></dd>
     
 
@@ -729,13 +990,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Marbles.Collection.html">Collection</a></li><li><a href="Marbles.History.html">History</a></li><li><a href="Marbles.HTTPRequest.html">HTTPRequest</a></li><li><a href="Marbles.Model.html">Model</a></li><li><a href="Marbles.Object.html">Object</a></li><li><a href="Marbles.Router.html">Router</a></li><li><a href="Marbles.Store.html">Store</a></li></ul><h3>Namespaces</h3><ul><li><a href="Marbles.html">Marbles</a></li><li><a href="Marbles.HTTP.Middleware.html">Middleware</a></li><li><a href="Marbles.Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="Marbles.Accessors.html">Accessors</a></li><li><a href="Marbles.Dispatcher.html">Dispatcher</a></li><li><a href="Marbles.Events.html">Events</a></li><li><a href="Marbles.HTTP.LinkHeader.html">LinkHeader</a></li><li><a href="Marbles.QueryParams.html">QueryParams</a></li><li><a href="Marbles.State.html">State</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Marbles.Collection.html">Collection</a></li><li><a href="Marbles.History.html">History</a></li><li><a href="Marbles.HTTPRequest.html">HTTPRequest</a></li><li><a href="Marbles.Model.html">Model</a></li><li><a href="Marbles.Object.html">Object</a></li><li><a href="Marbles.Router.html">Router</a></li><li><a href="Marbles.Store.html">Store</a></li></ul><h3>Namespaces</h3><ul><li><a href="Marbles.html">Marbles</a></li><li><a href="Marbles.HTTP.Middleware.html">Middleware</a></li><li><a href="Marbles.Utils.html">Utils</a></li></ul><h3>Mixins</h3><ul><li><a href="Marbles.Accessors.html">Accessors</a></li><li><a href="Marbles.Dispatcher.html">Dispatcher</a></li><li><a href="Marbles.Events.html">Events</a></li><li><a href="Marbles.HTTP.LinkHeader.html">LinkHeader</a></li><li><a href="Marbles.QueryParams.html">QueryParams</a></li><li><a href="Marbles.State.html">State</a></li></ul><h3>Global</h3><ul><li><a href="global.html#start">start</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Jan 09 2015 21:26:15 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sat Jul 04 2015 16:02:33 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

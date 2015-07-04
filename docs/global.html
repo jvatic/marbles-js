@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Mixin: Dispatcher</title>
+    <title>JSDoc: Global</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Mixin: Dispatcher</h1>
+    <h1 class="page-title">Global</h1>
 
     
 
@@ -27,9 +27,7 @@
 
 <header>
     <h2>
-        <span class="ancestors"><a href="Marbles.html">Marbles</a>.</span>
     
-    Dispatcher
     </h2>
     
 </header>
@@ -39,8 +37,6 @@
     
 
     
-        
-            <div class="description">Simple FLUX Dispatcher</div>
         
 
         
@@ -63,11 +59,6 @@
 
     
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line356">line 356</a>
-    </li></ul></dd>
     
 
     
@@ -102,12 +93,16 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="dispatch"><span class="type-signature">(static) </span>dispatch<span class="signature">(event)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="start"><span class="type-signature"></span>start<span class="signature">(options)</span><span class="type-signature"></span></h4>
 
     
 </dt>
 <dd>
 
+    
+    <div class="description">
+        Starts listenening to pushState events and calls route handlers when appropriate
+    </div>
     
 
     
@@ -140,7 +135,7 @@
 
         <tr>
             
-                <td class="name"><code>event</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
@@ -156,7 +151,7 @@
 
             
 
-            <td class="description last">An event object</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -187,7 +182,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line373">line 373</a>
+        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line1360">line 1360</a>
     </li></ul></dd>
     
 
@@ -210,165 +205,16 @@
     
 
     
-    <h5>Returns:</h5>
+
     
-            
-<div class="param-desc">
-    Resolves when all registered callbacks have been called
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
+        <h5>Example</h5>
         
-<span class="param-type">Promise</span>
-
-
-    </dd>
-</dl>
-
-        
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="register"><span class="type-signature">(static) </span>register<span class="signature">(callback)</span><span class="type-signature"> &rarr; {Number}</span></h4>
-
-    
-</dt>
-<dd>
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Function to call events with</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="marbles.js.html">marbles.js</a>, <a href="marbles.js.html#line362">line 362</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Dispatch index
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Number</span>
-
-
-    </dd>
-</dl>
-
-        
+    <pre class="prettyprint"><code>import History from "marbles/history";
+new History().start({
+	root: "/", // if your app is mounted anywhere other than the domain root, enter the path prefix here
+	pushState: true, // set to `false` in the unlikely event you wish to disable pushState (falls back to manipulating window.location)
+	dispatcher: Marbles.Dispatcher // The Dispatcher all events are passed to
+});</code></pre>
 
     
 </dd>

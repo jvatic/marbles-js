@@ -1,3 +1,4 @@
+/* @flow weak */
 /**
  * @global
  * @namespace Marbles
@@ -6,6 +7,7 @@
 (function(__m__) {
  "use strict";
  __m__["marbles/version"] = {};
+ /* @flow weak */
  /**
   * @global
   * @namespace Marbles
@@ -17,9 +19,13 @@
   __m__["marbles/version"].VERSION = VERSION;
  }
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/utils"] = {};
+    /* @flow weak */
+
     var __extend = function (obj, others, options) {
         var override = options.override;
 
@@ -319,11 +325,27 @@
         }
     };
 
+    var extend = Utils.extend;
+    var lazyExtend = Utils.lazyExtend;
+    var assertEqual = Utils.assertEqual;
+    var createClass = Utils.createClass;
+
+    if (true) {
+        __m__["marbles/utils"].extend = extend;
+        __m__["marbles/utils"].lazyExtend = lazyExtend;
+        __m__["marbles/utils"].assertEqual = assertEqual;
+        __m__["marbles/utils"].createClass = createClass;
+    }
+
     __m__["marbles/utils"].default = Utils;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/dispatcher"] = {};
+    /* @flow weak */
+
     var __callbacks = [];
 
     /**
@@ -360,6 +382,7 @@
 
     __m__["marbles/dispatcher"].default = Dispatcher;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
 /**
  * @memberof Marbles
  * @mixin
@@ -369,6 +392,7 @@
 (function(__m__) {
     "use strict";
     __m__["marbles/state"] = {};
+    /* @flow weak */
     /**
      * @memberof Marbles
      * @mixin
@@ -397,17 +421,63 @@
 
         /**
          * @method
+         * @param {function} changeFn
+         * @desc Calls `willChange`, the passed in function, `handleChange`, then `didChange`
+         */
+        withChange: function (changeFn) {
+            this.willChange();
+            changeFn.call(this);
+            this.handleChange();
+            this.didChange();
+        },
+
+        /**
+         * @method
          * @param {Object} newState
          * @desc Copies properties of newState to the existing state object
          */
         setState: function (newState) {
-            this.willUpdate();
+            this.withChange(function () {
+                var state = this.state;
+                Object.keys(newState).forEach(function (key) {
+                    state[key] = newState[key];
+                });
+            });
+        },
+
+        /**
+         * @method
+         * @param {Object} newState
+         * @param {Number} maxTimeout
+         * @desc Same as setState, but waits up to 10ms for more changes to occur before calling change listeners
+         */
+        setStateWithDelay: function (newState, maxTimeout) {
+            this.willChange();
             var state = this.state;
             Object.keys(newState).forEach(function (key) {
                 state[key] = newState[key];
             });
+            this.handleChangeWithDelay(maxTimeout);
+        },
+
+        handleChangeWithDelay: function (maxTimeout) {
+            maxTimeout = maxTimeout || 10;
+            clearTimeout(this.__handleChangeTimeout);
+            this.__handleChangeTimeout = setTimeout(function () {
+                this.handleChangeDelayed();
+            }.bind(this), 2);
+            if ( !this.__handleChangeMaxTimeout ) {
+                this.__handleChangeMaxTimeout = setTimeout(function () {
+                    this.handleChangeDelayed();
+                }.bind(this), maxTimeout);
+            }
+        },
+
+        handleChangeDelayed: function () {
+            clearTimeout(this.__handleChangeMaxTimeout);
+            clearTimeout(this.__handleChangeTimeout);
             this.handleChange();
-            this.didUpdate();
+            this.didChange();
         },
 
         /**
@@ -416,10 +486,9 @@
          * @desc Replaces the existing state object with newState
          */
         replaceState: function (newState) {
-            this.willUpdate();
-            this.state = newState;
-            this.handleChange();
-            this.didUpdate();
+            this.withChange(function () {
+                this.state = newState;
+            });
         },
 
         handleChange: function () {
@@ -432,22 +501,24 @@
          * @method
          * @desc Called before state object is mutated
          */
-        willUpdate: function () {},
+        willChange: function () {},
 
         /**
          * @method
          * @desc Called after state object is mutated
          */
-        didUpdate: function () {}
+        didChange: function () {}
     };
 
     __m__["marbles/state"].default = State;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/store"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
-    var State = __m__["marbles/state"].State;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
+    var State = __m__["marbles/state"].State || __m__["marbles/state"].default;
 
     /**
      * @memberof Marbles
@@ -758,9 +829,13 @@
 
     __m__["marbles/store"].default = Store;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/events"] = {};
+    /* @flow weak */
+
     var EVENT_SPLITTER = /\s+/;
 
     function initEvents(obj) {
@@ -901,6 +976,7 @@
 
     __m__["marbles/events"].default = Events;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
 /**
  * @memberof Marbles
  * @mixin
@@ -909,6 +985,7 @@
 (function(__m__) {
     "use strict";
     __m__["marbles/query_params"] = {};
+    /* @flow weak */
     /**
      * @memberof Marbles
      * @mixin
@@ -1075,12 +1152,14 @@
 
     __m__["marbles/query_params"].default = QueryParams;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/history"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
-    var Dispatcher = __m__["marbles/dispatcher"].Dispatcher;
-    var QueryParams = __m__["marbles/query_params"].QueryParams;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
+    var Dispatcher = __m__["marbles/dispatcher"].Dispatcher || __m__["marbles/dispatcher"].default;
+    var QueryParams = __m__["marbles/query_params"].QueryParams || __m__["marbles/query_params"].default;
 
     /*
      * * * * * * * * * * * * * * * * * *
@@ -1088,16 +1167,48 @@
      * * * * * * * * * * * * * * * * * *
      */
 
+    var pathWithParams = function (path, params) {
+        if (params.length === 0) {
+            return path;
+        }
+
+        // clone params array
+        params = [].concat(params);
+        // we mutate the first param obj, so clone that
+        params[0] = Utils.extend({}, params[0]);
+
+        // expand named params in path
+        path = path.replace(/:([^\/]+)/g, function (m, key) {
+            var paramObj = params[0];
+            if (paramObj.hasOwnProperty(key)) {
+                var val = paramObj[key];
+                delete paramObj[key];
+                return encodeURIComponent(val);
+            } else {
+                return ":"+ key;
+            }
+        });
+
+        // add remaining params to query string
+        var queryString = QueryParams.serializeParams(params);
+        if (queryString.length > 1) {
+            if (path.indexOf('?') !== -1) {
+                path = path +'&'+ queryString.substring(1);
+            } else {
+                path = path + queryString;
+            }
+        }
+
+        return path;
+    };
+
     /**
      * @memberof Marbles
      * @class
      * @see Marbles.Router
-     * @desc You should never need to explicitly instantiate this class
      */
     var History = Utils.createClass({
         displayName: 'Marbles.History',
-
-        mixins: [QueryParams],
 
         willInitialize: function () {
             this.started = false;
@@ -1107,6 +1218,21 @@
             this.prevPath = null;
 
             this.handlePopState = this.handlePopState.bind(this);
+        },
+
+        // register router
+        register: function (router) {
+            router.history = this;
+            router.routes.forEach(function (route) {
+                this.route(
+                    route.route,
+                    route.name,
+                    route.handler,
+                    route.paramNames,
+                    route.opts,
+                    router
+                );
+            }.bind(this));
         },
 
         // register route handler
@@ -1147,8 +1273,8 @@
         // handler to be called even if path is
         // already loaded
         navigate: function (path, options) {
-            if (Marbles.history !== this || !this.started) {
-                throw new Error("Marbles.history has not been started or is set to a different instance");
+            if (!this.started) {
+                throw new Error("history has not been started");
             }
 
             if (!options) {
@@ -1170,7 +1296,7 @@
             }
 
             if (options.params) {
-                path = this.pathWithParams(path, options.params);
+                path = pathWithParams(path, options.params);
             }
 
             if (path === this.path && !options.force) {
@@ -1199,41 +1325,6 @@
             }
         },
 
-        pathWithParams: function (path, params) {
-            if (params.length === 0) {
-                return path;
-            }
-
-            // clone params array
-            params = [].concat(params);
-            // we mutate the first param obj, so clone that
-            params[0] = Marbles.Utils.extend({}, params[0]);
-
-            // expand named params in path
-            path = path.replace(/:([^\/]+)/g, function (m, key) {
-                var paramObj = params[0];
-                if (paramObj.hasOwnProperty(key)) {
-                    var val = paramObj[key];
-                    delete paramObj[key];
-                    return encodeURIComponent(val);
-                } else {
-                    return ":"+ key;
-                }
-            });
-
-            // add remaining params to query string
-            var queryString = this.serializeParams(params);
-            if (queryString.length > 1) {
-                if (path.indexOf('?') !== -1) {
-                    path = path +'&'+ queryString.substring(1);
-                } else {
-                    path = path + queryString;
-                }
-            }
-
-            return path;
-        },
-
         pathWithRoot: function (path) {
             // add path root if it's not already there
             var root = this.options.root;
@@ -1249,15 +1340,26 @@
 
         getURLFromPath: function (path, params) {
             if (params && params.length !== 0) {
-                path = this.pathWithParams(path, params);
+                path = pathWithParams(path, params);
             }
             return window.location.protocol +'//'+ window.location.host + this.pathWithRoot(path);
         },
 
-        // start pushState handling
+        /**
+         * @func
+         * @param {Object} options
+         * @desc Starts listenening to pushState events and calls route handlers when appropriate
+         * @example
+         *	import History from "marbles/history";
+         *	new History().start({
+         *		root: "/", // if your app is mounted anywhere other than the domain root, enter the path prefix here
+         *		pushState: true, // set to `false` in the unlikely event you wish to disable pushState (falls back to manipulating window.location)
+         *		dispatcher: Marbles.Dispatcher // The Dispatcher all events are passed to
+         *	});
+         */
         start: function (options) {
-            if (Marbles.history && Marbles.history.started) {
-                throw new Error("Marbles.history has already been started");
+            if (this.started) {
+                throw new Error("history has already been started");
             }
 
             if (!options) {
@@ -1267,11 +1369,9 @@
                 options.trigger = true;
             }
 
-            if (!Marbles.history) {
-                Marbles.history = this;
-            }
-
             this.dispatcher = options.dispatcher || Dispatcher;
+
+            this.context = options.context || {};
 
             this.options = Utils.extend({root: '/', pushState: true}, options);
             this.path = this.getPath();
@@ -1360,7 +1460,7 @@
             var path = this.path = this.getPath();
             var parts = path.match(this.constructor.regex.routeParts);
             path = parts[1];
-            var params = this.deserializeParams(parts[2] || '');
+            var params = QueryParams.deserializeParams(parts[2] || '');
             this.pathParams = params;
 
             var prevHandler;
@@ -1382,10 +1482,11 @@
                     nextPath: path,
                     params: prevParams,
                     nextParams: params,
-                    abort: handlerAbort
+                    abort: handlerAbort,
+                    context: this.context
                 };
-                if (prevHandler.router.beforeHandlerUnlaod) {
-                    prevHandler.router.beforeHandlerUnlaod.call(prevHandler.router, handlerUnloadEvent);
+                if (prevHandler.router.beforeHandlerUnload) {
+                    prevHandler.router.beforeHandlerUnload.call(prevHandler.router, handlerUnloadEvent);
                 }
 
                 if ( !__handlerAbort ) {
@@ -1400,7 +1501,8 @@
                     handler: handler,
                     path: path,
                     params: params,
-                    abort: handlerAbort
+                    abort: handlerAbort,
+                    context: this.context
                 };
                 if (handler.router.beforeHandler) {
                     handler.router.beforeHandler.call(handler.router, event);
@@ -1411,7 +1513,7 @@
                 }
 
                 if ( !__handlerAbort ) {
-                    handler.callback.call(router, params, handler.opts);
+                    handler.callback.call(router, params, handler.opts, this.context);
                     this.trigger('handler:after', {
                         handler: handler,
                         path: path,
@@ -1436,32 +1538,18 @@
         routeParts: /^([^?]*)(?:\?(.*))?$/ // 1: path, 2: params
     };
 
-    /**
-     * @memberof Marbles.History
-     * @func
-     * @param {Object} options
-     * @desc Starts listenening to pushState events and calls route handlers when appropriate
-     * @example
-     *	Marbles.History.start({
-     *		root: "/", // if your app is mounted anywhere other than the domain root, enter the path prefix here
-     *		pushState: true, // set to `false` in the unlikely event you wish to disable pushState (falls back to manipulating window.location)
-     *		dispatcher: Marbles.Dispatcher // The Dispatcher all events are passed to
-     *	})
-     */
-    History.start = function () {
-        if (!Marbles.history) {
-            Marbles.history = new History();
-        }
-        return Marbles.history.start.apply(Marbles.history, arguments);
-    };
+    if (true) {
+        __m__["marbles/history"].pathWithParams = pathWithParams;
+    }
 
     __m__["marbles/history"].default = History;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/router"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
-    var History = __m__["marbles/history"].History;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
 
     /*
      * * * * * * * * * * * * * * * * * *
@@ -1474,7 +1562,9 @@
      * @class
      * @see Marbles.History
      * @example
-     *	var MyRouter = Marbles.Router.createClass({
+     *	import Router from "marbles/router";
+     *	import History from "marbles/history";
+     *	var MyRouter = Router.createClass({
      *		displayName: "MyRouter",
      *
      *		// routes are evaluated in the order they are defined
@@ -1502,17 +1592,17 @@
      *			// opts contains any extra properties given in a route object
      *		}
      *	});
-     *	new MyRouter(); // bring it to life
+     *	var history = new History();
+     *	history.register(new MyRouter()); // register router
+     *	history.start(); // bring it to life
      */
     var Router = Utils.createClass({
         displayName: 'Marbles.Router',
 
-        willInitialize: function () {
-            this.bindRoutes();
-        },
-
-        navigate: function (path, options) {
-            return Marbles.history.navigate(path, options);
+        willInitialize: function (options) {
+            options = options || {};
+            this.context = options.context;
+            this.compileRoutes();
         },
 
         // register route handler
@@ -1520,10 +1610,6 @@
         // of param objects, the first of which
         // will contain any named params
         route: function (route, handler, opts) {
-            if (!Marbles.history) {
-                Marbles.history = new History();
-            }
-
             var paramNames = [];
             if (typeof route.test !== 'function') {
                 paramNames = this.routeParamNames(route);
@@ -1538,10 +1624,17 @@
                 handler = this[handler];
             }
 
-            Marbles.history.route(route, name, handler, paramNames, opts, this);
+            this.routes.push({
+                route: route,
+                name: name,
+                handler: handler,
+                paramNames: paramNames,
+                opts: opts
+            });
         },
 
-        bindRoutes: function () {
+        compileRoutes: function () {
+            this.routes = [];
             var ctor = this.constructor;
             if (!ctor.routes) {
                 throw new Error("You need to define "+ ctor.displayName || ctor.name +".routes");
@@ -1637,9 +1730,13 @@
 
     __m__["marbles/router"].default = Router;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/accessors"] = {};
+    /* @flow weak */
+
     var KEYPATH_SEP = '.';
     var displayName = 'Marbles.Accessors';
 
@@ -1739,9 +1836,13 @@
 
     __m__["marbles/accessors"].default = Accessors;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/transaction"] = {};
+    /* @flow weak */
+
     var Transaction = {
         transaction: function (operationFn) {
             var tmp = Object.create(this);
@@ -1797,10 +1898,12 @@
 
     __m__["marbles/transaction"].default = Transaction;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/dirty_tracking"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
 
     var assertEqual = function (obj1, obj2) {
         if (obj1 === obj2) {
@@ -1920,9 +2023,13 @@
 
     __m__["marbles/dirty_tracking"].default = DirtyTracking;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/validation"] = {};
+    /* @flow weak */
+
     var escapeKeypath = function (keypath) {
         return keypath.replace(".", "_");
     };
@@ -2015,11 +2122,13 @@
 
     __m__["marbles/validation"].default = Validation;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/uri"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
-    var QueryParams = __m__["marbles/query_params"].QueryParams;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
+    var QueryParams = __m__["marbles/query_params"].QueryParams || __m__["marbles/query_params"].default;
 
     var URI = Utils.createClass({
         displayName: 'Marbles.URI',
@@ -2117,61 +2226,14 @@
 
     __m__["marbles/uri"].default = URI;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/http"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
-    var Events = __m__["marbles/events"].Events;
-    var URI = __m__["marbles/uri"].URI;
-
-    /**
-     * @memberof Marbles
-     * @func
-     * @params {Object} options
-     * @returns {Marbles.HTTPRequest} request
-     * @see Marbles.HTTP.Middleware
-     * @example
-     *	Marbles.HTTP({
-     *		method: "POST",
-     *		url: "http://example.com/posts",
-     *		params: [{
-     *			a: 1
-     *		}],
-     *		body: { title: "My Post", content: "Lorem ipsum..." },
-     *		middleware: [
-     *			Marbles.HTTP.Middleware.SerializeJSON
-     *		],
-     *		headers: {
-     *			"Content-Type": "application/json",
-     *		}
-     *	}).then(function (args) {
-     *		var res = args[0];
-     *		var xhr = args[1];
-     *		// request complete
-     *		// do something
-     *	}).catch(function (err) {
-     *		// request terminated
-     *		// do something
-     *	});
-     */
-    var HTTP = function (options) {
-        var request = new Request({
-            method: options.method,
-            url: options.url,
-            params: options.params,
-            body: options.body,
-            headers: options.headers,
-            middleware: options.middleware
-        });
-        if (typeof options.callback === 'function') {
-            request.once('complete', options.callback);
-        }
-        if ( !request.xhr ) {
-            request.open();
-            request.send();
-        }
-        return request;
-    };
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
+    var Events = __m__["marbles/events"].Events || __m__["marbles/events"].default;
+    var URI = __m__["marbles/uri"].URI || __m__["marbles/uri"].default;
 
     /**
      * @memberof Marbles
@@ -2359,87 +2421,68 @@
                 return;
             }
 
-            var send = function () {
-                this.trigger('before:send');
-                if (this.multipart === true) {
-                    if (typeof this.xhr.sendAsBinary !== 'function') {
-                        throw new Error(this.constructor.displayName +': '+ this.xhr.constructor.name +'.prototype.sendAsBinary is not a function!');
-                    }
-                    this.xhr.sendAsBinary(this.requestBody);
-                } else {
-                    try {
-                        this.xhr.send(this.requestBody);
-                    } catch (e) {
-                        setTimeout(function () {
-                            throw e;
-                        }, 0);
-                    }
-                }
-                this.trigger('after:send');
-            }.bind(this);
-
-            if (this.body && Array.isArray(this.body)) {
-                this.setRequestHeader('Content-Type', 'multipart/form-data; boundary='+ this.constructor.MULTIPART_BOUNDARY);
-                this.multipart = true;
-                this.buildMultipartRequestBody(send);
-            } else {
-                send();
+            this.trigger('before:send');
+            try {
+                this.xhr.send(this.requestBody);
+            } catch (e) {
+                setTimeout(function () {
+                    throw e;
+                }, 0);
             }
-        },
-
-        buildMultipartRequestBody: function (done) {
-            var startBoundary = "--"+ this.constructor.MULTIPART_BOUNDARY +"\r\n";
-            var closeBoundary = "--"+ this.constructor.MULTIPART_BOUNDARY +"--";
-            var parts = [];
-            var numPendingParts = this.body.length;
-
-            function readAsBinaryString(blob, callback) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    callback(e.target.result);
-                };
-                reader.readAsBinaryString(blob);
-            }
-
-            function addPart(data) {
-                if (data) {
-                    parts.push(data);
-                }
-                numPendingParts--;
-
-                if (numPendingParts === 0) {
-                    this.body = startBoundary;
-                    this.body += parts.join(startBoundary);
-                    this.body += closeBoundary;
-                    done();
-                }
-            }
-
-            function buildAndAddPart(part) {
-                var name = part[0];
-                var blob = part[1];
-                var filename = part[2];
-                var data = [
-                    'Content-Disposition: form-data; name="'+ name +'"; filename="'+ filename +'"',
-                    'Content-Type: '+ (blob.type || 'application/octet-stream'),
-                    'Content-Length: '+ blob.size,
-                ].join('\r\n');
-
-                readAsBinaryString(blob, function(str) {
-                    data += str +'\r\n';
-                    addPart(data);
-                });
-            }
-
-            for (var i = 0, _len = this.body.length; i < _len; i++) {
-                buildAndAddPart(this.body[i]);
-            }
+            this.trigger('after:send');
         }
     });
 
-    Request.MULTIPART_BOUNDARY = "-----------REQUEST_PART";
-
     Request.activeRequests = {};
+
+    /**
+     * @memberof Marbles
+     * @func
+     * @params {Object} options
+     * @returns {Marbles.HTTPRequest} request
+     * @see Marbles.HTTP.Middleware
+     * @example
+     *	Marbles.HTTP({
+     *		method: "POST",
+     *		url: "http://example.com/posts",
+     *		params: [{
+     *			a: 1
+     *		}],
+     *		body: { title: "My Post", content: "Lorem ipsum..." },
+     *		middleware: [
+     *			Marbles.HTTP.Middleware.SerializeJSON
+     *		],
+     *		headers: {
+     *			"Content-Type": "application/json",
+     *		}
+     *	}).then(function (args) {
+     *		var res = args[0];
+     *		var xhr = args[1];
+     *		// request complete
+     *		// do something
+     *	}).catch(function (err) {
+     *		// request terminated
+     *		// do something
+     *	});
+     */
+    var HTTP = function (options) {
+        var request = new Request({
+            method: options.method,
+            url: options.url,
+            params: options.params,
+            body: options.body,
+            headers: options.headers,
+            middleware: options.middleware
+        });
+        if (typeof options.callback === 'function') {
+            request.once('complete', options.callback);
+        }
+        if ( !request.xhr ) {
+            request.open();
+            request.send();
+        }
+        return request;
+    };
 
     if (true) {
         __m__["marbles/http"].Request = Request;
@@ -2448,6 +2491,7 @@
 
     __m__["marbles/http"].default = HTTP;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
 /**
  * @memberof Marbles.HTTP.Middleware
  * @param {String} user
@@ -2458,6 +2502,7 @@
 (function(__m__) {
     "use strict";
     __m__["marbles/http/middleware/basic_auth"] = {};
+    /* @flow weak */
     /**
      * @memberof Marbles.HTTP.Middleware
      * @param {String} user
@@ -2482,10 +2527,12 @@
 
     __m__["marbles/http/middleware/basic_auth"].default = BasicAuth;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/http/middleware/form_encoded"] = {};
-    var QueryParams = __m__["marbles/query_params"].QueryParams;
+    var QueryParams = __m__["marbles/query_params"].QueryParams || __m__["marbles/query_params"].default;
 
     var CONTENT_TYPE = 'application/x-www-form-urlencoded';
 
@@ -2541,6 +2588,7 @@
 
     __m__["marbles/http/middleware/form_encoded"].default = FormEncoded;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
 /**
  * @memberof Marbles.HTTP.Middleware
  * @desc Serializes the request body if the Content-Type header matches. Deserializes the response body if the Content-Type header matches.
@@ -2549,6 +2597,7 @@
 (function(__m__) {
     "use strict";
     __m__["marbles/http/middleware/serialize_json"] = {};
+    /* @flow weak */
     /**
      * @memberof Marbles.HTTP.Middleware
      * @desc Serializes the request body if the Content-Type header matches. Deserializes the response body if the Content-Type header matches.
@@ -2589,6 +2638,7 @@
 
     __m__["marbles/http/middleware/serialize_json"].default = SerializeJSON;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
 /**
  * @memberof Marbles.HTTP.Middleware
  * @desc Sets `withCredentials = true` on the XMLHttpRequest object
@@ -2597,6 +2647,7 @@
 (function(__m__) {
     "use strict";
     __m__["marbles/http/middleware/with_credentials"] = {};
+    /* @flow weak */
     /**
      * @memberof Marbles.HTTP.Middleware
      * @desc Sets `withCredentials = true` on the XMLHttpRequest object
@@ -2616,13 +2667,15 @@
 
     __m__["marbles/http/middleware/with_credentials"].default = WithCredentials;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
  "use strict";
  __m__["marbles/http/middleware"] = {};
- var BasicAuth = __m__["marbles/http/middleware/basic_auth"].BasicAuth;
- var FormEncoded = __m__["marbles/http/middleware/form_encoded"].FormEncoded;
- var SerializeJSON = __m__["marbles/http/middleware/serialize_json"].SerializeJSON;
- var WithCredentials = __m__["marbles/http/middleware/with_credentials"].WithCredentials;
+ var BasicAuth = __m__["marbles/http/middleware/basic_auth"].BasicAuth || __m__["marbles/http/middleware/basic_auth"].default;
+ var FormEncoded = __m__["marbles/http/middleware/form_encoded"].FormEncoded || __m__["marbles/http/middleware/form_encoded"].default;
+ var SerializeJSON = __m__["marbles/http/middleware/serialize_json"].SerializeJSON || __m__["marbles/http/middleware/serialize_json"].default;
+ var WithCredentials = __m__["marbles/http/middleware/with_credentials"].WithCredentials || __m__["marbles/http/middleware/with_credentials"].default;
 
  /**
   * @memberof Marbles
@@ -2650,9 +2703,13 @@
 
  __m__["marbles/http/middleware"].default = Middleware;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/http/link_header"] = {};
+    /* @flow weak */
+
     var LINK_SPLITTER = /,[\s\r\n]*/;
     var LINK_MATCHER = /<([^>]+)>((?:[\s\r\n]|.)*)/;
     var ATTR_SPLITTER = /[\s\r\n]*;[\s\r\n]*/;
@@ -2705,12 +2762,14 @@
 
     __m__["marbles/http/link_header"].default = LinkHeader;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/object"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
-    var Accessors = __m__["marbles/accessors"].Accessors;
-    var Events = __m__["marbles/events"].Events;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
+    var Accessors = __m__["marbles/accessors"].Accessors || __m__["marbles/accessors"].default;
+    var Events = __m__["marbles/events"].Events || __m__["marbles/events"].default;
 
     /**
      * @deprecated
@@ -2740,10 +2799,12 @@
 
     __m__["marbles/object"].default = MarblesObject;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/id_counter"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
 
     var IDCounter = Utils.createClass({
         displayName: 'Marbles.IDCounter',
@@ -2779,10 +2840,12 @@
 
     __m__["marbles/id_counter"].default = IDCounter;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/id_mapping"] = {};
-    var IDCounter = __m__["marbles/id_counter"].IDCounter;
+    var IDCounter = __m__["marbles/id_counter"].IDCounter || __m__["marbles/id_counter"].default;
 
     var __generateCIDName,
             __buildCIDMappingScope,
@@ -2996,14 +3059,16 @@
 
     __m__["marbles/id_mapping"].default = CIDMapping;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/model"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
-    var Transaction = __m__["marbles/transaction"].Transaction;
-    var CIDMapping = __m__["marbles/id_mapping"].CIDMapping;
-    var Accessors = __m__["marbles/accessors"].Accessors;
-    var Events = __m__["marbles/events"].Events;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
+    var Transaction = __m__["marbles/transaction"].Transaction || __m__["marbles/transaction"].default;
+    var CIDMapping = __m__["marbles/id_mapping"].CIDMapping || __m__["marbles/id_mapping"].default;
+    var Accessors = __m__["marbles/accessors"].Accessors || __m__["marbles/accessors"].default;
+    var Events = __m__["marbles/events"].Events || __m__["marbles/events"].default;
 
     /**
      * @deprecated Use the Store instead
@@ -3093,14 +3158,16 @@
 
     __m__["marbles/model"].default = Model;
 })(window.____modules____ = window.____modules____ || {});
+/* @flow weak */
+
 (function(__m__) {
     "use strict";
     __m__["marbles/collection"] = {};
-    var Utils = __m__["marbles/utils"].Utils;
-    var Model = __m__["marbles/model"].Model;
-    var Accessors = __m__["marbles/accessors"].Accessors;
-    var Events = __m__["marbles/events"].Events;
-    var CIDMapping = __m__["marbles/id_mapping"].CIDMapping;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
+    var Model = __m__["marbles/model"].Model || __m__["marbles/model"].default;
+    var Accessors = __m__["marbles/accessors"].Accessors || __m__["marbles/accessors"].default;
+    var Events = __m__["marbles/events"].Events || __m__["marbles/events"].default;
+    var CIDMapping = __m__["marbles/id_mapping"].CIDMapping || __m__["marbles/id_mapping"].default;
 
     /**
      * @deprecated Use the Store instead
@@ -3435,24 +3502,24 @@
 (function(__m__) {
     "use strict";
     __m__["marbles"] = {};
-    var VERSION = __m__["marbles/version"].VERSION;
-    var Utils = __m__["marbles/utils"].Utils;
-    var Dispatcher = __m__["marbles/dispatcher"].Dispatcher;
-    var State = __m__["marbles/state"].State;
-    var Store = __m__["marbles/store"].Store;
-    var Events = __m__["marbles/events"].Events;
-    var History = __m__["marbles/history"].History;
-    var Router = __m__["marbles/router"].Router;
-    var Accessors = __m__["marbles/accessors"].Accessors;
-    var Transaction = __m__["marbles/transaction"].Transaction;
-    var DirtyTracking = __m__["marbles/dirty_tracking"].DirtyTracking;
-    var Validation = __m__["marbles/validation"].Validation;
-    var HTTPRequest = __m__["marbles/http"].HTTPRequest, HTTP = __m__["marbles/http"].HTTP;
-    var HTTPMiddleware = __m__["marbles/http/middleware"].HTTPMiddleware;
-    var HTTPLinkHeader = __m__["marbles/http/link_header"].HTTPLinkHeader;
-    var MarblesObject = __m__["marbles/object"].MarblesObject;
-    var Model = __m__["marbles/model"].Model;
-    var Collection = __m__["marbles/collection"].Collection;
+    var VERSION = __m__["marbles/version"].VERSION || __m__["marbles/version"].default;
+    var Utils = __m__["marbles/utils"].Utils || __m__["marbles/utils"].default;
+    var Dispatcher = __m__["marbles/dispatcher"].Dispatcher || __m__["marbles/dispatcher"].default;
+    var State = __m__["marbles/state"].State || __m__["marbles/state"].default;
+    var Store = __m__["marbles/store"].Store || __m__["marbles/store"].default;
+    var Events = __m__["marbles/events"].Events || __m__["marbles/events"].default;
+    var History = __m__["marbles/history"].History || __m__["marbles/history"].default;
+    var Router = __m__["marbles/router"].Router || __m__["marbles/router"].default;
+    var Accessors = __m__["marbles/accessors"].Accessors || __m__["marbles/accessors"].default;
+    var Transaction = __m__["marbles/transaction"].Transaction || __m__["marbles/transaction"].default;
+    var DirtyTracking = __m__["marbles/dirty_tracking"].DirtyTracking || __m__["marbles/dirty_tracking"].default;
+    var Validation = __m__["marbles/validation"].Validation || __m__["marbles/validation"].default;
+    var HTTPRequest = __m__["marbles/http"].HTTPRequest || __m__["marbles/http"].default, HTTP = __m__["marbles/http"].HTTP || __m__["marbles/http"].default;
+    var HTTPMiddleware = __m__["marbles/http/middleware"].HTTPMiddleware || __m__["marbles/http/middleware"].default;
+    var HTTPLinkHeader = __m__["marbles/http/link_header"].HTTPLinkHeader || __m__["marbles/http/link_header"].default;
+    var MarblesObject = __m__["marbles/object"].MarblesObject || __m__["marbles/object"].default;
+    var Model = __m__["marbles/model"].Model || __m__["marbles/model"].default;
+    var Collection = __m__["marbles/collection"].Collection || __m__["marbles/collection"].default;
 
     if (true) {
         __m__["marbles"].Utils = Utils;
