@@ -6,7 +6,7 @@ module MarblesJS
   end
 
   def self.configure(options = {})
-    self.settings[:public_dir] ||= File.expand_path('../../public/assets', __FILE__) # lib/../public/assets
+    self.settings[:public_dir] ||= File.expand_path('../../public/assets', __FILE__) # ruby-lib/../public/assets
     unless self.settings[:asset_paths]
       self.settings[:asset_paths] = [ File.expand_path('../../src', __FILE__) ]
     end

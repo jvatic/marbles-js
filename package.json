@@ -1,6 +1,26 @@
 {
-  "name": "Marbles",
+  "name": "marbles",
+  "description": "Front-end framework for routing, http, and data handling",
+  "version": "0.1.0",
+  "keywords": ["framework", "http", "router", "routing", "browser"],
+  "homepage": "https://github.com/jvatic/marbles-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jvatic/marbles-js.git"
+  },
+  "license": "BSD",
+  "author": {
+    "name": "Jesse Stuart",
+    "url": "https://github.com/jvatic"
+  },
+  "main": "es5/marbles.js",
   "devDependencies": {
-    "jsdoc": "~3.3"
+    "jsdoc": "~3.3",
+    "babel-core": "~5.6"
+  },
+  "files": "es5",
+  "scripts": {
+    "prepublish": "babel -d es5 --optional flow src",
+    "postinstall": "ln -s ./es5/marbles/* ./"
   }
 }
