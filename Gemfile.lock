@@ -19,7 +19,6 @@ PATH
   remote: .
   specs:
     marbles-js (0.0.5)
-      es6-module-mapper
 
 GEM
   remote: https://rubygems.org/
