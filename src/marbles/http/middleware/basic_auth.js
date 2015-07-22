@@ -6,7 +6,7 @@
  * @desc Returns middleware for setting `Authorize` header
  */
 var BasicAuth = function (user, password) {
-	var authHeader = "Basic "+ window.btoa((user || "") +":"+ (password || ""));
+	var authHeader = "Basic "+ btoa((user || "") +":"+ (password || ""));
 	return {
 		willSendRequest: function (request) {
 			try {
