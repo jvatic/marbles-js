@@ -141,6 +141,17 @@ Store.__trackInstance = function (instance) {
  * @memberof Marbles.Store
  * @func
  * @param {Marbles.Store} store
+ * @desc Get the state object of store
+ */
+Store.getState = function (id) {
+	var instance = this.__getInstance(id);
+	return instance.getState();
+};
+
+/**
+ * @memberof Marbles.Store
+ * @func
+ * @param {Marbles.Store} store
  * @desc Give Store instance up for garbage collection
  */
 Store.discardInstance = function (instance) {

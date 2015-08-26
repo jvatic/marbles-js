@@ -24,6 +24,10 @@ var State = {
 		});
 	},
 
+	getState: function () {
+		return this.state;
+	},
+
 	/**
 	 * @method
 	 * @param {function} changeFn
