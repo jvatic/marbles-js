@@ -69,6 +69,9 @@ var Utils = {
 			}
 			return true;
 		}
+		if ((obj === null && other !== null) || (other === null && obj !== null)) {
+			return false;
+		}
 		// both ids are objects
 		for (var k in obj) {
 			if (obj.hasOwnProperty(k)) {
