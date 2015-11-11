@@ -1,5 +1,6 @@
 /* @flow weak */
 var __callbacks = [];
+var __lock = Promise.resolve();
 
 /**
  * @memberof Marbles
@@ -24,12 +25,15 @@ var Dispatcher = {
 	 * @returns {Promise} Resolves when all registered callbacks have been called
 	 */
 	dispatch: function (event) {
-		var promises = __callbacks.map(function (callback) {
-			return new Promise(function (resolve) {
-				resolve(callback(event));
+		__lock = __lock.then(function () {
+			var promises = __callbacks.map(function (callback) {
+				return new Promise(function (resolve) {
+					resolve(callback(event));
+				});
 			});
+			return Promise.all(promises);
 		});
-		return Promise.all(promises);
+		return __lock;
 	}
 };
 
