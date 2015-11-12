@@ -161,10 +161,12 @@ var History = Utils.createClass({
 		}
 		window.history[method]({}, document.title, path);
 
+		var promise = Promise.resolve();
 		if (options.trigger) {
 			// cause route handler to be called
-			this.loadURL({ replace: options.replace });
+			promise = this.loadURL({ replace: options.replace });
 		}
+		return promise;
 	},
 
 	pathWithRoot: function (path) {
@@ -229,11 +231,11 @@ var History = Utils.createClass({
 		}
 
 		this.started = true;
-		this.trigger('start');
-
-		if (options.trigger) {
-			this.loadURL();
-		}
+		return this.trigger('start').then(function () {
+			if (options.trigger) {
+				return this.loadURL();
+			}
+		});
 	},
 
 	// stop pushState handling
@@ -242,7 +244,7 @@ var History = Utils.createClass({
 			window.removeEventListener('popstate', this.handlePopState, false);
 		}
 		this.started = false;
-		this.trigger('stop');
+		return this.trigger('stop');
 	},
 
 	getPath: function () {
@@ -270,9 +272,9 @@ var History = Utils.createClass({
 		var current = this.getPath();
 		if (current === this.path) {
 			// path is the same, do nothing
-			return;
+			return Promise.resolve();
 		}
-		this.loadURL();
+		return this.loadURL();
 	},
 
 	getHandler: function (path) {
@@ -315,29 +317,38 @@ var History = Utils.createClass({
 		var handlerAbort = function () {
 			__handlerAbort = true;
 		};
+		var router;
 
-		if (prevHandler) {
-			var handlerUnloadEvent = {
-				handler: prevHandler,
-				nextHandler: handler,
-				path: prevPath,
-				nextPath: path,
-				params: prevParams,
-				nextParams: params,
-				abort: handlerAbort,
-				context: this.context
-			};
-			if (prevHandler.router.beforeHandlerUnload) {
-				prevHandler.router.beforeHandlerUnload.call(prevHandler.router, handlerUnloadEvent);
+		var runBeforeUnload = function () {
+			var promise = Promise.resolve();
+			if (prevHandler) {
+				var handlerUnloadEvent = {
+					handler: prevHandler,
+					nextHandler: handler,
+					path: prevPath,
+					nextPath: path,
+					params: prevParams,
+					nextParams: params,
+					abort: handlerAbort,
+					context: this.context
+				};
+				if (prevHandler.router.beforeHandlerUnload) {
+					prevHandler.router.beforeHandlerUnload.call(prevHandler.router, handlerUnloadEvent);
+				}
+
+				if ( !__handlerAbort ) {
+					promise = this.trigger('handler:before-unload', handlerUnloadEvent);
+				}
 			}
+			return promise;
+		}.bind(this);
 
-			if ( !__handlerAbort ) {
-				this.trigger('handler:before-unload', handlerUnloadEvent);
+		var runBefore = function () {
+			var promise = Promise.resolve();
+			if ( !handler || __handlerAbort ) {
+				return promise;
 			}
-		}
-
-		if (handler && !__handlerAbort) {
-			var router = handler.router;
+			router = handler.router;
 			params = QueryParams.combineParams(params, router.extractNamedParams.call(router, handler.route, path, handler.paramNames));
 			var event = {
 				handler: handler,
@@ -351,19 +362,30 @@ var History = Utils.createClass({
 			}
 
 			if ( !__handlerAbort ) {
-				this.trigger('handler:before', event);
+				promise = this.trigger('handler:before', event);
 			}
+			return promise;
+		}.bind(this);
 
-			if ( !__handlerAbort ) {
-				handler.callback.call(router, params, handler.opts, this.context);
-				this.trigger('handler:after', {
-					handler: handler,
-					path: path,
-					params: params
-				});
+		var runHandler = function () {
+			if ( !handler || __handlerAbort ) {
+				return Promise.resolve();
 			}
-		}
-		return handler;
+			return handler.callback.call(router, params, handler.opts, this.context);
+		}.bind(this);
+
+		var runAfter = function () {
+			if ( !handler || __handlerAbort ) {
+				return Promise.resolve();
+			}
+			return this.trigger('handler:after', {
+				handler: handler,
+				path: path,
+				params: params
+			});
+		}.bind(this);
+
+		return runBeforeUnload().then(runBefore).then(runHandler).then(runAfter);
 	},
 
 	trigger: function (eventName, args) {
