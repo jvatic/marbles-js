@@ -1,4 +1,5 @@
 /* @flow weak */
+/* @flow weak */
 var __callbacks = [];
 var __lock = Promise.resolve();
 
@@ -26,12 +27,13 @@ var Dispatcher = {
 	 */
 	dispatch: function (event) {
 		__lock = __lock.then(function () {
-			var promises = __callbacks.map(function (callback) {
-				return new Promise(function (resolve) {
-					resolve(callback(event));
+			var p = Promise.resolve();
+			__callbacks.forEach(function (callback) {
+				return p.then(function () {
+					return callback(event);
 				});
 			});
-			return Promise.all(promises);
+			return p;
 		});
 		return __lock;
 	}
