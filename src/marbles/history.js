@@ -235,7 +235,7 @@ var History = Utils.createClass({
 			if (options.trigger) {
 				return this.loadURL();
 			}
-		});
+		}.bind(this));
 	},
 
 	// stop pushState handling
