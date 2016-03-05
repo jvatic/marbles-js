@@ -349,11 +349,11 @@ var History = Utils.createClass({
 				return promise;
 			}
 			router = handler.router;
-			params = QueryParams.combineParams(params, router.extractNamedParams.call(router, handler.route, path, handler.paramNames));
+			var p = QueryParams.combineParams(params, router.extractNamedParams.call(router, handler.route, path, handler.paramNames));
 			var event = {
 				handler: handler,
 				path: path,
-				params: params,
+				params: p,
 				abort: handlerAbort,
 				context: this.context
 			};
