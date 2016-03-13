@@ -9,6 +9,45 @@ There is no view component, it's recomended you use [React](http://reactjs.org/)
 
 ## Usage
 
+### [asset-matrix-go](https://github.com/jvatic/asset-matrix-go)
+
+Reference this repo in your compiler:
+
+```go
+package main
+
+import (
+	"log"
+
+	matrix "github.com/jvatic/asset-matrix-go"
+)
+
+func main() {
+	m := matrix.New(&matrix.Config{
+		Paths: []*matrix.AssetRoot{
+			{
+				GitRepo:   "git://github.com/jvatic/marbles-js.git",
+				GitBranch: "master",
+				GitRef:    "6d5491bbc51f4454e0c605af6e7faa4e0539441a",
+				Path:      "src",
+			},
+		},
+	})
+	if err := m.Build(); err != nil {
+		log.Fatal(err)
+	}
+	m.RemoveOldAssets()
+}
+```
+
+then import the modules you need:
+
+```javascript
+import { extend } from 'marbles/utils';
+import HTTP from 'marbles/http':
+// ...
+```
+
 ### npm
 
 ```
