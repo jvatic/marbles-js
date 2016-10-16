@@ -32,13 +32,16 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
   # each collection with with collection_id and models
   #
   # Returns an array of models
-  filterAndSortCollectionsModels: (models, callbacks) =>
+  filterAndSortCollectionsModels: (collections, models, callbacks) =>
 
     # Sort all collections' models seperately
     # and find the collection with the lowest value
     # for the last model
 
     lowest_last_value = null
+
+    for collection in collections
+      models[collection.cid] ?= []
 
     for collection_cid, _models of models
       continue unless models[collection_cid].length
@@ -115,7 +118,7 @@ Marbles.UnifiedCollection = class UnifiedCollection extends Marbles.Collection
       collections_options[collection.cid] = _.extend {}, _options, options[collection.cid] || {}
 
       if num_pending_fetches <= 0
-        models = @filterAndSortCollectionsModels(models,
+        models = @filterAndSortCollectionsModels(collections, models,
           rejectModel: (collection_cid, model) =>
             # remove discarded models from collection
             # to prevent it from being lost in a unique filter
